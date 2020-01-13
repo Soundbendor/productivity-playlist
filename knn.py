@@ -18,6 +18,10 @@ neigh.fit(songdata.values)
 print("trained data ... fingers crossed")
 
 # input the starting and destination coordinates, set "current" to starting
+origin = int(input("Choose a number for a starting song: "))
+destination = int(input("Choose a number for an ending song: "))
+current = origin
+
 # input the time needed to get from starting to destination
 # since these are 30 second song clips, divide the time to figure out how many songs we need (n_songs_needed) (round down if necessary)
 # create a list of numbers (for songs) to store our "path" - let's call it song_list
