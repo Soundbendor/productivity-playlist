@@ -76,9 +76,7 @@ for time_reqd in range(teststart, teststart + testcount):
 
         for i in range(len(candidates)):
             num = candidates[i]
-            # print(songdata.iloc[num])
-            # print(num)
-
+            
             # calculate the relative a_dists and v_dists between them and current
             # calculate the ratio between each of those and the desired a_step and v_step
             dist_a_ratio = (songdata.iloc[num][0] - current_a) / step_a
