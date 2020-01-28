@@ -4,15 +4,24 @@ import pandas as pd
 from sklearn.neighbors import NearestNeighbors
 import matplotlib.pyplot as plt
 
-# load the annotation data from CSVs to ... data frames?
-# (specifically the song_id, average arousal and valence for each song)
-# (this line just loads the first 2000 songs ... I figured that'd be enough for a first run)
-songdata = pd.read_csv("deam-data\\annotations\\annotations averaged per song\song_level\static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
+def prompt(question, ids, data):
+    input_found = False
+    
+    while(input_found == False):
+        test_input = int(input(question))
+        
+        if test_input in ids:
+            input_found = True
+            print(data.loc[test_input, :])
+            return test_input
+        else:
+            print("ID not in song list. Try again")
+
+# load song_id, average arousal and valence for each song from CSV to pandas DataFrame
+# songdata = pd.read_csv("deam-data\\annotations\\annotations averaged per song\song_level\static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
+songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4])
 print("read song data")
 song_ids = list(songdata.index.values)
-print(songdata.loc[99, :])
-print(songdata.loc[1370, :]) # shares the same AV coordinates as 99 (will have to remove duplicate coordinates or add dimensions to differentiate)
-print(songdata.loc[56, :])
 
 # train a KNN model 
 neigh = NearestNeighbors()
@@ -20,8 +29,8 @@ neigh.fit(songdata.values)
 print("trained data ... fingers crossed")
 
 # input the starting and destination coordinates, set "current" to starting
-user_curr = int(input("Choose a number for a starting song: "))
-user_dest = int(input("Choose a number for an ending song: "))
+user_curr = prompt("Choose a number for a starting song: ", song_ids, songdata)
+user_dest = prompt("Choose a number for an ending song: ", song_ids, songdata)
 
 # input the time needed to get from starting to destination (test cases here)
 teststart = int(input("How many minutes between your start and destination? "))
@@ -32,8 +41,8 @@ for time_reqd in range(teststart, teststart + testcount):
     current = user_curr
     destination = user_dest
 
-    destination_a = songdata.loc[destination][0]
-    destination_v = songdata.loc[destination][1]
+    destination_a = songdata.loc[destination][1]
+    destination_v = songdata.loc[destination][0]
         
     n_songs_reqd = time_reqd * 2 # multiply by 60 (seconds) and divide by 30 (seconds)
 
@@ -49,8 +58,8 @@ for time_reqd in range(teststart, teststart + testcount):
     # while (test):
 
         # grab the a_dist and v_dist between current and destination (replace with list for scaling dimensions)
-        current_a = songdata.loc[current][0]
-        current_v = songdata.loc[current][1]
+        current_a = songdata.loc[current][1]
+        current_v = songdata.loc[current][0]
 
         # was gonna do slope and distance, but what if the imagined vector was in the OPPOSITE direction?
         distance = np.sqrt(np.square(destination_a - current_a) + np.square(destination_v - current_v))
@@ -70,25 +79,26 @@ for time_reqd in range(teststart, teststart + testcount):
         for i in range(len(songlist)):
             candidates = candidates[candidates != songlist[i]]
 
-        dists_a = []
-        dists_v = []
-        combined = []
+        cand_scores = []
 
         for i in range(len(candidates)):
             num = candidates[i]
             
+            ## RATIO METHOD
             # calculate the relative a_dists and v_dists between them and current
             # calculate the ratio between each of those and the desired a_step and v_step
-            dist_a_ratio = (songdata.iloc[num][0] - current_a) / step_a
-            dist_v_ratio = (songdata.iloc[num][1] - current_v) / step_v
-
             # use absolute value function of 1 - ratio to get distance to 1.00
-            dists_a.append(np.absolute(1 - dist_a_ratio))
-            dists_v.append(np.absolute(1 - dist_v_ratio))
-            combined.append(dists_a[i] * dists_v[i])
+            # dist_a_ratio = (songdata.iloc[num][1] - current_a) / step_a
+            # dist_v_ratio = (songdata.iloc[num][0] - current_v) / step_v
+            # cand_scores.append(np.absolute(1 - dist_a_ratio) * np.absolute(1 - dist_v_ratio))
 
-        # select the song which has the ratio closest to 1.00 to be the new value of "current"
-        min_indices = np.argmin(combined)
+            ## DIFFERENCE METHOD
+            dist_a_diff = np.absolute(songdata.iloc[num][1] - current_a - step_a)
+            dist_v_diff = np.absolute(songdata.iloc[num][0] - current_v - step_v)
+            cand_scores.append(dist_a_diff + dist_v_diff)
+
+        # select the song which has the ratio/difference closest to 1.00 to be the new value of "current"
+        min_indices = np.argmin(cand_scores)
         min_cand_index = candidates[min_indices]
         current = song_ids[min_cand_index]
         songlist = pd.unique(np.append(songlist, current))
@@ -101,8 +111,8 @@ for time_reqd in range(teststart, teststart + testcount):
     a_points = []
 
     for i in range(len(songlist)):
-        v_points.append(songdata.loc[songlist[i]][0])
-        a_points.append(songdata.loc[songlist[i]][1])
+        v_points.append(songdata.loc[songlist[i]][1])
+        a_points.append(songdata.loc[songlist[i]][0])
 
     plt.plot(v_points, a_points)
 
