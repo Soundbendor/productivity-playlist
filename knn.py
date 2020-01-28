@@ -85,9 +85,6 @@ for time_reqd in range(teststart, teststart + testcount):
             num = candidates[i]
             
             ## RATIO METHOD
-            # calculate the relative a_dists and v_dists between them and current
-            # calculate the ratio between each of those and the desired a_step and v_step
-            # use absolute value function of 1 - ratio to get distance to 1.00
             # dist_a_ratio = (songdata.iloc[num][1] - current_a) / step_a
             # dist_v_ratio = (songdata.iloc[num][0] - current_v) / step_v
             # cand_scores.append(np.absolute(1 - dist_a_ratio) * np.absolute(1 - dist_v_ratio))
