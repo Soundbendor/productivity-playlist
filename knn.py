@@ -29,8 +29,8 @@ neigh.fit(songdata.values)
 print("trained data ... fingers crossed")
 
 # input the starting and destination coordinates, set "current" to starting
-user_curr = prompt("Choose a number for a starting song: ", song_ids, songdata)
-user_dest = prompt("Choose a number for an ending song: ", song_ids, songdata)
+user_curr = int(input("Choose a number for a starting song: "))
+user_dest = int(input("Choose a number for an ending song: "))
 
 # input the time needed to get from starting to destination (test cases here)
 teststart = int(input("How many minutes between your start and destination? "))
@@ -77,7 +77,19 @@ for time_reqd in range(teststart, teststart + testcount):
         candidates = candidates[0]
 
         for i in range(len(songlist)):
-            candidates = candidates[candidates != songlist[i]]
+            candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
+        
+        if (len(candidates) < 1):
+            k_neighbors = neigh.kneighbors([songdata.loc[current].array], n_songs_reqd + 1)
+            candidates = np.array(k_neighbors[1])
+            candidates = candidates[0]
+
+            for i in range(len(songlist)):
+                candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
+            
+
+            
+
 
         cand_scores = []
 
@@ -95,6 +107,7 @@ for time_reqd in range(teststart, teststart + testcount):
             cand_scores.append(dist_a_diff + dist_v_diff)
 
         # select the song which has the ratio/difference closest to 1.00 to be the new value of "current"
+
         min_indices = np.argmin(cand_scores)
         min_cand_index = candidates[min_indices]
         current = song_ids[min_cand_index]
