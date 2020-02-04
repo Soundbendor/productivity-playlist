@@ -1,4 +1,5 @@
 import spotipy
+import pprint
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
@@ -20,9 +21,16 @@ except:
     print('Token is not accessible for ' + username)
 
 songtitles = pd.read_csv("deam-data\\metadata\\metadata_2015.csv", header=0, usecols=[2, 3])
-
 sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 print(songtitles.iloc[0])
 
-result = sp.search(songtitles.iloc[0][0], limit=1, type='track')
-print(result)
+# merge the artist and track to get a single search item
+joined_titles = []
+
+for i in range(len(songtitles)):
+    joined_titles.append(songtitles.iloc[i][0] + " " + songtitles.iloc[i][1])
+
+result = sp.search(joined_titles[0], limit=1, type='track')
+features = sp.audio_features(result)
+pprint.pprint(result)
+pprint.pprint(features)
