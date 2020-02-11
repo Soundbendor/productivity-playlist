@@ -22,6 +22,7 @@ def prompt(question, ids, data):
 songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4])
 print("read song data")
 song_ids = list(songdata.index.values)
+print(songdata.head())
 
 # train a KNN model 
 neigh = NearestNeighbors()
@@ -35,6 +36,9 @@ user_dest = int(input("Choose a number for an ending song: "))
 # input the time needed to get from starting to destination (test cases here)
 teststart = int(input("How many minutes between your start and destination? "))
 testcount = int(input("How many tests do you want to do? "))
+
+# array of smoothness values
+smoothies = []
 
 # for loop for testing different amounts of points in between
 for time_reqd in range(teststart, teststart + testcount):
@@ -56,6 +60,7 @@ for time_reqd in range(teststart, teststart + testcount):
     # while the current song isn't the destination song and the number of songs required isn't met
     while ((current != destination) & (len(songlist) < n_songs_reqd)):
     # while (test):
+        euclids = []
 
         # grab the a_dist and v_dist between current and destination (replace with list for scaling dimensions)
         current_a = songdata.loc[current][1]
@@ -86,10 +91,6 @@ for time_reqd in range(teststart, teststart + testcount):
 
             for i in range(len(songlist)):
                 candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
-            
-
-            
-
 
         cand_scores = []
 
@@ -104,11 +105,17 @@ for time_reqd in range(teststart, teststart + testcount):
             ## DIFFERENCE METHOD
             dist_a_diff = np.absolute(songdata.iloc[num][1] - current_a - step_a)
             dist_v_diff = np.absolute(songdata.iloc[num][0] - current_v - step_v)
-            cand_scores.append(dist_a_diff + dist_v_diff)
+            
+            added_dist = dist_a_diff + dist_v_diff
+            euclid_dist = np.sqrt(np.square(dist_a_diff) + np.square(dist_v_diff))
+            
+            cand_scores.append(euclid_dist)
 
         # select the song which has the ratio/difference closest to 1.00 to be the new value of "current"
-
         min_indices = np.argmin(cand_scores)
+        min_cand_dist = cand_scores[min_indices] + 1
+        euclids.append(min_cand_dist)
+
         min_cand_index = candidates[min_indices]
         current = song_ids[min_cand_index]
         songlist = pd.unique(np.append(songlist, current))
@@ -116,6 +123,10 @@ for time_reqd in range(teststart, teststart + testcount):
 
     print(time_reqd)
     print(songlist)
+
+    smoothie = np.mean(euclids)
+    smoothies.append(smoothie)
+    print(smoothie)
 
     v_points = []
     a_points = []
@@ -128,4 +139,5 @@ for time_reqd in range(teststart, teststart + testcount):
 
 plt.xlabel('valence')
 plt.ylabel('arousal')
+plt.legend(smoothies)
 plt.show()
