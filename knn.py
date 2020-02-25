@@ -3,17 +3,40 @@ import numpy as np
 import random
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+from time import time
 import matplotlib.pyplot as plt
+
+import spotipy
+import spotipy.util as util
+from spotipy.oauth2 import SpotifyClientCredentials
+
+#get important personal information from Spotify API
+client_id = '2a285d92069147f8a7e59cec1d0d9bb6'
+client_secret = '1eebc7035f74489db8f5597ce4afb863'
+redirect_uri = 'https://www.google.com/'
+username = 'eonkid46853'
+
+#get yo Spotify
+client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+scope = 'user-read-private user-library-read playlist-modify-private playlist-modify-public'
+try:
+    token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
+    sp = spotipy.Spotify(auth= token)
+except:
+    print('Token is not accessible for ' + username)
+
+sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
 
 # load song_id, average arousal and valence for each song from CSV to pandas DataFrame
 # songdata = pd.read_csv("deam-data\\annotations\\annotations averaged per song\song_level\static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
-songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4])
+# songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4])
+songdata = pd.read_csv("data_with_features.csv", header=0, index_col=0, usecols=[0, 1, 2, 5])
 print("read song data")
 song_ids = list(songdata.index.values)
 
 # train a KNN model 
 neigh = NearestNeighbors()
-neigh.fit(songdata.values)
+neigh.fit(songdata.select_dtypes(include='float64').to_numpy())
 print("trained data ... fingers crossed")
 
 # input the starting and destination coordinates, set "current" to starting
@@ -36,6 +59,9 @@ smoothies = []
 # array to store coordinates
 coords = []
 
+#array to store the "smoothest" playlist id's (for Spotify)
+min_id_list = []
+
 # for loop for testing different amounts of points in between
 for time_reqd in range(teststart, teststart + testcount):
     current = user_curr
@@ -57,8 +83,6 @@ for time_reqd in range(teststart, teststart + testcount):
     # testing variable for running a single iteration of the while loop
     test = True 
     smooth_steps = []
-    
-
 
     # while the current song isn't the destination song and the number of songs required isn't met
     while ((current != destination) & (len(songlist) < n_songs_reqd)):
@@ -78,7 +102,7 @@ for time_reqd in range(teststart, teststart + testcount):
         step_v = dist_v / (n_songs_reqd - len(songlist))
 
         # grab the nearest neighbors within 110% * step_size of the current point
-        r_neighbors = neigh.radius_neighbors([songdata.loc[current].array], radius=(1.1 * step_size))
+        r_neighbors = neigh.radius_neighbors([songdata.select_dtypes(include='float64').loc[current].array], radius=(1.1 * step_size))
         candidates = np.array(r_neighbors[1])
         candidates = candidates[0]
 
@@ -86,7 +110,7 @@ for time_reqd in range(teststart, teststart + testcount):
             candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
         
         if (len(candidates) < 1):
-            k_neighbors = neigh.kneighbors([songdata.loc[current].array], n_songs_reqd + 1)
+            k_neighbors = neigh.kneighbors([songdata.select_dtypes(include='float64').loc[current].array], n_songs_reqd + 1)
             candidates = np.array(k_neighbors[1])
             candidates = candidates[0]
 
@@ -129,6 +153,11 @@ for time_reqd in range(teststart, teststart + testcount):
         test = False
 
     smoothie = np.mean(smooth_steps)
+
+    if (len(smoothies) > 0):
+        if (smoothie < smoothies[np.argmin(smoothies)]):
+            min_id_list = songlist
+
     smoothies.append(smoothie)
     print("{}: {}".format(time_reqd, smoothie))
 
@@ -153,6 +182,8 @@ for i in range(len(coords)):
     plt.plot(coords[i][0], coords[i][1])
 plt.show()
 
+plt.xlabel('valence')
+plt.ylabel('arousal')
 plt.plot(coords[smoothest][0], coords[smoothest][1])
 plt.show()
 
@@ -160,3 +191,13 @@ plt.xlabel('# of tests')
 plt.ylabel('smoothness of paths')
 plt.plot(smoothies)
 plt.show()
+
+user_id = sp.current_user()
+print(sp.me())
+
+# title = "Productivity Playlist Test " + str(time())
+# result_playlist = sp.user_playlist_create(sp.me(), title, public=False, 
+#     description="From my research in the Soundbendor lab at Oregon State University (2020).")
+
+# for i in range(len(min_id_list)):
+#     sp.user_playlist_add_tracks(sp.me(), result_playlist, songdata.loc[min_id_list[i]][2])
