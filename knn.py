@@ -3,8 +3,9 @@ import numpy as np
 import random
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
-from time import time
+import time
 import matplotlib.pyplot as plt
+import pprint
 
 import spotipy
 import spotipy.util as util
@@ -18,19 +19,21 @@ username = 'eonkid46853'
 
 #get yo Spotify
 client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-scope = 'user-read-private user-library-read playlist-modify-private playlist-modify-public'
+scope = "playlist-modify-public,playlist-modify-private"
 try:
     token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
     sp = spotipy.Spotify(auth= token)
 except:
     print('Token is not accessible for ' + username)
 
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
+sp = spotipy.Spotify(auth=token, client_credentials_manager=client_credentials_manager)
 
 # load song_id, average arousal and valence for each song from CSV to pandas DataFrame
 # songdata = pd.read_csv("deam-data\\annotations\\annotations averaged per song\song_level\static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
 # songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4])
 songdata = pd.read_csv("data_with_features.csv", header=0, index_col=0, usecols=[0, 1, 2, 5])
+has_sp_id = songdata['sp_track_id']!="NO TRACK FOUND ON SPOTIFY"
+songdata = songdata[has_sp_id]
 print("read song data")
 song_ids = list(songdata.index.values)
 
@@ -44,11 +47,12 @@ print("trained data ... fingers crossed")
 # user_dest = int(input("Choose a number for an ending song: "))
 user_curr = song_ids[random.randint(0, len(song_ids)) - 1]
 user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
+
 print(songdata.loc[user_curr])
 print(songdata.loc[user_dest])
 
 # input the time needed to get from starting to destination (test cases here)
-# teststart = int(input("How many minutes between your start and destination? "))
+# testcount = int(input("How many songs between your start and destination? "))
 testcount = int(input("How many tests do you want to do? "))
 teststart = 2
 # testcount = 100
@@ -63,15 +67,13 @@ coords = []
 min_id_list = []
 
 # for loop for testing different amounts of points in between
-for time_reqd in range(teststart, teststart + testcount):
+for n_songs_reqd in range(teststart, teststart + testcount):
     current = user_curr
     destination = user_dest
     origin_a = songdata.loc[current][1]
     origin_v = songdata.loc[current][0]
     destination_a = songdata.loc[destination][1]
     destination_v = songdata.loc[destination][0]
-
-    n_songs_reqd = time_reqd * 2 # multiply by 60 (seconds) and divide by 30 (seconds)
 
     sm_a_step = (destination_a - origin_a) / n_songs_reqd
     sm_v_step = (destination_v - origin_v) / n_songs_reqd
@@ -159,7 +161,7 @@ for time_reqd in range(teststart, teststart + testcount):
             min_id_list = songlist
 
     smoothies.append(smoothie)
-    print("{}: {}".format(time_reqd, smoothie))
+    print("{}: {}".format(n_songs_reqd, smoothie))
 
     v_points = []
     a_points = []
@@ -192,12 +194,12 @@ plt.ylabel('smoothness of paths')
 plt.plot(smoothies)
 plt.show()
 
-user_id = sp.current_user()
-print(sp.me())
+title = "Productivity Playlist Test " + str(time.ctime())
+result_playlist = sp.user_playlist_create(username, title, public=False)
 
-# title = "Productivity Playlist Test " + str(time())
-# result_playlist = sp.user_playlist_create(sp.me(), title, public=False, 
-#     description="From my research in the Soundbendor lab at Oregon State University (2020).")
+track_ids = []
+for i in range(len(min_id_list)):
+    track_ids.append(songdata.loc[min_id_list[i]][2])
 
-# for i in range(len(min_id_list)):
-#     sp.user_playlist_add_tracks(sp.me(), result_playlist, songdata.loc[min_id_list[i]][2])
+print(track_ids)
+sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
