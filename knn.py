@@ -47,7 +47,6 @@ print("trained data ... fingers crossed")
 # user_dest = int(input("Choose a number for an ending song: "))
 user_curr = song_ids[random.randint(0, len(song_ids)) - 1]
 user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
-
 print(songdata.loc[user_curr])
 print(songdata.loc[user_dest])
 
@@ -60,11 +59,12 @@ teststart = 2
 # array of smoothness values
 smoothies = []
 
-# array to store coordinates
+# array to store coordinates for all playlists
 coords = []
 
-#array to store the "smoothest" playlist id's (for Spotify)
+#array to store the Deezer Song IDs for the smoothest playlist (for Spotify output)
 min_id_list = []
+smooth = (1, 99999)
 
 # for loop for testing different amounts of points in between
 for n_songs_reqd in range(teststart, teststart + testcount):
@@ -84,6 +84,8 @@ for n_songs_reqd in range(teststart, teststart + testcount):
 
     # testing variable for running a single iteration of the while loop
     test = True 
+    
+    #storing the "smoothness" values for each song in the playlist
     smooth_steps = []
 
     # while the current song isn't the destination song and the number of songs required isn't met
@@ -122,6 +124,7 @@ for n_songs_reqd in range(teststart, teststart + testcount):
         cand_scores = []
         cand_smooths = []
 
+        # TEST ALL THE CANDIDATES FOR THE NEXT SONG TO FIND THE BEST ONE
         for i in range(len(candidates)):
             num = candidates[i]
             
