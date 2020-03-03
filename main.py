@@ -9,6 +9,7 @@ import pprint
 #our modules
 import helper
 import prodplay
+import algos
 
 #get important personal information from Spotify API
 client_id = '2a285d92069147f8a7e59cec1d0d9bb6'
@@ -43,7 +44,10 @@ songlists = []      # the different playlists
 
 # for loop for testing different amounts of points in between
 for n_songs_reqd in range(teststart, teststart + testcount):
-    songlist, smoothie = prodplay.makePlaylist(songdata, song_ids, user_curr, user_dest, n_songs_reqd, neigh)
+    songlist, smoothie = prodplay.makePlaylist(
+        songdata, user_curr, user_dest, n_songs_reqd, neigh, algos.euclid_score
+    )
+    
     smoothies.append(smoothie)
     print("{}: {}".format(n_songs_reqd, smoothie))
     songlists.append(songlist)
