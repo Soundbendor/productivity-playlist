@@ -19,13 +19,16 @@ def makeSpotifyList(sp, username, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(username, title, public=public)
     sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1):
+def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = []):
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
     if (data_dim == 1):
-        plt.plot(data)
-    
+        if (line_count > 1):
+            for i in range(line_count):
+                plt.plot(data[i])
+        else:
+            plt.plot(data)
     elif (data_dim == 2):
         if (line_count > 1):
             for i in range(line_count):
@@ -33,4 +36,7 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1):
         else:
             plt.plot(data[0], data[1])
     
+    if (legend != []):
+        plt.legend(legend)
+
     plt.show()

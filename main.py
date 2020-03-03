@@ -39,42 +39,51 @@ print(songdata.loc[user_dest])
 testcount = int(input("How many tests do you want to do? "))
 teststart = 2
 
-smoothies = []      # smoothness values for each collective playlist
-songlists = []      # the different playlists
+scores = [algos.euclid_score, algos.add_score, algos.mult_score]
+key = ["euclidean distance", "added differences", "multiplied ratios"]
+smoothnesses = []
 
-# for loop for testing different amounts of points in between
-for n_songs_reqd in range(teststart, teststart + testcount):
-    songlist, smoothie = prodplay.makePlaylist(
-        songdata, user_curr, user_dest, n_songs_reqd, neigh, algos.euclid_score
-    )
+for score in scores:
+    smoothies = []      # smoothness values for each collective playlist
+    songlists = []      # the different playlists
+
+    # for loop for testing different amounts of points in between
+    for n_songs_reqd in range(teststart, teststart + testcount):
+        songlist, smoothie = prodplay.makePlaylist(
+            songdata, user_curr, user_dest, n_songs_reqd, neigh, score
+        )
+        
+        smoothies.append(smoothie)
+        print("{}: {}".format(n_songs_reqd, smoothie))
+        songlists.append(songlist)
+
+    coords = []
+    for j in range(len(songlists)):
+        v_points = []
+        a_points = []
+
+        for i in range(len(songlists[j])):
+            v_points.append(songdata.loc[songlists[j][i]][1])
+            a_points.append(songdata.loc[songlists[j][i]][0])
+
+        wrapped_points = [v_points, a_points]
+        coords.append(wrapped_points)
+
+    smoothest = np.argmin(smoothies)
+    print(smoothest + teststart)
+
+    helper.graph('valence', 'arousal', coords, 2, len(coords))
+    helper.graph('valence', 'arousal', coords[smoothest], 2)
     
-    smoothies.append(smoothie)
-    print("{}: {}".format(n_songs_reqd, smoothie))
-    songlists.append(songlist)
+    smoothnesses.append(smoothies)
 
-coords = []
-for j in range(len(songlists)):
-    v_points = []
-    a_points = []
+helper.graph('# of tests', 'smoothness of paths', smoothnesses, 1, 3, key)
 
-    for i in range(len(songlists[j])):
-        v_points.append(songdata.loc[songlists[j][i]][1])
-        a_points.append(songdata.loc[songlists[j][i]][0])
 
-    wrapped_points = [v_points, a_points]
-    coords.append(wrapped_points)
+# track_ids = []
+# for i in range(len(songlists[smoothest])):
+#     track_ids.append(songdata.loc[songlists[smoothest][i]][2])
+# print(track_ids)
 
-smoothest = np.argmin(smoothies)
-print(smoothest + teststart)
-
-helper.graph('valence', 'arousal', coords, 2, len(coords))
-helper.graph('valence', 'arousal', coords[smoothest], 2)
-helper.graph('# of tests', 'smoothness of path', smoothies)
-
-track_ids = []
-for i in range(len(songlists[smoothest])):
-    track_ids.append(songdata.loc[songlists[smoothest][i]][2])
-print(track_ids)
-
-title = "Productivity Playlist Test " + str(time.ctime())
-helper.makeSpotifyList(sp, username, title, track_ids, False)
+# title = "Productivity Playlist Test " + str(time.ctime())
+# helper.makeSpotifyList(sp, username, title, track_ids, False)
