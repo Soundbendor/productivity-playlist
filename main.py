@@ -2,6 +2,7 @@
 import numpy as np
 import random
 import pandas as pd
+import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestNeighbors
 import time
 import pprint
@@ -43,14 +44,16 @@ scores = [algos.euclid_score, algos.add_score, algos.mult_score]
 key = ["euclidean distance", "added differences", "multiplied ratios"]
 smoothnesses = []
 
-for score in scores:
+test_time = str(time.ctime())
+
+for i in range(len(scores)):
     smoothies = []      # smoothness values for each collective playlist
     songlists = []      # the different playlists
 
     # for loop for testing different amounts of points in between
     for n_songs_reqd in range(teststart, teststart + testcount):
         songlist, smoothie = prodplay.makePlaylist(
-            songdata, user_curr, user_dest, n_songs_reqd, neigh, score
+            songdata, user_curr, user_dest, n_songs_reqd, neigh, scores[i]
         )
         
         smoothies.append(smoothie)
@@ -73,11 +76,14 @@ for score in scores:
     print(smoothest + teststart)
 
     helper.graph('valence', 'arousal', coords, 2, len(coords))
+    plt.savefig('graph-results/algotest_{}/all_lines_{}.png'.format(test_time, i))
     helper.graph('valence', 'arousal', coords[smoothest], 2)
+    plt.savefig('graph-results/algotest_{}/smoothest_{}.png'.format(test_time, i))
     
     smoothnesses.append(smoothies)
 
 helper.graph('# of tests', 'smoothness of paths', smoothnesses, 1, 3, key)
+plt.savefig('graph_results/algotest_{}/comparison.png'.format(test_time))
 
 
 # track_ids = []
@@ -85,5 +91,5 @@ helper.graph('# of tests', 'smoothness of paths', smoothnesses, 1, 3, key)
 #     track_ids.append(songdata.loc[songlists[smoothest][i]][2])
 # print(track_ids)
 
-# title = "Productivity Playlist Test " + str(time.ctime())
+# title = "Productivity Playlist Test " + test_time
 # helper.makeSpotifyList(sp, username, title, track_ids, False)
