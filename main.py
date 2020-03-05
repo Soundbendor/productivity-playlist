@@ -26,13 +26,20 @@ has_sp_id = songdata['sp_track_id']!="NO TRACK FOUND ON SPOTIFY"
 songdata = songdata[has_sp_id]
 song_ids = list(songdata.index.values)
 
+plt.xlabel('valence')
+plt.xlabel('arousal')
+plt.scatter(songdata["valence"], songdata["arousal"])
+plt.show()
+
 # train a KNN model 
 neigh = NearestNeighbors()
 neigh.fit(songdata.select_dtypes(include='float64').to_numpy())
 
 # input the starting and destination coordinates, set "current" to starting
-user_curr = song_ids[random.randint(0, len(song_ids)) - 1]
-user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
+# user_curr = song_ids[random.randint(0, len(song_ids)) - 1]
+# user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
+user_curr = 239138
+user_dest = 286183
 print(songdata.loc[user_curr])
 print(songdata.loc[user_dest])
 
@@ -44,7 +51,7 @@ scores = [algos.euclid_score, algos.add_score, algos.mult_score]
 key = ["euclidean distance", "added differences", "multiplied ratios"]
 smoothnesses = []
 
-test_time = str(time.ctime())
+test_time = str(time.strftime("%m_%d_%H_%M"))
 
 for i in range(len(scores)):
     smoothies = []      # smoothness values for each collective playlist
@@ -65,9 +72,9 @@ for i in range(len(scores)):
         v_points = []
         a_points = []
 
-        for i in range(len(songlists[j])):
-            v_points.append(songdata.loc[songlists[j][i]][1])
-            a_points.append(songdata.loc[songlists[j][i]][0])
+        for k in range(len(songlists[j])):
+            v_points.append(songdata.loc[songlists[j][k]][1])
+            a_points.append(songdata.loc[songlists[j][k]][0])
 
         wrapped_points = [v_points, a_points]
         coords.append(wrapped_points)
@@ -76,20 +83,20 @@ for i in range(len(scores)):
     print(smoothest + teststart)
 
     helper.graph('valence', 'arousal', coords, 2, len(coords))
-    plt.savefig('graph-results/algotest_{}/all_lines_{}.png'.format(test_time, i))
+    plt.savefig('graph-results/{}_all_lines_{}.png'.format(test_time, key[i]))
     helper.graph('valence', 'arousal', coords[smoothest], 2)
-    plt.savefig('graph-results/algotest_{}/smoothest_{}.png'.format(test_time, i))
+    plt.savefig('graph-results/{}_smoothest_{}.png'.format(test_time, key[i]))
     
+    # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
+    # track_ids = []
+    # for i in range(len(songlists[smoothest])):
+    #     track_ids.append(songdata.loc[songlists[smoothest][i]][2])
+    # print(track_ids)
+
+    # title = "Productivity Playlist Test " + test_time
+    # helper.makeSpotifyList(sp, username, title, track_ids, False)
+
     smoothnesses.append(smoothies)
 
 helper.graph('# of tests', 'smoothness of paths', smoothnesses, 1, 3, key)
-plt.savefig('graph_results/algotest_{}/comparison.png'.format(test_time))
-
-
-# track_ids = []
-# for i in range(len(songlists[smoothest])):
-#     track_ids.append(songdata.loc[songlists[smoothest][i]][2])
-# print(track_ids)
-
-# title = "Productivity Playlist Test " + test_time
-# helper.makeSpotifyList(sp, username, title, track_ids, False)
+# plt.savefig('graph_results/{}_comparison.png'.format(test_time))
