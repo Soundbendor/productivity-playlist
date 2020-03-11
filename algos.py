@@ -50,15 +50,16 @@ def mult_score(songdata, num, current, destination, songs_left):
 
 def rand_score(songdata, candidates, destination, origin, n_songs_reqd, songs_so_far):
     num = candidates[random.randrange(0, len(candidates))]
-    
-    smooth_a_step = (songdata.loc[destination][1] - songdata.loc[origin][1]) / n_songs_reqd
-    smooth_v_step = (songdata.loc[destination][0] - songdata.loc[origin][0]) / n_songs_reqd
-
-    smooth = euclid_dist(
-        songdata.loc[origin][0] + (songs_so_far * smooth_v_step),
-        songdata.loc[origin][1] + (songs_so_far * smooth_a_step),
-        songdata.iloc[num][0],
-        songdata.iloc[num][1]
-    )
-
+    smooth = smoothness_mse(songdata, origin, destination, num)
     return num, smooth
+
+def smoothness_mse(songdata, origin, destination, num):
+    origin_a = songdata.loc[origin][1]
+    origin_v = songdata.loc[origin][0]
+    destination_a = songdata.loc[destination][1]
+    destination_v = songdata.loc[destination][0]
+    current_a = songdata.iloc[num][1]
+    current_v = songdata.iloc[num][0]
+
+    slope = (destination_a - origin_a) / (destination_v - origin_v)
+    return np.square(current_a - (origin_a + slope * (current_v - origin_v)))
