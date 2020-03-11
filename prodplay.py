@@ -12,10 +12,15 @@ def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model
     dist_a = destination_a - current_a + .001
     dist_v = destination_v - current_v + .001
 
-    songs_left = n_songs_reqd - len(songlist)
+    songs_left = n_songs_reqd - len(songlist) + 1
     radius = 1.1 * np.sqrt(np.square(dist_a) + np.square(dist_v)) / songs_left
     
-    r_neighbors = model.radius_neighbors([songdata.select_dtypes(include='float64').loc[current].array], radius=radius)
+    target_a = current_a + (dist_a / songs_left)
+    target_v = current_v + (dist_v / songs_left)
+    target = [[target_v, target_a]]
+    
+    # r_neighbors = model.radius_neighbors(target, radius=radius)
+    r_neighbors = model.kneighbors(target, n_neighbors=19)
     candidates = np.array(r_neighbors[1])
     candidates = candidates[0]
 
@@ -23,19 +28,25 @@ def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model
         candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
     
     if (len(candidates) < 1):
-        k_neighbors = model.kneighbors([songdata.select_dtypes(include='float64').loc[current].array], n_songs_reqd + 1)
-        candidates = np.array(k_neighbors[1])
+        t_neighbors = model.kneighbors(target, n_neighbors=9)
+        candidates = np.array(t_neighbors[1])
         candidates = candidates[0]
+        
+        if (len(candidates) < 1):
+            k_neighbors = model.kneighbors(target, n_neighbors = n_songs_reqd + 1)
+            print(k_neighbors)
+            candidates = np.array(k_neighbors[1])
+            candidates = candidates[0]
 
-        for i in range(len(songlist)):
-            candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
-    
+            for i in range(len(songlist)):
+                candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
+
     return candidates
 
 def choose_candidate(songdata, candidates, current, origin, destination, n_songs_reqd, songs_so_far, score):
     smooth_a_step = (songdata.loc[destination][1] - songdata.loc[origin][1]) / n_songs_reqd
     smooth_v_step = (songdata.loc[destination][0] - songdata.loc[origin][0]) / n_songs_reqd
-    songs_left = n_songs_reqd - songs_so_far
+    songs_left = n_songs_reqd - songs_so_far 
     
     cand_scores = []
     cand_smooths = []
@@ -72,19 +83,29 @@ def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score):
 
     current = origin
     # while the current song isn't the destination song and the number of songs required isn't met
-    while ((current != destination) & (len(songlist) < n_songs_reqd)):        
+    while ((current != destination) & (len(songlist) - 1 < n_songs_reqd)):        
         # get the neighbors of the current song based on the size of the next step
         candidates = get_candidates(songdata, current, destination, n_songs_reqd, songlist, model)
+
+        if (score != algos.rand_score):
+            # choose the song that has the closest arousal and valence distances to the desired values
+            next_song, next_smooth = choose_candidate(
+                songdata, candidates, current, origin, destination, n_songs_reqd, len(songlist) - 1, score
+            )
         
-        # choose the song that has the closest arousal and valence distances to the desired values
-        next_song, next_smooth = choose_candidate(
-            songdata, candidates, current, origin, destination, n_songs_reqd, len(songlist), score
-        )
-        
+        else:
+            next_song, next_smooth = score(
+                songdata, candidates, destination, origin, n_songs_reqd, len(songlist)
+            )
+
         # grab the song index and smoothness factor (for testing use) and put into appropriate lists
         smooth_steps.append(next_smooth)
         current = song_ids[next_song]
         songlist = pd.unique(np.append(songlist, current))
+
+
+    # for some reason, it will fill up the length of the list w/o getting to the final song
+    songlist = pd.unique(np.append(songlist, destination))
 
     # return the song list and the average smoothness of the songs in the playlist
     smoothie = np.mean(smooth_steps)

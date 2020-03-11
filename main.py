@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestNeighbors
 import time
 import pprint
+import os
 
 #our modules
 import helper
@@ -47,13 +48,17 @@ print(songdata.loc[user_dest])
 testcount = int(input("How many tests do you want to do? "))
 teststart = 2
 
-scores = [algos.euclid_score, algos.add_score, algos.mult_score]
-key = ["euclidean distance", "added differences", "multiplied ratios"]
+scores = [algos.euclid_score, algos.add_score, algos.mult_score, algos.rand_score]
+key = ["euclidean distance", "added differences", "multiplied ratios", "random"]
 smoothnesses = []
 
-test_time = str(time.strftime("%m_%d_%H_%M"))
+test_time = str(time.strftime("%y-%m-%d_%H%M"))
+
+if not os.path.exists('graph-results/{}'.format(test_time)):
+    os.makedirs('graph-results/{}'.format(test_time))
 
 for i in range(len(scores)):
+    print("\n\n{}".format(key[i]))
     smoothies = []      # smoothness values for each collective playlist
     songlists = []      # the different playlists
 
@@ -82,10 +87,12 @@ for i in range(len(scores)):
     smoothest = np.argmin(smoothies)
     print(smoothest + teststart)
 
-    helper.graph('valence', 'arousal', coords, 2, len(coords))
-    plt.savefig('graph-results/{}_all_lines_{}.png'.format(test_time, key[i]))
-    helper.graph('valence', 'arousal', coords[smoothest], 2)
-    plt.savefig('graph-results/{}_smoothest_{}.png'.format(test_time, key[i]))
+    helper.graph('valence', 'arousal', coords, data_dim = 2, line_count = len(coords),
+        file = 'graph-results/{}/all_lines_{}.png'.format(test_time, key[i])
+    )
+    helper.graph('valence', 'arousal', coords[smoothest], data_dim = 2,
+        file = 'graph-results/{}/smoothest_{}.png'.format(test_time, key[i])
+    )
     
     # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
     # track_ids = []
@@ -98,5 +105,7 @@ for i in range(len(scores)):
 
     smoothnesses.append(smoothies)
 
-helper.graph('# of tests', 'smoothness of paths', smoothnesses, 1, 3, key)
-# plt.savefig('graph_results/{}_comparison.png'.format(test_time))
+helper.graph('length of playlist', 'smoothness of path', smoothnesses, 
+    data_dim = 1, line_count = len(smoothnesses), legend = key,
+    file = 'graph-results/{}/comparison.png'.format(test_time, key[i])
+)
