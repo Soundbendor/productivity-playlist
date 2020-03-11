@@ -95,7 +95,7 @@ def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score):
         
         else:
             next_song, next_smooth = score(
-                songdata, candidates, destination, origin, n_songs_reqd, len(songlist)
+                songdata, candidates, destination, origin, n_songs_reqd, len(songlist) - 1
             )
 
         # grab the song index and smoothness factor (for testing use) and put into appropriate lists
