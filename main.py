@@ -23,14 +23,10 @@ sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
 
 # load song_id, average arousal and valence, and spotify track ID for each song from CSV to pandas DataFrame
 songdata = pd.read_csv("data_with_features.csv", header=0, index_col=0, usecols=[0, 1, 2, 5])
-has_sp_id = songdata['sp_track_id']!="NO TRACK FOUND ON SPOTIFY"
+has_sp_id = songdata['sp_track_id'] != "NO TRACK FOUND ON SPOTIFY"
 songdata = songdata[has_sp_id]
 song_ids = list(songdata.index.values)
-
-plt.xlabel('valence')
-plt.xlabel('arousal')
-plt.scatter(songdata["valence"], songdata["arousal"])
-plt.show()
+helper.graph('valence', 'arousal', [songdata["valence"], songdata["arousal"]], data_dim=2)
 
 # train a KNN model 
 neigh = NearestNeighbors()

@@ -1,0 +1,10 @@
+#ignore graph results
+graph-results/
+
+#ignore datasets
+deezer-data/
+deam-data/
+*.csv
+
+#ignore python files
+__pycache__
