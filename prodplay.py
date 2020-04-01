@@ -55,20 +55,7 @@ def choose_candidate(songdata, candidates, current, origin, destination, n_songs
     # TEST ALL THE CANDIDATES FOR THE NEXT SONG TO FIND THE BEST ONE
     for i in range(len(candidates)):
         num = candidates[i]
-
         cand_scores.append(score(songdata, num, current, destination, songs_left))
-
-        # Old Score Method: find euclidean distance to target value
-        '''
-        cand_smooths.append(algos.euclid_dist(
-            songdata.loc[origin][0] + (songs_so_far * smooth_v_step),
-            songdata.loc[origin][1] + (songs_so_far * smooth_a_step),
-            songdata.iloc[num][0],
-            songdata.iloc[num][1]
-        ))
-        '''
-
-        # New Score Method: Mean-Squared Error: find vert distance from perfect line
         cand_smooths.append(algos.smoothness_mse(songdata, origin, destination, num))
 
     # select the song which has the score closest to 0 to be the new value of "current"
