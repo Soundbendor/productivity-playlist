@@ -26,7 +26,7 @@ songdata = pd.read_csv("data_with_features.csv", header=0, index_col=0, usecols=
 has_sp_id = songdata['sp_track_id'] != "NO TRACK FOUND ON SPOTIFY"
 songdata = songdata[has_sp_id]
 song_ids = list(songdata.index.values)
-helper.graph('valence', 'arousal', [songdata["valence"], songdata["arousal"]], data_dim=2)
+# helper.graph('valence', 'arousal', [songdata["valence"], songdata["arousal"]], data_dim=2)
 
 # train a KNN model 
 neigh = NearestNeighbors()
