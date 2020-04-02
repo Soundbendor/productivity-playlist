@@ -81,22 +81,23 @@ def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score):
         # get the neighbors of the current song based on the size of the next step
         candidates = get_candidates(songdata, current, destination, n_songs_reqd, songlist, model)
 
-        if (score != algos.rand_score):
+        # handle cases of random neighbors (bypassing the score)
+        if (score == algos.neighbors_rand):
+            next_song, next_smooth = score(songdata, candidates, origin, destination)
+        
+        elif (score == algos.full_rand):
+            next_song, next_smooth = score(songdata, origin, destination)
+        
+        else:
             # choose the song that has the closest arousal and valence distances to the desired values
             next_song, next_smooth = choose_candidate(
                 songdata, candidates, current, origin, destination, n_songs_reqd, len(songlist) - 1, score
             )
         
-        else:
-            next_song, next_smooth = score(
-                songdata, candidates, destination, origin, n_songs_reqd, len(songlist) - 1
-            )
-
         # grab the song index and smoothness factor (for testing use) and put into appropriate lists
         smooth_steps.append(next_smooth)
         current = song_ids[next_song]
         songlist = pd.unique(np.append(songlist, current))
-
 
     # for some reason, it will fill up the length of the list w/o getting to the final song
     songlist = pd.unique(np.append(songlist, destination))
