@@ -24,18 +24,12 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     plt.ylabel(ylabel)
 
     if (data_dim == 1):
-        if (line_count > 1):
-            for i in range(line_count):
-                plt.plot(data[i], marker=marker, linestyle=linestyle)
-        else:
-            plt.plot(data)
+        for i in range(line_count):
+            plt.plot(data[i], marker=marker, linestyle=linestyle)
     
     elif (data_dim == 2):
-        if (line_count > 1):
-            for i in range(line_count):
-                plt.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
-        else:
-            plt.plot(data[0], data[1], marker=marker, linestyle=linestyle)
+        for i in range(line_count):
+            plt.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
     
     if (legend != []):
         plt.legend(legend)

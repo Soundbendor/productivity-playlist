@@ -8,3 +8,4 @@ deam-data/
 
 #ignore python files
 __pycache__
+*.pyc

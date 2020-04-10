@@ -3,7 +3,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import algos
 
-def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model):
+def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model, neighbors = 7):
     destination_a = songdata.loc[destination][1]
     destination_v = songdata.loc[destination][0]
     current_a = songdata.loc[current][1]
@@ -20,26 +20,21 @@ def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model
     target = [[target_v, target_a]]
     
     # r_neighbors = model.radius_neighbors(target, radius=radius)
-    r_neighbors = model.kneighbors(target, n_neighbors=19)
-    candidates = np.array(r_neighbors[1])
+    nearest = model.kneighbors(target, n_neighbors=neighbors)
+    candidates = np.array(nearest[1])
     candidates = candidates[0]
 
     for i in range(len(songlist)):
         candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
-    
+       
     if (len(candidates) < 1):
-        t_neighbors = model.kneighbors(target, n_neighbors=9)
-        candidates = np.array(t_neighbors[1])
+        triple = model.kneighbors(target, n_neighbors = 3 * neighbors)
+        print(triple)
+        candidates = np.array(triple[1])
         candidates = candidates[0]
-        
-        if (len(candidates) < 1):
-            k_neighbors = model.kneighbors(target, n_neighbors = n_songs_reqd + 1)
-            print(k_neighbors)
-            candidates = np.array(k_neighbors[1])
-            candidates = candidates[0]
 
-            for i in range(len(songlist)):
-                candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
+        for i in range(len(songlist)):
+            candidates = candidates[candidates != songdata.index.get_loc(songdata.loc[songlist[i]].name)]
 
     return candidates
 
@@ -65,7 +60,7 @@ def choose_candidate(songdata, candidates, current, origin, destination, n_songs
     
     return min_cand_song, min_cand_smooth
 
-def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score):
+def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7):
     song_ids = list(songdata.index.values)
    
     # create a list of numbers (for songs) to store our "path" - let's call it song_list
@@ -79,7 +74,7 @@ def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score):
     # while the current song isn't the destination song and the number of songs required isn't met
     while ((current != destination) & (len(songlist) - 1 < n_songs_reqd)):        
         # get the neighbors of the current song based on the size of the next step
-        candidates = get_candidates(songdata, current, destination, n_songs_reqd, songlist, model)
+        candidates = get_candidates(songdata, current, destination, n_songs_reqd, songlist, model, neighbors)
 
         # handle cases of random neighbors (bypassing the score)
         if (score == algos.neighbors_rand):

@@ -11,6 +11,9 @@ def euclidean_score(songdata, num, current, destination, songs_left):
 def minkowski3_score(songdata, num, current, destination, songs_left):
     return minkowski_score(songdata, num, current, destination, songs_left, 3)
 
+def minkowski4_score(songdata, num, current, destination, songs_left):
+    return minkowski_score(songdata, num, current, destination, songs_left, 4)
+
 def minkowski_score(songdata, num, current, destination, songs_left, order):
     current_a = songdata.loc[current][1]
     current_v = songdata.loc[current][0]
