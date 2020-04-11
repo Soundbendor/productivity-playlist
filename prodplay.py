@@ -60,7 +60,7 @@ def choose_candidate(songdata, candidates, current, origin, destination, n_songs
     
     return min_cand_song, min_cand_smooth
 
-def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7):
+def makePlaylist(songdata, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 19):
     song_ids = list(songdata.index.values)
    
     # create a list of numbers (for songs) to store our "path" - let's call it song_list
