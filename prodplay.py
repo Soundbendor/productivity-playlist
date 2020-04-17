@@ -29,7 +29,6 @@ def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model
        
     if (len(candidates) < 1):
         triple = model.kneighbors(target, n_neighbors = 3 * neighbors)
-        print(triple)
         candidates = np.array(triple[1])
         candidates = candidates[0]
 

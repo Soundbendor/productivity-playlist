@@ -27,7 +27,7 @@ def test_neighbors(model, songdata):
     
     smoothnesses = []
 
-    neighbor_counts = [5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31]
+    neighbor_counts = [15, 17, 19, 21, 23, 25, 27, 29, 31]
 
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
 
@@ -113,14 +113,14 @@ def test_dists(model, songdata):
     
     scores = [
         [algos.cosine_score, "Cosine Similarity"]
-        # ,[algos.euclidean_score, "Euclidean Distance"]
-        # ,[algos.manhattan_score, "Manhattan Distance"]
-        # ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
-        # ,[algos.minkowski4_score, "Minkowski Distance (order 4)"]
-        # ,[algos.jaccard_score, "Jaccard Distance"]
-        # ,[algos.mult_score, "Multiplied Ratios"]
-        # ,[algos.neighbors_rand, "Random Neighbors"]
-        # ,[algos.full_rand, "Random Songs"]
+        ,[algos.euclidean_score, "Euclidean Distance"]
+        ,[algos.manhattan_score, "Manhattan Distance"]
+        ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
+        ,[algos.minkowski4_score, "Minkowski Distance (order 4)"]
+        ,[algos.jaccard_score, "Jaccard Distance"]
+        ,[algos.mult_score, "Multiplied Ratios"]
+        ,[algos.neighbors_rand, "Random Neighbors"]
+        ,[algos.full_rand, "Random Songs"]
     ]
     keys = []
     for i in range(len(scores)):
