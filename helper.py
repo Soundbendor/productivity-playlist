@@ -28,6 +28,8 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
             plt.plot(data[i], marker=marker, linestyle=linestyle)
     
     elif (data_dim == 2):
+        if (line_count == 1):
+            plt.plot(data[0], data[1], marker=marker, linestyle=linestyle)
         for i in range(line_count):
             plt.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
     
