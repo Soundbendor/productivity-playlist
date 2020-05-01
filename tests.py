@@ -20,7 +20,8 @@ def test_neighbors(model, songdata):
     
     num_tests = int(input("Number of tests: "))
 
-    neighbor_counts = [15, 17, 19, 21, 23, 25, 27, 29, 31]
+    neighbor_counts = [*range(10, 500, 50)]
+    neighbor_counts.append(np.sqrt(len(songdata)))
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
 
     if not os.path.exists('graph-results/{}'.format(test_time)):

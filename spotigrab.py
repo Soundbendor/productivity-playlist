@@ -5,24 +5,18 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import pandas as pd
 import numpy as np
 
+import helper
+
 #get important personal information from Spotify API
 client_id = '2a285d92069147f8a7e59cec1d0d9bb6'
 client_secret = '1eebc7035f74489db8f5597ce4afb863'
 redirect_uri = 'https://www.google.com/'
 username = 'eonkid46853'
+scope = "user-library-read playlist-read-private"
+sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
 
-#get yo Spotify
-client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
-scope = 'user-library-read playlist-read-private'
-try:
-    token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
-    sp = spotipy.Spotify(auth= token)
-except:
-    print('Token is not accessible for ' + username)
-
-songdata = pd.read_csv("deezer-data\\train.csv", header=0, index_col=0, usecols=[0, 3, 4, 5, 6])
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-print(songdata.iloc[0])
+songdata = pd.read_csv("deezer-data/all2.csv", header=0, index_col=0)
+song_ids = list(songdata.index.values)
 
 # merge the artist and track to get a single search item
 joined_titles = []
@@ -42,17 +36,27 @@ sp_speechiness = []
 sp_tempo = []
 sp_time_sig = []
 sp_valence = []
+sp_popularity = []
+sp_explicit = []
+sp_artist_genres = {}
 
 print(len(songdata))
 
 for i in range(len(songdata)):
-    print(i, end="\r")
-    joined_titles.append(songdata.iloc[i][2] + " " + songdata.iloc[i][3])
+    print(i, end = "\r")
+    joined_titles.append(songdata.iloc[i][4] + " " + songdata.iloc[i][5])
     result = sp.search(joined_titles[i], limit=1, type='track')
+    # pprint.pprint(result)
 
     try:
         uri = result['tracks']['items'][0]['uri']
-        features = sp.audio_features(uri)[0]
+        popularity = result['tracks']['items'][0]['popularity']
+        explicit = result['tracks']['items'][0]['explicit']
+        artist_id = result['tracks']['items'][0]['artists'][0]['id']
+
+        artist = sp.artist(artist_id)
+        sp_artist_genres[song_ids[i]] = np.array(artist['genres'])
+        features = sp.audio_features([uri])[0]
         
         sp_track_id.append(features['id'])
         sp_acousticness.append(features['acousticness'])
@@ -68,22 +72,30 @@ for i in range(len(songdata)):
         sp_tempo.append(features['tempo'])
         sp_time_sig.append(features['time_signature'])
         sp_valence.append(features['valence'])
+        sp_popularity.append(popularity)
+        sp_explicit.append(explicit)
+
 
     except:
-        sp_track_id.append('NO TRACK FOUND ON SPOTIFY')
-        sp_acousticness.append(0)
-        sp_danceability.append(0)
-        sp_duration_ms.append(0)
-        sp_energy.append(0)
-        sp_instrumentalness.append(0)
-        sp_key.append(0)
-        sp_liveness.append(0)
-        sp_loudness.append(0)
-        sp_mode.append(0)
-        sp_speechiness.append(0)
-        sp_tempo.append(0)
-        sp_time_sig.append(0)
-        sp_valence.append(0)       
+        sp_track_id.append(None)
+        sp_acousticness.append(None)
+        sp_danceability.append(None)
+        sp_duration_ms.append(None)
+        sp_energy.append(None)
+        sp_instrumentalness.append(None)
+        sp_key.append(None)
+        sp_liveness.append(None)
+        sp_loudness.append(None)
+        sp_mode.append(None)
+        sp_speechiness.append(None)
+        sp_tempo.append(None)
+        sp_time_sig.append(None)
+        sp_valence.append(None)
+        sp_popularity.append(None)
+        sp_explicit.append(None)
+
+genre_df = pd.DataFrame.from_dict(sp_artist_genres, orient='index')
+pprint.pprint(genre_df)
 
 songdata['sp_track_id'] = sp_track_id
 songdata['sp_acousticness'] = sp_acousticness
@@ -99,5 +111,7 @@ songdata['sp_speechiness'] = sp_speechiness
 songdata['sp_tempo'] = sp_tempo
 songdata['sp_time_sig'] = sp_time_sig
 songdata['sp_valence'] = sp_valence
+songdata['sp_popularity'] = sp_popularity
+songdata['sp_explicit'] = sp_explicit
 
-songdata.to_csv(path_or_buf='data_with_features.csv')
+songdata.to_csv(path_or_buf='all2-spotify.csv')
