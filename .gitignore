@@ -5,6 +5,7 @@ graph-results/
 deezer-data/
 deam-data/
 *.csv
+*.json
 
 #ignore python files
 __pycache__
