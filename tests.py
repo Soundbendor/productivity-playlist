@@ -20,12 +20,14 @@ def test_neighbors(model, songdata):
     
     num_tests = int(input("Number of tests: "))
 
-    neighbor_counts = [*range(100, 500, 50)]
-    neighbor_counts.append(int(np.sqrt(len(songdata))))
+    neighbor_counts = [i * int(np.sqrt(len(songdata))) for i in range(0.5,4.5,0.5)]
+    # neighbor_counts.append(int(np.sqrt(len(songdata))))
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
 
     if not os.path.exists('graph-results/{}'.format(test_time)):
         os.makedirs('graph-results/{}'.format(test_time))
+
+    total_smoothnesses = []
 
     for c in range(num_tests):
         smoothnesses = []
@@ -110,6 +112,24 @@ def test_neighbors(model, songdata):
                 np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
             )
         )
+
+        if (total_smoothnesses != []):
+            for i in range(len(smoothnesses)):
+                for j in range(len(smoothnesses[i])):
+                    total_smoothnesses[i][j] += smoothnesses[i][j]
+
+        else:
+            total_smoothnesses = smoothnesses
+        
+    for i in range(len(total_smoothnesses)):
+        for j in range(len(total_smoothnesses[i])):
+            total_smoothnesses[i][j] /= num_tests
+
+    helper.graph('length of playlist', 'smoothness of path', total_smoothnesses, 
+        data_dim = 1, line_count = len(total_smoothnesses), legend = neighbor_counts,
+        file = 'graph-results/{}/comparison_avg.png'.format(test_time),
+        title = "MSE Neighbor Comparisons Averaged over the Past {} Runs".format(num_tests)
+    )
 
 def test_dists(model, songdata):
     song_ids = list(songdata.index.values)

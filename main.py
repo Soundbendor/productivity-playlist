@@ -19,7 +19,7 @@ scope = "playlist-modify-public,playlist-modify-private"
 sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
 
 # load song_id, average arousal and valence, and spotify track ID for each song from CSV to pandas DataFrame
-songdata = pd.read_csv("all-spotify.csv", header=0, index_col=0, usecols=[0, 3, 4, 7])
+songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0, 3, 4, 7])
 # has_sp_id = songdata['has'] != None
 # songdata = songdata[has_sp_id]
 

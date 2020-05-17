@@ -16,7 +16,7 @@ username = 'eonkid46853'
 scope = "user-library-read playlist-read-private"
 sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
 
-songdata = pd.read_csv("all-spotify.csv", header=0, index_col=0, usecols=[0,5,6])
+songdata = pd.read_csv("deam-spotify.csv", header=0, index_col=0, usecols=[0,1,2])
 song_ids = list(songdata.index.values)
 
 # merge the artist and track to get a single search item
@@ -43,7 +43,7 @@ sp_artist_genres = {}
 
 print(len(songdata))
 
-for i in range(10):
+for i in range(len(songdata)):
     print(i, end = "\r")
     joined_titles.append(songdata.iloc[i][0] + " " + songdata.iloc[i][1])
     result = sp.search(joined_titles[i], limit=1, type='track')
@@ -97,7 +97,7 @@ for i in range(10):
 
 print(len(sp_artist_genres))
 json_genres = json.dumps(sp_artist_genres, indent=2)
-with open("deezer-artists.json", "w") as outfile:
+with open("deam-artists.json", "w") as outfile:
     outfile.write(json_genres)
 
 # songdata['sp_track_id'] = sp_track_id
