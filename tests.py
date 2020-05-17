@@ -20,7 +20,7 @@ def test_neighbors(model, songdata):
     
     num_tests = int(input("Number of tests: "))
 
-    neighbor_counts = [i * int(np.sqrt(len(songdata))) for i in range(0.5,4.5,0.5)]
+    neighbor_counts = [i * int(np.sqrt(len(songdata)) / 2) for i in range(1,10)]
     # neighbor_counts.append(int(np.sqrt(len(songdata))))
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
 
@@ -31,9 +31,11 @@ def test_neighbors(model, songdata):
 
     for c in range(num_tests):
         smoothnesses = []
-
-        euclid_dist = 0
-        while (euclid_dist < 1):
+        
+        user_orig = 123456
+        user_dest = 654321
+        euclid_dist = 0.00
+        while (euclid_dist < 0.95 or euclid_dist > 1.05):
             user_orig = song_ids[random.randint(0, len(song_ids)) - 1]
             user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
 
