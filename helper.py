@@ -44,3 +44,4 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
         plt.savefig(file)
 
     plt.show(block=False)
+    plt.clf()
