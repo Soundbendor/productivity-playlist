@@ -49,8 +49,8 @@ def cosine_score(songdata, num, current, destination, songs_left):
     current_v = songdata.loc[current][0]
     destination_a = songdata.loc[destination][1]
     destination_v = songdata.loc[destination][0]
-    step_a = (destination_a - current_a + .0000001) / songs_left
-    step_v = (destination_v - current_v + .0000001) / songs_left
+    step_a = (destination_a - current_a + .000000001) / songs_left
+    step_v = (destination_v - current_v + .000000001) / songs_left
     
     #Vector A: the vector to the candidate
     dist_a = songdata.iloc[num][1] - current_a
@@ -58,8 +58,8 @@ def cosine_score(songdata, num, current, destination, songs_left):
     dist_mag = np.sqrt(np.square(dist_a) + np.square(dist_v))
 
     #Vector B: the vector to the hypothetical target
-    step_a = (destination_a - current_a + .0000001) / songs_left
-    step_v = (destination_v - current_v + .0000001) / songs_left
+    step_a = (destination_a - current_a + .000000001) / songs_left
+    step_v = (destination_v - current_v + .000000001) / songs_left
     step_mag = np.sqrt(np.square(step_a) + np.square(step_v))
 
     # cosine = A dot B / (mag(A) * mag(B))
