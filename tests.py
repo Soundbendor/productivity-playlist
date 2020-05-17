@@ -28,21 +28,28 @@ def test_neighbors(model, songdata):
         os.makedirs('graph-results/{}'.format(test_time))
 
     total_smoothnesses = []
+    used_points = [-1, -1]
 
     for c in range(num_tests):
         smoothnesses = []
-        
-        user_orig = 123456
-        user_dest = 654321
+        print(used_points)
+
         euclid_dist = 0.00
         while (euclid_dist < 0.95 or euclid_dist > 1.05):
             user_orig = song_ids[random.randint(0, len(song_ids)) - 1]
+            while user_orig in used_points:
+                user_orig = song_ids[random.randint(0, len(song_ids)) - 1]
+            
             user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
+            while user_dest in used_points:
+                user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
 
             euclid_dist = np.sqrt(
                 np.square(songdata.loc[user_dest][1] - songdata.loc[user_orig][1])
             + np.square(songdata.loc[user_dest][0] - songdata.loc[user_orig][0]))
 
+        used_points.append(user_orig)
+        used_points.append(user_dest)
         # user_orig = 239138
         # user_dest = 286183
         print(songdata.loc[user_orig])
