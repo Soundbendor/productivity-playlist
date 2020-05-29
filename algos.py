@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import random
+import warnings
 
 def manhattan_score(songdata, num, current, destination, songs_left):
     return minkowski_score(songdata, num, current, destination, songs_left, 1)
@@ -65,7 +66,10 @@ def cosine_score(songdata, num, current, destination, songs_left):
     # cosine = A dot B / (mag(A) * mag(B))
     dot_product = dist_a * step_a + dist_v * step_v
     mag_product = step_mag * dist_mag
-    cosine = dot_product / mag_product
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        cosine = dot_product / mag_product
 
     # cos = 1 means closest, cos = -1 means farthest, so 1 is "smoother"
     # find difference between 1 and this cosine value
