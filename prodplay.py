@@ -3,6 +3,29 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import algos
 
+def filter_candiates(songdata, songlist, candidates):
+    filtered = []
+    list_coords = []
+    cand_coords = []
+
+    for s in songlist:
+        list_coords.append([songdata.loc[s][0], songdata.loc[s][1]])
+
+    for c in candidates:
+        cand_coords.append([songdata.loc[c][0], songdata.loc[c][1]])
+
+    for i in range(len(candidates)):
+        unique = True
+        for j in range(len(songlist)):
+            if (cand_coords[i] == list_coords[j]):
+                unique = False
+        
+        if (unique == True):
+            filtered.append(candidates[i])
+    
+    return np.array(filtered)
+
+
 def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model, neighbors = 7):
     destination_a = songdata.loc[destination][1]
     destination_v = songdata.loc[destination][0]

@@ -20,7 +20,7 @@ def test_neighbors(model, songdata):
     
     num_tests = int(input("Number of tests: "))
 
-    neighbor_counts = [i * int(np.sqrt(len(songdata)) / 2) for i in range(2,8)]
+    neighbor_counts = [i * int(np.sqrt(len(songdata)) / 2) for i in range(3,8)]
     # neighbor_counts.append(int(np.sqrt(len(songdata))))
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
 
@@ -33,6 +33,9 @@ def test_neighbors(model, songdata):
     for c in range(num_tests):
         smoothnesses = []
         print(used_points)
+
+        if not os.path.exists('graph-results/{}/{}'.format(test_time, c)):
+            os.makedirs('graph-results/{}/{}'.format(test_time, c))
 
         euclid_dist = 0.00
         while (euclid_dist < 0.95 or euclid_dist > 1.05):
@@ -58,8 +61,8 @@ def test_neighbors(model, songdata):
 
         for i in range(len(neighbor_counts)):
             print("\n\n{} Neighbors".format(neighbor_counts[i]))
-            smoothies = [[],[]]      # smoothness values for each collective playlist
-            songlists = []      # the different playlists
+            smoothies = [[],[]]         # smoothness values for each collective playlist
+            songlists = []              # the different playlists
             lengths = []
 
             # for loop for testing different amounts of points in between
@@ -67,11 +70,13 @@ def test_neighbors(model, songdata):
                 songlist, smoothie = prodplay.makePlaylist(
                     songdata, user_orig, user_dest, n_songs_reqd, model, neighbors=neighbor_counts[i]
                 ) 
-                
                 smoothies[1].append(smoothie)
                 smoothies[0].append(n_songs_reqd)
-                print("{}: {}".format(n_songs_reqd, smoothie))
+                print("{}: {}".format(len(songlist), smoothie))
                 songlists.append(songlist)
+
+            if not os.path.exists('graph-results/{}/{}/{}'.format(test_time, c, neighbor_counts[i])):
+                os.makedirs('graph-results/{}/{}/{}'.format(test_time, c, neighbor_counts[i]))
 
             coords = []
             for j in range(len(songlists)):
@@ -83,26 +88,38 @@ def test_neighbors(model, songdata):
                     a_points.append(songdata.loc[songlists[j][k]][0])
 
                 wrapped_points = [v_points, a_points]
+                pprint.pprint(wrapped_points)
 
-                # helper.graph('valence', 'arousal', wrapped_points, data_dim = 2, marker='.',
-                #     file = 'graph-results/{}/result_{}_{}.png'.format(test_time, j + minlength, keys[i]),
-                #     title = "Playlist Path ({} songs) using {}".format(j + minlength, keys[i])
-                # ) 
+                helper.graph('valence', 'arousal', wrapped_points, data_dim = 2, marker='.',
+                    file = 'graph-results/{}/{}/{}/{}.png'.format(test_time, c, neighbor_counts[i], (j*4) + minlength),
+                    title = "Path ({} songs, K={}) from ({}, {}) to ({}, {})".format(
+                        (j*4) + minlength, neighbor_counts[i],
+                        np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+                        np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+                    )
+                ) 
 
                 coords.append(wrapped_points)
 
             smoothest = np.argmin(smoothies[1])
             print(smoothest + minlength)
 
-            # helper.graph('valence', 'arousal', coords, data_dim = 2, line_count = len(coords),
-            #     file = 'graph-results/{}/all_lines_{}.png'.format(test_time, neighbor_counts[i]),
-            #     title = "All Playlist Paths (from {} to {} songs) using {} Neighbors".format(
-            #         minlength, minlength + maxlength - 1, neighbor_counts[i])
-            # )
-            # helper.graph('valence', 'arousal', coords[smoothest], data_dim = 2, marker='.',
-            #     file = 'graph-results/{}/smoothest_{}.png'.format(test_time, neighbor_counts[i]),
-            #     title = "Smoothest Playlist Path ({} songs) using {} Neighbors".format(smoothest + minlength, neighbor_counts[i])
-            # )
+            helper.graph('valence', 'arousal', coords, data_dim = 2, line_count = len(coords),
+                file = 'graph-results/{}/{}/{}/all.png'.format(test_time, c, neighbor_counts[i]),
+                title = "Paths ({} to {} songs, K={}) from ({}, {}) to ({}, {})".format(
+                    minlength, minlength + maxlength - 1, neighbor_counts[i],  
+                    np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+                    np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
+                )
+            )
+            helper.graph('valence', 'arousal', coords[smoothest], data_dim = 2, marker='.',
+                file = 'graph-results/{}/{}/{}/smoothest.png'.format(test_time, c, neighbor_counts[i]),
+                title = "Smoothest Playlist Path ({} songs) using {} Neighbors from ({}, {}) to ({}, {})".format(
+                    smoothest + minlength, neighbor_counts[i],
+                    np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+                    np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
+                )
+            )
             
             # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
             # track_ids = []
@@ -117,7 +134,7 @@ def test_neighbors(model, songdata):
 
         helper.graph('length of playlist', 'smoothness of path', smoothnesses, 
             data_dim = 2, line_count = len(smoothnesses), legend = neighbor_counts,
-            file = 'graph-results/{}/comparison_{}.png'.format(test_time, c),
+            file = 'graph-results/{}/{}/comparison.png'.format(test_time, c),
             title = "MSE Neighbor Comparison from ({}, {}) to ({}, {})".format(
                 np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
                 np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
@@ -138,7 +155,7 @@ def test_neighbors(model, songdata):
 
     helper.graph('length of playlist', 'smoothness of path', total_smoothnesses, 
         data_dim = 2, line_count = len(total_smoothnesses), legend = neighbor_counts,
-        file = 'graph-results/{}/comparison_avg.png'.format(test_time),
+        file = 'graph-results/{}/average.png'.format(test_time),
         title = "MSE Neighbor Comparisons Averaged over the Past {} Runs".format(num_tests)
     )
 
