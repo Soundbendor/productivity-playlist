@@ -5,61 +5,57 @@ import matplotlib.pyplot as plt
 from sklearn.neighbors import NearestNeighbors
 import time
 import pprint
-import os
 
 import algos
 import helper
 import prodplay
 
-def test_neighbors(model, songdata):
-    song_ids = list(songdata.index.values)
+def get_points(songpoints, used, target = 1):
+    dist = 0.00
 
-    # input the time needed to get from starting to destination (test cases here)
+    while (dist < (0.95 * target) or dist > (1.05 * target)):
+        orig = songpoints.keys()[random.randint(0, len(songpoints)-1)]
+        while orig in used:
+            orig = songpoints.keys()[random.randint(0, len(songpoints)-1)]
+        
+        dest = songpoints.keys()[random.randint(0, len(songpoints)-1)]
+        while dest in used:
+            dest = songpoints.keys()[random.randint(0, len(songpoints)-1)]
+
+        origArr = helper.string2arrPoint(orig)
+        destArr = helper.string2arrPoint(dest)
+        dist = np.sqrt(np.square(destArr[1] - origArr[1]) + np.square(destArr[0] - origArr[0]))
+
+    used.append(orig)
+    used.append(dest)
+
+    origPt = songpoints[orig][random.randint(0, len(songpoints[orig])-1)]
+    destPt = songpoints[dest][random.randint(0, len(songpoints[dest])-1)]
+   
+    print("\nEuclidean distance: {}".format(dist))
+    print(origPt, destPt)
+    return origPt, destPt
+
+def test_neighbors(model, songdata, songpoints, coords):
+    song_ids = list(songdata.index.values)
     maxlength = int(input("Max length: "))
     minlength = 2
-    
     num_tests = int(input("Number of tests: "))
-
     neighbor_counts = [i * int(np.sqrt(len(songdata)) / 2) for i in range(3,8)]
-    # neighbor_counts.append(int(np.sqrt(len(songdata))))
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
-
-    if not os.path.exists('graph-results/{}'.format(test_time)):
-        os.makedirs('graph-results/{}'.format(test_time))
-
+    helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
-    used_points = [-1, -1]
+    used_points = ["-1, -1"]
 
     for c in range(num_tests):
         smoothnesses = []
-        print(used_points)
-
-        if not os.path.exists('graph-results/{}/{}'.format(test_time, c)):
-            os.makedirs('graph-results/{}/{}'.format(test_time, c))
-
-        euclid_dist = 0.00
-        while (euclid_dist < 0.95 or euclid_dist > 1.05):
-            user_orig = song_ids[random.randint(0, len(song_ids)) - 1]
-            while user_orig in used_points:
-                user_orig = song_ids[random.randint(0, len(song_ids)) - 1]
-            
-            user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
-            while user_dest in used_points:
-                user_dest = song_ids[random.randint(0, len(song_ids)) - 1]
-
-            euclid_dist = np.sqrt(
-                np.square(songdata.loc[user_dest][1] - songdata.loc[user_orig][1])
-            + np.square(songdata.loc[user_dest][0] - songdata.loc[user_orig][0]))
-
-        used_points.append(user_orig)
-        used_points.append(user_dest)
-        # user_orig = 239138
-        # user_dest = 286183
+        helper.makeDir('graph-results/{}/{}'.format(test_time, c))
+        user_orig, user_dest = get_points(songpoints, used_points)
         print(songdata.loc[user_orig])
         print(songdata.loc[user_dest])
-        print("\nEuclidean distance: {}".format(euclid_dist))
 
         for i in range(len(neighbor_counts)):
+            helper.makeDir('graph-results/{}/{}/{}'.format(test_time, c, neighbor_counts[i]))
             print("\n\n{} Neighbors".format(neighbor_counts[i]))
             smoothies = [[],[]]         # smoothness values for each collective playlist
             songlists = []              # the different playlists
@@ -68,15 +64,14 @@ def test_neighbors(model, songdata):
             # for loop for testing different amounts of points in between
             for n_songs_reqd in range(minlength, minlength + maxlength, 4):
                 songlist, smoothie = prodplay.makePlaylist(
-                    songdata, user_orig, user_dest, n_songs_reqd, model, neighbors=neighbor_counts[i]
+                    songdata, songpoints, coords, 
+                    user_orig, user_dest, n_songs_reqd, 
+                    model, neighbors=neighbor_counts[i]
                 ) 
                 smoothies[1].append(smoothie)
                 smoothies[0].append(n_songs_reqd)
                 print("{}: {}".format(len(songlist), smoothie))
                 songlists.append(songlist)
-
-            if not os.path.exists('graph-results/{}/{}/{}'.format(test_time, c, neighbor_counts[i])):
-                os.makedirs('graph-results/{}/{}/{}'.format(test_time, c, neighbor_counts[i]))
 
             coords = []
             for j in range(len(songlists)):
@@ -121,7 +116,7 @@ def test_neighbors(model, songdata):
                 )
             )
             
-            # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
+        # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
             # track_ids = []
             # for i in range(len(songlists[smoothest])):
             #     track_ids.append(songdata.loc[songlists[smoothest][i]][2])
@@ -145,7 +140,6 @@ def test_neighbors(model, songdata):
             for i in range(len(smoothnesses[1])):
                 for j in range(len(smoothnesses[1][i])):
                     total_smoothnesses[1][i][j] += smoothnesses[1][i][j]
-
         else:
             total_smoothnesses = smoothnesses
         

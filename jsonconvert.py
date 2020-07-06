@@ -15,7 +15,7 @@ for i in range(len(songdata)):
     song = songdata.loc[i]
     print(song.dzr_sng_id, song.valence, song.arousal)
 
-    songstring = "{}{}{}{}".format(sign(song.valence), abs(song.valence), sign(song.arousal), abs(song.arousal))
+    songstring = "{}{} {}{}".format(sign(song.valence), abs(song.valence), sign(song.arousal), abs(song.arousal))
 
     if songstring not in songobj.keys():
         songobj[songstring] = []

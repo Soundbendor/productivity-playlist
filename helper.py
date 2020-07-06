@@ -1,8 +1,25 @@
 import matplotlib.pyplot as plt
-
+import os
 import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
+
+def sign(num):
+    if num > 0:
+        return '+'
+    else:
+        return '-'
+
+def makeDir(key):
+    if not os.path.exists(key):
+        os.makedirs(key)
+
+def string2arrPoint(key):
+    positions = key.split()
+    return [float(positions[0]), float(positions[1])]
+
+def arr2stringPoint(arr):
+    return "{}{} {}{}".format(sign(arr[0]), abs(arr[0]), sign(arr[1]), abs(arr[1]))
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope):
     client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)

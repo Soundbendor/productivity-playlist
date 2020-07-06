@@ -3,6 +3,8 @@ import numpy as np
 import random
 import pandas as pd
 from sklearn.neighbors import NearestNeighbors
+import json
+import pprint
 
 #our modules
 import helper
@@ -23,11 +25,22 @@ songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0, 
 # has_sp_id = songdata['has'] != None
 # songdata = songdata[has_sp_id]
 
-print("N:\t{}".format(len(songdata)))
-print("Sqrt(N):\t{}".format(np.sqrt(len(songdata))))
+print("N: {}".format(len(songdata)))
+print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
+
+songpoints = {}
+with open("songpoints.json") as f:
+    songpoints = json.load(f)
+
+coords = []
+for key in songpoints.keys():
+    coords.append(helper.string2arrPoint(key))
+coords = np.array(coords)
+pprint.pprint(coords)
+pprint.pprint(songdata.select_dtypes(include='float64').to_numpy())
 
 # train a KNN model 
 model = NearestNeighbors()
-model.fit(songdata.select_dtypes(include='float64').to_numpy())
+model.fit(coords)
 
-tests.test_neighbors(model, songdata)
+tests.test_neighbors(model, songdata, songpoints, coords)
