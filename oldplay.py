@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 import algos
+import warnings
+import pprint
 
 def filter_candiates(songpoints, pointlist, candidates):
     filtered = []
@@ -25,6 +27,47 @@ def filter_candiates(songpoints, pointlist, candidates):
     
     return np.array(filtered)
 
+def old_cosine(songdata, num, current, destination, songs_left):
+    current_a = songdata.loc[current][1]
+    current_v = songdata.loc[current][0]
+    destination_a = songdata.loc[destination][1]
+    destination_v = songdata.loc[destination][0]
+    step_a = (destination_a - current_a + .000000001) / songs_left
+    step_v = (destination_v - current_v + .000000001) / songs_left
+
+    #Vector A: the vector to the candidate
+    dist_a = songdata.iloc[num][1] - current_a
+    dist_v = songdata.iloc[num][0] - current_v
+    dist_mag = np.sqrt(np.square(dist_a) + np.square(dist_v))
+
+    #Vector B: the vector to the hypothetical target
+    step_a = (destination_a - current_a + .000000001) / songs_left
+    step_v = (destination_v - current_v + .000000001) / songs_left
+    step_mag = np.sqrt(np.square(step_a) + np.square(step_v))
+
+    # cosine = A dot B / (mag(A) * mag(B))
+    dot_product = dist_a * step_a + dist_v * step_v
+    mag_product = step_mag * dist_mag
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        cosine = dot_product / mag_product
+
+    # cos = 1 means closest, cos = -1 means farthest, so 1 is "smoother"
+    # find difference between 1 and this cosine value
+    score = 1 - cosine
+    return score
+
+def old_smoothness(songdata, origin, destination, num):
+    origin_a = songdata.loc[origin][1]
+    origin_v = songdata.loc[origin][0]
+    destination_a = songdata.loc[destination][1]
+    destination_v = songdata.loc[destination][0]
+    current_a = songdata.iloc[num][1]
+    current_v = songdata.iloc[num][0]
+
+    slope = (destination_a - origin_a) / (destination_v - origin_v)
+    return np.square(current_a - (origin_a + slope * (current_v - origin_v)))
 
 def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model, neighbors = 7):
     destination_a = songdata.loc[destination][1]
@@ -44,6 +87,7 @@ def get_candidates(songdata, current, destination, n_songs_reqd, songlist, model
     
     # r_neighbors = model.radius_neighbors(target, radius=radius)
     nearest = model.kneighbors(target, n_neighbors=neighbors)
+    pprint.pprint(nearest[0][0])
     candidates = np.array(nearest[1])
     candidates = candidates[0]
 
@@ -70,7 +114,7 @@ def choose_candidate(songdata, candidates, current, origin, destination, n_songs
     for i in range(len(candidates)):
         num = candidates[i]
         cand_scores.append(score(songdata, num, current, destination, songs_left))
-        cand_smooths.append(algos.smoothness_mse(songdata, origin, destination, num))
+        cand_smooths.append(old_smoothness(songdata, origin, destination, num))
 
     # select the song which has the score closest to 0 to be the new value of "current"
     min_score_index = np.argmin(cand_scores)
@@ -79,7 +123,7 @@ def choose_candidate(songdata, candidates, current, origin, destination, n_songs
     
     return min_cand_song, min_cand_smooth
 
-def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 19):
+def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd, model, score = old_cosine, neighbors = 19):
     song_ids = list(songdata.index.values)
    
     # create a list of numbers (for songs) to store our "path" - let's call it song_list
