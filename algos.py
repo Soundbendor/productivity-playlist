@@ -78,8 +78,8 @@ def full_rand(coords, pointlist, origin, destination):
         cand = coords[random.randrange(0, len(coords))]
         pointFound == True
 
-        for p in pointlist:
-            if (cand == p):
+        for j in range(len(pointlist)):
+            if (abs(cand[0] - pointlist[j][0]) < .0000001 and abs(cand[1] - pointlist[j][1]) < .0000001):
                 pointFound == False     
 
     smooth = smoothness_mse(cand, origin, destination)

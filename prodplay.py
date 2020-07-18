@@ -64,12 +64,12 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
     while ((len(pointlist) - 1 < n_songs_reqd) and (helper.arr2stringPoint(currPoint) != helper.arr2stringPoint(destPoint))):
         
         if (score == algos.full_rand):
-            nextPoint, nextSmooth = score(coords, pointlist, origin, destination)
+            nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
         else:
             candidates = get_candidates(coords, pointlist, currPoint, destPoint, n_songs_reqd, model, neighbors)
             # pprint.pprint(candidates)
             if (score == algos.neighbors_rand):
-                nextPoint, nextSmooth = score(candidates, origin, destination)
+                nextPoint, nextSmooth = score(candidates, origPoint, destPoint)
             else:
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 

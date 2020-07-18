@@ -145,15 +145,14 @@ def test_neighbors(model, songdata, songpoints, coords):
 
 def test_dists(model, songdata, songpoints, coords):
     the_dist = int(input("Distance: "))
-    num_tests = int(input("Number of tests: "))
     maxlength = int(input("Max length: "))
     minlength = 2
-    # neighbor_counts = [i * int(np.sqrt(len(coords)) / 2) for i in range(3,8)]
-    neighbor_counts = [i for i in range(5, 30, 2)]
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
     helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
     used_points = ["-1, -1"]
+    user_orig, user_dest = get_points(songpoints, used_points, the_dist)
+    smoothnesses = []
     
     scores = [
         [algos.cosine_score, "Cosine Similarity"]
@@ -164,7 +163,7 @@ def test_dists(model, songdata, songpoints, coords):
         ,[algos.jaccard_score, "Jaccard Distance"]
         ,[algos.mult_score, "Multiplied Ratios"]
         ,[algos.neighbors_rand, "Random Neighbors"]
-        ,[algos.full_rand, "Random Songs"]
+        # ,[algos.full_rand, "Random Songs"]
     ]
     scores = np.transpose(scores)
 
@@ -212,7 +211,7 @@ def test_dists(model, songdata, songpoints, coords):
             )
         )
         helper.graph('valence', 'arousal', pointlists[smoothest], data_dim = 2, marker='.',
-            file = 'graph-results/{}/{}/{}/smoothest.png'.format(test_time, scores[1][i]),
+            file = 'graph-results/{}/{}/smoothest.png'.format(test_time, scores[1][i]),
             title = "Smoothest Playlist Path ({} songs) using {} from ({}, {}) to ({}, {})".format(
                 smoothest + minlength, scores[1][i],
                 np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
