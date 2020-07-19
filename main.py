@@ -47,8 +47,8 @@ print("Sqrt(N): {}".format(np.sqrt(len(songpoints.keys()))))
 model = NearestNeighbors()
 model.fit(coords)
 
-# tests.test_neighbors(model, songdata, songpoints, coords)
-tests.test_dists(model, songdata, songpoints, coords)
+tests.test_neighbors(model, songdata, songpoints, coords)
+# tests.test_dists(model, songdata, songpoints, coords)
 
 # user_orig       = 532216
 # user_dest       = 532284

@@ -36,6 +36,8 @@ def get_points(songpoints, used, target = 1):
     print(origPt, destPt)
     return origPt, destPt
 
+# TODO: make tests of neighbors & distance vs. max playlist length
+
 def test_neighbors(model, songdata, songpoints, coords):
     the_dist = int(input("Distance: "))
     num_tests = int(input("Number of tests: "))
@@ -73,7 +75,7 @@ def test_neighbors(model, songdata, songpoints, coords):
                 print("{}: {}".format(len(songlist), smoothie))
                 pointlist = np.transpose(pointlist)
                 smoothies[1].append(smoothie)
-                smoothies[0].append(n_songs_reqd)
+                smoothies[0].append(len(songlist))
                 songlists.append(songlist)
                 pointlists.append(pointlist)
 
@@ -159,11 +161,9 @@ def test_dists(model, songdata, songpoints, coords):
         ,[algos.euclidean_score, "Euclidean Distance"]
         ,[algos.manhattan_score, "Manhattan Distance"]
         ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
-        ,[algos.minkowski4_score, "Minkowski Distance (order 4)"]
         ,[algos.jaccard_score, "Jaccard Distance"]
         ,[algos.mult_score, "Multiplied Ratios"]
         ,[algos.neighbors_rand, "Random Neighbors"]
-        # ,[algos.full_rand, "Random Songs"]
     ]
     scores = np.transpose(scores)
 
