@@ -24,8 +24,9 @@ sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
 
 # load song_id, average arousal and valence, and spotify track ID for each song from CSV to pandas DataFrame
 songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0, 3, 4, 7])
-# has_sp_id = songdata['has'] != None
-# songdata = songdata[has_sp_id]
+# songdata = pd.read_csv("deam-data/annotations/annotations averaged per song/song_level/static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
+has_sp_id = songdata['sp_track_id'] != None
+songdata = songdata[has_sp_id]
 
 songpoints = {}
 with open("songpoints.json") as f:
@@ -39,15 +40,15 @@ coords = np.array(coords)
 print("N: {}".format(len(songpoints.keys())))
 print("Sqrt(N): {}".format(np.sqrt(len(songpoints.keys()))))
 
-# plotCoords = np.transpose(coords)
-# plt.scatter(plotCoords[0], plotCoords[1])
-# plt.show()
+plotCoords = np.transpose(coords)
+plt.scatter(plotCoords[0], plotCoords[1], marker='.', linewidths=0.7, c=["#D73F09"])
+plt.show()
 
 # train a KNN model 
 model = NearestNeighbors()
 model.fit(coords)
 
-tests.test_neighbors(model, songdata, songpoints, coords)
+# tests.test_neighbors(model, songdata, songpoints, coords)
 # tests.test_dists(model, songdata, songpoints, coords)
 
 # user_orig       = 532216
