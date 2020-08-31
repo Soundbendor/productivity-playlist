@@ -4,8 +4,10 @@ graph-results/
 #ignore datasets
 deezer-data/
 deam-data/
+fonts/
 *.csv
 *.json
+*.png
 
 #ignore python files
 __pycache__

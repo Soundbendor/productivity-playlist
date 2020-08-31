@@ -159,7 +159,7 @@ def test_dists(model, songdata, songpoints, coords):
     scores = [
         [algos.cosine_score, "Cosine Similarity"]
         ,[algos.euclidean_score, "Euclidean Distance"]
-        ,[algos.manhattan_score, "Manhattan Distance"]
+        # ,[algos.manhattan_score, "Manhattan Distance"]
         ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
         ,[algos.jaccard_score, "Jaccard Distance"]
         ,[algos.mult_score, "Multiplied Ratios"]

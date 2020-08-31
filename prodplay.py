@@ -5,6 +5,7 @@ from sklearn.neighbors import NearestNeighbors
 import algos
 import helper
 import pprint
+import warnings
 
 def filter_candiates(coords, pointlist, candidates):
     filtered = []
@@ -50,7 +51,7 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
     return candidates[choice].tolist(), candSmooth[choice]
 
 def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7):
-    n_songs_reqd = n_songs_reqd * 2
+    # n_songs_reqd = n_songs_reqd * 2
     smoothlist = np.empty(0)
     songlist = np.empty(0)
     pointlist = []
@@ -62,7 +63,7 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
     pointlist.append(origPoint)
     currPoint = origPoint
 
-    while (helper.arr2stringPoint(currPoint) != helper.arr2stringPoint(destPoint)):
+    while ((len(pointlist) - 1 < n_songs_reqd) and helper.arr2stringPoint(currPoint) != helper.arr2stringPoint(destPoint)):
         
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
@@ -75,6 +76,7 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 
         nextString = helper.arr2stringPoint(nextPoint)
+
         if (helper.arr2stringPoint(nextPoint) != helper.arr2stringPoint(destPoint)):
             nextSong = songpoints[nextString][random.randint(0, len(songpoints[nextString])-1)]
         else:
