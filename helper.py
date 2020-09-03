@@ -73,7 +73,7 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     plt.show(block=False)
     plt.clf()
 
-def plot_AV_data(x, y, xlabel, ylabel, title, colors="#D73F09", plt_size=10):
+def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=10):
     plt.figure(figsize=(plt_size,plt_size))
     plt.scatter(x, y, s=20, c=colors, alpha=.5)
     plt.xlim(-1.25,1.25)
@@ -95,8 +95,8 @@ def plot_AV_data(x, y, xlabel, ylabel, title, colors="#D73F09", plt_size=10):
     axisFont = fm.FontProperties(fname="./fonts/Stratum2-Medium.otf")
     emotionFont = fm.FontProperties(fname="./fonts/KievitOffc-BoldIta.ttf")
 
-    ax.set_xlabel(xlabel, fontproperties=axisFont, size=plt_size*2)
-    ax.set_ylabel(ylabel, fontproperties=axisFont, size=plt_size*2)
+    ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*2)
+    ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*2)
     ax.set_title(title, fontproperties=titleFont, size=plt_size*3)
 
     # print emotion labels
@@ -109,6 +109,6 @@ def plot_AV_data(x, y, xlabel, ylabel, title, colors="#D73F09", plt_size=10):
     ax.text(0.98, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*1.5))
     ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*1.5)) 
 
-    plt.savefig("./datapoints.png", dpi=300)
+    plt.savefig(file, dpi=300)
     plt.show(block=False)
     plt.clf() 
