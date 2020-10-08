@@ -57,12 +57,6 @@ song_points = {}
 
 print(len(songdata))
 
-def sign(num):
-    if num > 0:
-        return '+'
-    else:
-        return '-'
-
 for i in range(len(songdata)):
     print(i, end = "\r")
     song = songdata.iloc[i]
@@ -70,7 +64,7 @@ for i in range(len(songdata)):
     result = sp.search(joined_titles[i], limit=1, type='track')
     
     song = songdata.iloc[i]
-    songstring = "{}{} {}{}".format(sign(song[1]), abs(song[1]), sign(song[2]), abs(song[2]))
+    songstring = "{}{} {}{}".format(helper.sign(song[1]), abs(song[1]), helper.sign(song[2]), abs(song[2]))
     if songstring not in song_points.keys():
         song_points[songstring] = []
     song_points[songstring].append(song[0])
