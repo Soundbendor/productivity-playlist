@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 import json
 import pprint
 import time
+import sys
+import os
 
 #our modules
 import helper
@@ -17,21 +19,29 @@ import algos
 import tests
 
 #get important personal information from Spotify API
-client_id = '2a285d92069147f8a7e59cec1d0d9bb6'
-client_secret = '1eebc7035f74489db8f5597ce4afb863'
-redirect_uri = 'https://www.google.com/'
-username = 'eonkid46853'
-scope = "playlist-modify-public,playlist-modify-private"
-sp = helper.Spotify(client_id, client_secret, redirect_uri, username, scope)
+info = {}
+configFile = sys.argv[1] if (len(sys.argv) > 1) else input("Please enter the path of your config file: ")
+while not os.path.exists(configFile) or not configFile.endswith(".json"):
+    configFile = input("Config JSON file not found! Please enter a valid path: ")
+with open(configFile) as f:
+    info = json.load(f)
 
-# load song_id, average arousal and valence, and spotify track ID for each song from CSV to pandas DataFrame
-songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0, 3, 4, 7])
-# songdata = pd.read_csv("deam-data/annotations/annotations averaged per song/song_level/static_annotations_averaged_songs_1_2000.csv", header=0, index_col=0, usecols=[0, 1, 3])
+sp = helper.Spotify(
+    info["auth"]["client_id"], 
+    info["auth"]["client_secret"], 
+    info["auth"]["redirect_uri"], 
+    info["auth"]["username"], 
+    info["main"]["scope"]
+)
+songdata = pd.read_csv(
+    info["main"]["songdata"], 
+    header=0, index_col=0, usecols=[0,3,4,7]
+)
 has_sp_id = songdata['sp_track_id'] != None
 songdata = songdata[has_sp_id]
 
 songpoints = {}
-with open("songpoints.json") as f:
+with open(info["main"]["songpoints"]) as f:
     songpoints = json.load(f)
 
 coords = []
@@ -41,11 +51,6 @@ coords = np.array(coords)
 
 print("N: {}".format(len(songpoints.keys())))
 print("Sqrt(N): {}".format(np.sqrt(len(songpoints.keys()))))
-
-plotCoords = pd.DataFrame(coords)
-scaler = MinMaxScaler(feature_range=(-1,1)) 
-scaled_values = np.transpose(scaler.fit_transform(pd.DataFrame(coords).iloc[:,0:2]))
-helper.plot_AV_data([], [], file="./empty.png")
 
 # train a KNN model 
 model = NearestNeighbors()
