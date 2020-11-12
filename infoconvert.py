@@ -2,6 +2,7 @@ import spotipy
 import pprint
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
+from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 import numpy as np
 import json
@@ -27,7 +28,7 @@ sp = helper.Spotify(
 )
 songdata = pd.read_csv(
     info["infoconvert"]["in_csv"], 
-    header=0, index_col=0, usecols=[0,3,4,5,6]
+    header=0, usecols=info["infoconvert"]["cols"]
 )
 song_ids = list(songdata.index.values)
 
@@ -67,7 +68,7 @@ for i in range(len(songdata)):
     songstring = "{}{} {}{}".format(helper.sign(song[1]), abs(song[1]), helper.sign(song[2]), abs(song[2]))
     if songstring not in song_points.keys():
         song_points[songstring] = []
-    song_points[songstring].append(song[0])
+    song_points[songstring].append(str(song[0]))
 
     try:
         uri = result['tracks']['items'][0]['uri']
@@ -132,10 +133,25 @@ songdata['sp_valence'] = sp_valence
 songdata['sp_popularity'] = sp_popularity
 songdata['sp_explicit'] = sp_explicit
 
+coords = []
+for key in song_points.keys():
+    coords.append(helper.string2arrPoint(key))
+coords = np.array(coords)
+
+scaler = MinMaxScaler(feature_range=(-1,1)) 
+scaled_values = np.transpose(scaler.fit_transform(pd.DataFrame(coords).iloc[:,0:2]))
+helper.plot_AV_data(
+    scaled_values[0], scaled_values[1], 
+    title='Distribution of {} Dataset'.format(info["infoconvert"]["title"]), 
+    file="{}.png".format(info["infoconvert"]["title"])
+)
+
 json_genres = json.dumps(sp_artist_genres, indent=2)
 with open(info["infoconvert"]["out_artists"], "w") as outfile:
     outfile.write(json_genres)
+
 json_obj = json.dumps(song_points, indent=2)
 with open(info["infoconvert"]["out_points"], "w") as outfile:
     outfile.write(json_obj)
+
 songdata.to_csv(path_or_buf=info["infoconvert"]["out_csv"])
