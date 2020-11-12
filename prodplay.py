@@ -63,7 +63,7 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
     pointlist.append(origPoint)
     currPoint = origPoint
 
-    while ((len(pointlist) - 1 < n_songs_reqd) and helper.arr2stringPoint(currPoint) != helper.arr2stringPoint(destPoint)):
+    while ((len(pointlist) < n_songs_reqd) and helper.arr2stringPoint(currPoint) != helper.arr2stringPoint(destPoint)):
         
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)

@@ -14,7 +14,6 @@ import os
 #our modules
 import helper
 import prodplay
-import oldplay
 import algos
 import tests
 
@@ -59,36 +58,66 @@ model.fit(coords)
 # tests.test_neighbors(model, songdata, songpoints, coords)
 # tests.test_dists(model, songdata, songpoints, coords)
 
-# user_orig       = 762954
-# user_dest       = 1157536
-# neighbors       = 10
-# n_songs_reqd    = 20
+user_orig       = 762954
+user_dest       = 1157536
+neighbors       = 10
+n_songs_reqd    = [i for i in range(2, int(input("Max. Playlist Length: ")))]
+avgDists        = []
+listLengths     = []
 
 # print(songdata.loc[user_orig])
 # print(songdata.loc[user_dest])
 
 # print("\n\nNEW method:")
-# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-#     songdata, songpoints, coords, 
-#     user_orig, user_dest, n_songs_reqd, 
-#     model
-# )
+
+for n in n_songs_reqd:
+    newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+        songdata, songpoints, coords, 
+        user_orig, user_dest, n, 
+        model
+    )
+
+    minDist = 20
+    avgDist = 0
+    for i in range(1, len(newpoints)):
+        score = np.power(
+            np.power(newpoints[i][0] - newpoints[i-1][0], 2) + 
+            np.power(newpoints[i][1] - newpoints[i-1][1], 2), 
+            1/2
+        )
+        minDist = min(minDist, score)
+        avgDist = avgDist + score
+    
+    avgDist = avgDist / (n-1)
+
+    listLengths.append(len(newsongs))
+    avgDists.append(avgDist)
+
 # pprint.pprint(newsongs)
 # pprint.pprint(newsmooth)
 # newpoints = np.transpose(newpoints)
 # pprint.pprint(newpoints)
 
-# test_time = str(time.strftime("%y-%m-%d_%H%M"))
-# helper.makeDir('graph-results/{}'.format(test_time))
+test_time = str(time.strftime("%y-%m-%d_%H%M"))
+helper.makeDir('graph-results/{}'.format(test_time))
 
-# helper.graph('valence', 'arousal', newpoints, data_dim = 2, marker='.',
-#     file="graph-results/{}/playlist.png".format(test_time),
-#     title = "Example Playlist Path".format(
-#         len(newpoints[0]), neighbors,
-#         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-#         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-#     )
-# )
+helper.graph('target playlist length', 'actual playlist length', [n_songs_reqd, listLengths], data_dim = 2, marker='.',
+    file="graph-results/{}/listLengths.png".format(test_time),
+    title = "Playlist Length Comparison (K={}) from ({},{}) to ({},{})".format(
+        neighbors,
+        np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+        np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+    )
+)
+
+helper.graph('target playlist length', 'average dist. between points', [n_songs_reqd, avgDists], data_dim = 2, marker='.',
+    file="graph-results/{}/avgDists.png".format(test_time),
+    title = "Average Inter-Point Distances (K={}) from ({},{}) to ({},{})".format(
+        neighbors,
+        np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+        np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+    )
+)
 
 # track_ids = []
 # for i in range(len(newsongs)):
