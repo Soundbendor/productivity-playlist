@@ -2,8 +2,6 @@
 graph-results/
 
 #ignore datasets
-deezer-data/
-deam-data/
 data/
 fonts/
 *.csv
