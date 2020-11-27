@@ -4,6 +4,17 @@ import os
 import spotipy
 import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
+import sys
+import json
+
+def loadConfig():
+    info = {}
+    configFile = sys.argv[1] if (len(sys.argv) > 1) else input("Please enter the path of your config file: ")
+    while not os.path.exists(configFile) or not configFile.endswith(".json"):
+        configFile = input("Config JSON file not found! Please enter a valid path: ")
+    with open(configFile) as f:
+        info = json.load(f)
+    return info
 
 def sign(num):
     if num > 0:
@@ -73,6 +84,15 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     plt.show(block=False)
     plt.clf()
 
+def plot_AV_box(a, v, title="test", file="./test.png"):
+    fig = plt.gcf()
+    ax = fig.gca()
+    ax.set_title(title, size=12) 
+    plt.boxplot([v, a], labels=['Valence','Arousal'], showmeans=True, meanline=True)
+    plt.savefig(file, dpi=300)
+    plt.show(block=False)
+    plt.clf() 
+
 def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=10):
     plt.figure(figsize=(plt_size,plt_size))
     plt.scatter(x, y, s=20, c=colors, alpha=.5)
@@ -98,7 +118,9 @@ def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=1
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*2)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*2)
     ax.set_title(title, fontproperties=titleFont, size=plt_size*3)
-
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
+    
     # print emotion labels
     ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*1.5))
     ax.text(0.5, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*1.5))

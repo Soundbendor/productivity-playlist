@@ -4,6 +4,7 @@ graph-results/
 #ignore datasets
 data/
 fonts/
+analysis/
 *.csv
 *.json
 *.png

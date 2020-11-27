@@ -11,13 +11,7 @@ import sys
 import os
 
 #get important personal information from Spotify API
-info = {}
-
-configFile = sys.argv[1] if (len(sys.argv) > 1) else input("Please enter the path of your config file: ")
-while not os.path.exists(configFile):
-    configFile = input("Config file not found! Please enter a valid path: ")
-with open(configFile) as f:
-    info = json.load(f)
+info = helper.loadConfig()
 
 sp = helper.Spotify(
     info["auth"]["client_id"], 
