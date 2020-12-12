@@ -48,29 +48,32 @@ def makeSpotifyList(sp, username, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(username, title, public=public)
     sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title=""):
-    fig = plt.gcf()
-    ax = fig.gca()
+def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2):
+    plt.figure(figsize=(6.4*unit_size,4.8*unit_size))
+    fig, ax= plt.subplots(dpi=600)
 
     # add formatted labels
-    titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
-    axisFont = fm.FontProperties(fname="./fonts/Stratum2-Medium.otf")
-    legendFont = fm.FontProperties(fname="./fonts/KievitOffc-Ita.ttf")
+    titleFont = fm.FontProperties(fname="./fonts/KievitOffc-Bold.ttf",size='x-large')
+    axisFont = fm.FontProperties(fname="./fonts/KievitOffc.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./fonts/KievitOffc-Ita.ttf",size='x-large')  
+    # titleFont = fm.FontProperties(fname='Arial', weight='bold', size='xx-large')
+    # axisFont = fm.FontProperties(fname='Arial', size='x-large')
+    # legendFont = fm.FontProperties(fname='Arial', style='italic', size='x-large')
 
-    ax.set_xlabel(xlabel, fontproperties=axisFont, size=12)
-    ax.set_ylabel(ylabel, fontproperties=axisFont, size=12)
-    ax.set_title(title, fontproperties=titleFont, size=32)
+    ax.set_xlabel(xlabel, fontproperties=axisFont)
+    ax.set_ylabel(ylabel, fontproperties=axisFont)
+    ax.set_title(title, fontproperties=titleFont)
 
     if (data_dim == 1):
         for i in range(line_count):
-            plt.plot(data[i], marker=marker, linestyle=linestyle)
+            ax.plot(data[i], marker=marker, linestyle=linestyle)
     
     elif (data_dim == 2):
         if (line_count == 1):
-            plt.plot(data[0], data[1], marker=marker, color="#D73F09", linestyle=linestyle)
+            ax.plot(data[0], data[1], marker=marker, color="#D73F09", linestyle=linestyle)
         else:
             for i in range(line_count):
-                plt.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
+                ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
     
     if (legend != []):
         ax.legend(legend, prop=legendFont)
@@ -79,7 +82,7 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
         plt.title(title)
 
     if (file != ""):
-        plt.savefig(file, dpi=300)
+        plt.savefig(file, dpi=600)
 
     plt.show(block=False)
     plt.clf()
@@ -89,7 +92,7 @@ def plot_AV_box(a, v, title="test", file="./test.png"):
     ax = fig.gca()
     ax.set_title(title, size=12) 
     plt.boxplot([v, a], labels=['Valence','Arousal'], showmeans=True, meanline=True)
-    plt.savefig(file, dpi=300)
+    plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 
 
