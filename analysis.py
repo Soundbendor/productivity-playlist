@@ -74,8 +74,6 @@ for i in range(len(names)):
         tuples.append((datasets[i].iloc[j, 2], datasets[i].iloc[j, 3]))
     namesets.append(set(tuples))
 
-pprint.pprint(namesets)
-
 for i in range(len(namesets) - 1):
     for j in range(i+1, len(namesets)):
         intersection = namesets[i] & namesets[j]

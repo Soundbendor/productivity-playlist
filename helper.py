@@ -48,17 +48,14 @@ def makeSpotifyList(sp, username, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(username, title, public=public)
     sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2):
-    plt.figure(figsize=(6.4*unit_size,4.8*unit_size))
+def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8):
+    plt.figure(figsize=(width*unit_size,height*unit_size))
     fig, ax= plt.subplots(dpi=600)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./fonts/KievitOffc-Bold.ttf",size='x-large')
     axisFont = fm.FontProperties(fname="./fonts/KievitOffc.ttf",size='x-large')
-    legendFont = fm.FontProperties(fname="./fonts/KievitOffc-Ita.ttf",size='x-large')  
-    # titleFont = fm.FontProperties(fname='Arial', weight='bold', size='xx-large')
-    # axisFont = fm.FontProperties(fname='Arial', size='x-large')
-    # legendFont = fm.FontProperties(fname='Arial', style='italic', size='x-large')
+    legendFont = fm.FontProperties(fname="./fonts/KievitOffc-Ita.ttf",size='x-large')
 
     ax.set_xlabel(xlabel, fontproperties=axisFont)
     ax.set_ylabel(ylabel, fontproperties=axisFont)
@@ -84,14 +81,19 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     if (file != ""):
         plt.savefig(file, dpi=600)
 
+
     plt.show(block=False)
     plt.clf()
 
-def plot_AV_box(a, v, title="test", file="./test.png"):
-    fig = plt.gcf()
-    ax = fig.gca()
-    ax.set_title(title, size=12) 
+def plot_AV_box(a, v, title="test", file="./test.png", plt_size=10):
+    plt.figure(figsize=(plt_size,plt_size))
+    fig, ax= plt.subplots(dpi=600)
+    
+    titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
+    ax.set_title(title, fontproperties=titleFont, size=plt_size*2)    
+    
     plt.boxplot([v, a], labels=['Valence','Arousal'], showmeans=True, meanline=True)
+    
     plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 
@@ -116,24 +118,24 @@ def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=1
     # add formatted labels
     titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
     axisFont = fm.FontProperties(fname="./fonts/Stratum2-Medium.otf")
-    emotionFont = fm.FontProperties(fname="./fonts/KievitOffc-BoldIta.ttf")
+    emotionFont = fm.FontProperties(fname="./fonts/KievitOffc-BoldIta.ttf", size='xx-large')
 
-    ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*2)
-    ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*2)
-    ax.set_title(title, fontproperties=titleFont, size=plt_size*3)
+    ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
+    ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
+    ax.set_title(title, fontproperties=titleFont, size=plt_size*4)
     ax.axes.xaxis.set_ticks([])
     ax.axes.yaxis.set_ticks([])
     
     # print emotion labels
-    ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(0.5, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(-1.13, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(0.98, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*1.5))
-    ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*1.5)) 
+    ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(0.5, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(-1.13, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(0.98, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*2.5)) 
 
-    plt.savefig(file, dpi=300)
+    plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 
