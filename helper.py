@@ -123,8 +123,8 @@ def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=1
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
     ax.set_title(title, fontproperties=titleFont, size=plt_size*4)
-    ax.axes.xaxis.set_ticks([])
-    ax.axes.yaxis.set_ticks([])
+    # ax.axes.xaxis.set_ticks([])
+    # ax.axes.yaxis.set_ticks([])
     
     # print emotion labels
     ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*2.5))
