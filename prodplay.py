@@ -88,8 +88,9 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
 
         currPoint = nextPoint
     
-    # pointlist.append(destPoint)
-    # songlist = np.append(songlist, destination)
+    if (pointlist[len(pointlist) - 1] != destPoint):
+        pointlist.append(destPoint)
+        songlist = np.append(songlist, destination)
 
     smoothness = np.mean(smoothlist)
     return songlist, smoothness, np.array(pointlist)

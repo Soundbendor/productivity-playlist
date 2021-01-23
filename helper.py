@@ -28,10 +28,13 @@ def makeDir(key):
 
 def string2arrPoint(key):
     positions = key.split()
-    return [float(positions[0]), float(positions[1])]
+    return [float(positions[i]) for i in range(len(positions))]
 
 def arr2stringPoint(arr):
-    return "{}{} {}{}".format(sign(arr[0]), abs(arr[0]), sign(arr[1]), abs(arr[1]))
+    s = ""
+    for i in range(len(arr)):
+        s = s + "{}{} ".format(sign(arr[i]), abs(arr[i]))
+    return s[:-1]
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope):
     client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
@@ -80,7 +83,6 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
 
     if (file != ""):
         plt.savefig(file, dpi=600)
-
 
     plt.show(block=False)
     plt.clf()

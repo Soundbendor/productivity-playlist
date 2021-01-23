@@ -29,10 +29,10 @@ sp = helper.Spotify(
 )
 songdata = pd.read_csv(
     info["main"]["songdata"], 
-    header=0, index_col=0, usecols=[0,3,4,5,6,7]
+    header=0, index_col=0, usecols=[0,6,7]
 )
-has_sp_id = songdata['sp_track_id'] != None
-songdata = songdata[has_sp_id]
+# has_sp_id = songdata['sp_track_id'] != None
+# songdata = songdata[has_sp_id]
 
 songpoints = {}
 with open(info["main"]["songpoints"]) as f:
@@ -52,33 +52,34 @@ model.fit(coords)
 
 # tests.test_neighbors(model, songdata, songpoints, coords)
 # tests.test_dists(model, songdata, songpoints, coords)
+tests.test_vector(model, songdata, songpoints, coords)
 
 
-user_orig       = 762954
-user_dest       = 1157536
-neighbors       = 10
-n_songs_reqd    = 20
+# user_orig       = 762954
+# user_dest       = 1157536
+# neighbors       = 10
+# n_songs_reqd    = 20
 
-print(songdata.loc[user_orig])
-print(songdata.loc[user_dest])
+# print(songdata.loc[user_orig])
+# print(songdata.loc[user_dest])
 
-newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-    songdata, songpoints, coords, 
-    user_orig, user_dest, n_songs_reqd, 
-    model
-)
-newpoints = np.transpose(newpoints)
-labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
-pprint.pprint(labels)
+# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+#     songdata, songpoints, coords, 
+#     user_orig, user_dest, n_songs_reqd, 
+#     model
+# )
+# newpoints = np.transpose(newpoints)
+# labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
+# pprint.pprint(labels)
 
-helper.graph('valence', 'arousal', newpoints, data_dim = 2, marker='.',
-    file="graph-results/playlist.png",
-    title = "Example Playlist Path".format(
-        len(newpoints[0]), neighbors,
-        np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-        np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-    )
-)
+# helper.graph('valence', 'arousal', newpoints, data_dim = 2, marker='.',
+#     file="graph-results/playlist.png",
+#     title = "Example Playlist Path".format(
+#         len(newpoints[0]), neighbors,
+#         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
+#         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+#     )
+# )
 
 # track_ids = []
 # for i in range(len(newsongs)):

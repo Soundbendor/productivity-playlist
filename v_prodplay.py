@@ -56,13 +56,13 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
     choice = np.argmin(candScores)
     return candidates[choice].tolist(), candSmooth[choice]
 
-def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7):
+def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0):
     smoothlist = np.empty(0)
     songlist = np.empty(0)
     pointlist = []
 
-    origPoint = songdata.loc[origin][1:].tolist()
-    destPoint = songdata.loc[destination][1:].tolist()
+    origPoint = songdata.loc[origin][si:].tolist()
+    destPoint = songdata.loc[destination][si:].tolist()
 
     songlist = np.append(songlist, origin)
     pointlist.append(origPoint)
@@ -81,28 +81,28 @@ def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, sco
             else:
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 
-        if (nextPoint != destPoint):
-            i = 0
-            found = False
-            while i < len(songdata) and not found:
-                j = 0
-                good = True
-                while j < len(nextPoint) and good:
-                    if (nextPoint[j] != songdata.iloc[i][j+1]):
-                        good = False
-                    j = j + 1
+        # if (nextPoint != destPoint):
+        #     i = 0
+        #     found = False
+        #     while i < len(songdata) and not found:
+        #         j = 0
+        #         good = True
+        #         while j < len(nextPoint) and good:
+        #             if (nextPoint[j] != songdata.iloc[i][j+si]):
+        #                 good = False
+        #             j = j + 1
                 
-                if good:
-                    found = True
-                else:
-                    i = i + 1
+        #         if good:
+        #             found = True
+        #         else:
+        #             i = i + 1
             
-            nextSong = songdata.index.values[i]
-        else:
-            nextSong = destination
+        #     nextSong = songdata.index.values[i]
+        # else:
+        #     nextSong = destination
 
         smoothlist = np.append(smoothlist, nextSmooth)
-        songlist = np.append(songlist, nextSong)
+        # songlist = np.append(songlist, nextSong)
         pointlist.append(nextPoint)
 
         currPoint = nextPoint

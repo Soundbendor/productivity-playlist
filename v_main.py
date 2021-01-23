@@ -30,7 +30,7 @@ sp = helper.Spotify(
 )
 songdata = pd.read_csv(
     info["main"]["songdata"], 
-    header=0, index_col=0, usecols=[0,3,6,7,8]
+    header=0, index_col=0, usecols=[0,3,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 )
 has_sp_id = [(not np.isnan(songdata.iloc[i][3])) for i in range(len(songdata))]
 songdata = songdata[has_sp_id]
