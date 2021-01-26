@@ -13,3 +13,6 @@ analysis/
 __pycache__
 *.pyc
 .cache-eonkid46853
+
+#ignore venv files
+venv/
