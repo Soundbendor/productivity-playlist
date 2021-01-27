@@ -64,7 +64,7 @@ for i in range(len(names)):
         file="analysis/cir_{}.png".format(names[i])
     )
     helper.plot_AV_box(
-        arousal, valence, 
+        [valence, arousal], ['Valence','Arousal'],
         title="Distribution of {} Dataset".format(names[i]),
         file="analysis/box_{}.png".format(names[i])
     )

@@ -6,6 +6,7 @@ import spotipy.util as util
 from spotipy.oauth2 import SpotifyClientCredentials
 import sys
 import json
+import numpy as np
 
 def loadConfig():
     info = {}
@@ -51,7 +52,7 @@ def makeSpotifyList(sp, username, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(username, title, public=public)
     sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8):
+def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False):
     plt.figure(figsize=(width*unit_size,height*unit_size))
     fig, ax= plt.subplots(dpi=600)
 
@@ -64,16 +65,19 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     ax.set_ylabel(ylabel, fontproperties=axisFont)
     ax.set_title(title, fontproperties=titleFont)
 
-    if (data_dim == 1):
-        for i in range(line_count):
-            ax.plot(data[i], marker=marker, linestyle=linestyle)
-    
-    elif (data_dim == 2):
-        if (line_count == 1):
-            ax.plot(data[0], data[1], marker=marker, color="#D73F09", linestyle=linestyle)
-        else:
+    if not hist:
+        if (data_dim == 1):
             for i in range(line_count):
-                ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
+                ax.plot(data[i], marker=marker, linestyle=linestyle)
+        
+        elif (data_dim == 2):
+            if (line_count == 1):
+                ax.plot(data[0], data[1], marker=marker, color="#D73F09", linestyle=linestyle)
+            else:
+                for i in range(line_count):
+                    ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
+    else:
+        n, bins, patches = ax.hist(data, bins=int(1+3.3*np.log10(len(data))), facecolor="#D73F09")
     
     if (legend != []):
         ax.legend(legend, prop=legendFont)
@@ -87,22 +91,23 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     plt.show(block=False)
     plt.clf()
 
-def plot_AV_box(a, v, title="test", file="./test.png", plt_size=10):
-    plt.figure(figsize=(plt_size,plt_size))
+def plot_AV_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=True, showfliers=True):
+    plt.figure(figsize=(plt_size, plt_size))
     fig, ax= plt.subplots(dpi=600)
     
     titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
-    ax.set_title(title, fontproperties=titleFont, size=plt_size*2)    
+    ax.set_title(title, fontproperties=titleFont)    
     
-    plt.boxplot([v, a], labels=['Valence','Arousal'], showmeans=True, meanline=True)
+    plt.boxplot(plots, labels=labels, showmeans=True, meanline=True, vert=vert, showfliers=showfliers)
+    plt.tight_layout()
     
     plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 
 
-def plot_AV_data(x, y, title="", colors="#D73F09", file="./test.png", plt_size=10):
+def plot_AV_data(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
     plt.figure(figsize=(plt_size,plt_size))
-    plt.scatter(x, y, s=20, c=colors, alpha=.5)
+    plt.scatter(v, a, s=20, c=colors, alpha=alpha)
     plt.xlim(-1.25,1.25)
     plt.ylim(-1.25,1.25)  
 
