@@ -8,7 +8,7 @@ with open("data/LMD/match_scores.json") as f:
     match_scores = json.load(f)
 
 songdata = pd.read_csv(
-    "data/deezer-data/deezer-spotify.csv",
+    "data/deezer/deezer-spotify.csv",
     header=0, usecols=[0,2]
 )
 
