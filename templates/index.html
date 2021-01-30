@@ -11,8 +11,47 @@
     {% endif %}
     
     {% if graph %}
-        <img src={{graph}} />
+        <img src={{graph}} style="width:500px;height:500px;" />
     {% else %}
         <p>No image provided.</p>
+    {% endif %}
+
+    <form action="/playlist">
+        <br><label for="song_orig">Origin:</label>
+        <select name="song_orig" id="song_orig">
+            <option value="" selected> Choose a song</option>
+            {% for song in song_arr %}
+                <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
+            {% endfor %}
+        </select>
+
+        <br><label for="song_dest">Destination:</label>    
+        <select name="song_dest" id="song_dest">
+            <option value="" selected> Choose a song</option>
+            {% for song in song_arr %}
+                <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
+            {% endfor %}
+        </select>
+        
+        <br><label for="n_songs">Number of Songs: </label>
+        <input type="number" id="n_songs" name="n_songs" value="10" min="2" max="20">
+
+        <input type="submit" value="Submit">
+    </form>
+
+    {% if list_graph %}
+        <img src={{list_graph}} style="width:500px;height:500px;" />
+    {% else %}
+        <p>No image provided.</p>
+    {% endif %}
+    
+    {% if list_arr %}
+        <ol>
+            {% for song in list_arr %}
+                <li> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</il>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <p>No playlist made.</p>
     {% endif %}
 </body>
