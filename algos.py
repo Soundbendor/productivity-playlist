@@ -16,33 +16,44 @@ def minkowski4_score(cand, current, destination, songs_left):
     return minkowski_score(cand, current, destination, songs_left, 4)
 
 def minkowski_score(cand, current, destination, songs_left, order):
-    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(2)]    
+    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(len(destination))]    
 
-    score = np.power(
-        np.power(cand[1] - (current[1] + step[1]), order) + 
-        np.power(cand[0] - (current[0] + step[0]), order), 
-        1/order
-    )
-
+    s = 0
+    for i in range(len(destination)):
+        s = s + np.power(cand[i] - (current[i] + step[i]), order) 
+    
+    score = np.power(s, 1/order)
     return score
 
 def mult_score(cand, current, destination, songs_left):
-    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(2)]
-    distRatio = [(cand[i] - current[i]) / step[i] for i in range(2)]
-    score = np.absolute(1 - distRatio[1]) * np.absolute(1 - distRatio[0])
+    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(len(destination))]
+    distRatio = [(cand[i] - current[i]) / step[i] for i in range(len(destination))]
+    
+    score = 1
+    for i in range(len(destination)):
+        score = score * np.absolute(i - distRatio[i])
+    
     return score
 
 def cosine_score(cand, current, destination, songs_left):
     #Vector A: the vector to the candidate
-    dist = [cand[i] - current[i] for i in range(2)]
-    dist_mag = np.sqrt(np.square(dist[1]) + np.square(dist[0]))
+    dist = [cand[i] - current[i] for i in range(len(destination))]
+    dist_sum = 0
+    for i in range(len(destination)):
+        dist_sum = dist_sum + np.square(dist[i])
+    dist_mag = np.sqrt(dist_sum)
 
     #Vector B: the vector to the hypothetical target
-    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(2)]
-    step_mag = np.sqrt(np.square(step[1]) + np.square(step[0]))
+    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(len(destination))]
+    step_sum = 0
+    for i in range(len(destination)):
+        step_sum = step_sum + np.square(step[i])
+    step_mag = np.sqrt(step_sum)
 
     # cosine = A dot B / (mag(A) * mag(B))
-    dot_product = dist[1] * step[1] + dist[0] * step[0]
+    dot_product = 0
+    for i in range(len(destination)):
+        dot_product = dot_product + (dist[i] * step[i])
     mag_product = step_mag * dist_mag
 
     with warnings.catch_warnings():
@@ -55,12 +66,14 @@ def cosine_score(cand, current, destination, songs_left):
     return score
 
 def jaccard_score(cand, current, destination, songs_left):
-    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(2)]
-    target = [current[i] + step[i] for i in range(2)]
+    step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(len(destination))]
+    target = [current[i] + step[i] for i in range(len(destination))]
 
     #compute the weighted Jaccard similarity
-    min_sum = min(cand[1], target[1]) + min(cand[0], target[0])
-    max_sum = max(cand[1], target[1]) + max(cand[0], target[0])
+    min_sum, max_sum = 0, 0
+    for i in range(len(destination)):
+        min_sum = min_sum + min(cand[i], target[i])
+        max_sum = max_sum + max(cand[i], target[i])
     jaccard = min_sum / max_sum
     
     #Jaccard distance = 1 - Jaccard Similarity

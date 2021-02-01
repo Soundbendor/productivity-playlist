@@ -21,10 +21,16 @@ songpoints = {}
 with open("data/deezer/deezer-points.json") as f:
     songpoints = json.load(f)
 
+# coords = []
+# for key in songpoints.keys():
+#     coords.append(helper.string2arrPoint(key))
+# coords = np.array(coords)
+
 coords = []
-for key in songpoints.keys():
-    coords.append(helper.string2arrPoint(key))
+for i in range(len(songdata)):
+    coords.append(songdata.iloc[i][3:].tolist())
 coords = np.array(coords)
+
 
 model = NearestNeighbors()
 model.fit(coords)
@@ -52,7 +58,7 @@ def playlist():
 
     if song_orig != None and song_dest != None:
         songs, smooth, points = prodplay.makePlaylist(
-            songdata, songpoints, coords, song_orig, song_dest, n_songs, model, startIdx = 3
+            songdata, coords, song_orig, song_dest, n_songs, model, si = 3
         )
 
         list_arr = [{
@@ -76,10 +82,33 @@ def playlist():
 
         # list_graph = url_for('static', filename='playlist_{}.png'.format(test_time))
 
+    orig = dest = None
+    if song_orig != None:
+        i = 0
+        while i < len(song_arr):
+            if song_arr[i]['id'] == song_orig: break
+            else: i += 1
+        if i < len(song_arr):
+            orig = song_arr[i]
+    
+    if song_dest != None:
+        i = 0
+        while i < len(song_arr):
+            if song_arr[i]['id'] == song_dest: break
+            else: i += 1
+        if i < len(song_arr):
+            dest = song_arr[i]    
+
+    if n_songs is None:
+        n_songs = 10
+
     return render_template(
         'index.html', 
         graph=url_for('static', filename='test1.png'), 
         song_arr=song_arr,
         list_arr=list_arr,
-        list_graph=list_graph
+        list_graph=list_graph,
+        orig = orig,
+        dest = dest,
+        n = n_songs
     )

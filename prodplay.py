@@ -12,21 +12,27 @@ def filter_candiates(coords, pointlist, candidates):
 
     for i in candidates:
         unique = True
-        for j in range(len(pointlist)):
-            # print("Checking {} vs {} -> {}".format(coords[i], pointlist[j], abs(coords[i][0] - pointlist[j][0]) < .0000001 and abs(coords[i][1] - pointlist[j][1]) < .0000001))
-            if (abs(coords[i][0] - pointlist[j][0]) < .0000001 and abs(coords[i][1] - pointlist[j][1]) < .0000001):
+        j = 0
+        while unique and j < len(pointlist):
+            bad = True
+            k = 0
+            while k < len(coords[i]) and bad:
+                if (abs(coords[i][k] - pointlist[j][k]) > .0000001):
+                    bad = False
+                k = k + 1
+            if bad:
                 unique = False
+            j = j + 1
+        
         if (unique == True):
             filtered.append(coords[i].tolist())
     
     return np.array(filtered)
 
 def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model, neighbors = 7):
-    distance = [destination[i] - current[i] + .0000001 for i in range(2)]
+    distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
-    target = [[current[i] + (distance[i]/remaining) for i in range(2)]]
-
-    # print("C: {}, D: {}, dist = {}, r: {}, T: {}".format(current, destination, distance, remaining, target))
+    target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
     candidates = []
     multiplier = 1
@@ -50,22 +56,20 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
     choice = np.argmin(candScores)
     return candidates[choice].tolist(), candSmooth[choice]
 
-def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, startIdx = 0):
-    # n_songs_reqd = n_songs_reqd * 2
+def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0):
     smoothlist = np.empty(0)
     songlist = np.empty(0)
     pointlist = []
 
-    origPoint = [songdata.loc[origin][startIdx + 0], songdata.loc[origin][startIdx + 1]]
-    destPoint = [songdata.loc[destination][startIdx + 0], songdata.loc[destination][startIdx + 1]]
+    origPoint = songdata.loc[origin][si:].tolist()
+    destPoint = songdata.loc[destination][si:].tolist()
 
     songlist = np.append(songlist, origin)
     pointlist.append(origPoint)
     currPoint = origPoint
 
-    print(currPoint, destPoint)
-
     while ((len(pointlist) < n_songs_reqd) and currPoint != destPoint):
+        # print(len(pointlist), end="\r")
         
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
@@ -77,10 +81,23 @@ def makePlaylist(songdata, songpoints, coords, origin, destination, n_songs_reqd
             else:
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 
-        nextString = helper.arr2stringPoint(nextPoint)
-
-        if (helper.arr2stringPoint(nextPoint) != helper.arr2stringPoint(destPoint)):
-            nextSong = songpoints[nextString][random.randint(0, len(songpoints[nextString])-1)]
+        if (nextPoint != destPoint):
+            i = 0
+            found = False
+            while i < len(songdata) and not found:
+                j = 0
+                good = True
+                while j < len(nextPoint) and good:
+                    if (nextPoint[j] != songdata.iloc[i][j+si]):
+                        good = False
+                    j = j + 1
+                
+                if good:
+                    found = True
+                else:
+                    i = i + 1
+            
+            nextSong = songdata.index.values[i]
         else:
             nextSong = destination
 

@@ -9,163 +9,43 @@ import pprint
 import algos
 import helper
 import prodplay
-import v_prodplay
 
-def get_points(songpoints, used, target = 1):
+def get_points(songdata, used, target = 1, si = 0):
     dist = 0.00
 
     while (dist < (0.95 * target) or dist > (1.05 * target)):
-        orig = list(songpoints)[random.randint(0, len(songpoints)-1)]
-        while orig in used:
-            orig = list(songpoints)[random.randint(0, len(songpoints)-1)]
+        orig = list(songdata.index.values)[random.randint(0, len(songdata)-1)]
+        dest = list(songdata.index.values)[random.randint(0, len(songdata)-1)]
+
+        origPt = songdata.loc[orig][si:]
+        destPt = songdata.loc[dest][si:]
         
-        dest = list(songpoints)[random.randint(0, len(songpoints)-1)]
-        while dest in used:
-            dest = list(songpoints)[random.randint(0, len(songpoints)-1)]
+        while (orig, dest) in used:
+            orig = songdata.iloc[random.randint(0, len(songdata)-1)]
+            dest = songdata.iloc[random.randint(0, len(songdata)-1)]
 
-        origArr = helper.string2arrPoint(orig)
-        destArr = helper.string2arrPoint(dest)
-        dist = np.sqrt(np.square(destArr[1] - origArr[1]) + np.square(destArr[0] - origArr[0]))
+        dist = np.sqrt(np.square(destPt[1] - origPt[1]) + np.square(destPt[0] - origPt[0]))
 
-    used.append(orig)
-    used.append(dest)
+    used.append((orig, dest))
+    return orig, dest
 
-    origPt = songpoints[orig][random.randint(0, len(songpoints[orig])-1)]
-    destPt = songpoints[dest][random.randint(0, len(songpoints[dest])-1)]
-   
-    print("\nEuclidean distance: {}".format(dist))
-    print(origPt, destPt)
-    return origPt, destPt
-
-def test_vector(model, songdata, songpoints, coords):
-    the_dist = int(input("Distance: "))
-    num_tests = int(input("Number of tests: "))
-    maxlength = int(input("Max length: "))
-    minlength = 2
-    # neighbor_counts = [i * int(np.sqrt(len(coords)) / 2) for i in range(3,8)]
-    test_time = str(time.strftime("%y-%m-%d_%H%M"))
-    helper.makeDir('graph-results/{}'.format(test_time))
-    total_smoothnesses = [[],[],[]]
-    used_points = ["-1, -1"]
-
-    for c in range(num_tests):
-        smoothnesses = []
-        helper.makeDir('graph-results/{}/{}'.format(test_time, c))
-        user_orig, user_dest = get_points(songpoints, used_points, the_dist)
-        print(songdata.loc[user_orig])
-        print(songdata.loc[user_dest])
-
-        smoothies = [[],[],[]]
-        r_pointlists = []
-        v_pointlists = []
-
-        for n_songs_reqd in range(minlength, minlength + maxlength):
-            r_songlist, r_smoothie, r_pointlist = prodplay.makePlaylist(
-                songdata, songpoints, coords, 
-                user_orig, user_dest, n_songs_reqd, 
-                model, neighbors = 10
-            )
-
-            v_songlist, v_smoothie, v_pointlist = v_prodplay.makePlaylist(
-                songdata, coords, 
-                user_orig, user_dest, n_songs_reqd, 
-                model, neighbors = 10
-            ) 
-
-            smoothies[0].append(len(r_pointlist))
-            smoothies[1].append(r_smoothie)
-            smoothies[2].append(v_smoothie)
-
-            r_pointlist = np.transpose(r_pointlist)
-            v_pointlist = np.transpose(v_pointlist)
-            r_pointlists.append(r_pointlist)
-            v_pointlists.append(v_pointlist)
-
-            helper.makeDir('graph-results/{}/{}/{}'.format(test_time, c, n_songs_reqd))
-            print("{}:\t{}\t{}".format(n_songs_reqd, r_smoothie, v_smoothie))
-
-            # helper.graph('valence', 'arousal', r_pointlist, data_dim = 2, marker='.',
-            #     file = 'graph-results/{}/{}/{}/raster.png'.format(test_time, c, n_songs_reqd),
-            #     title = "Path ({} songs) from ({}, {}) to ({}, {})".format(
-            #         len(r_songlist),
-            #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-            #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-            #     )
-            # )
-
-            # helper.graph('valence', 'arousal', v_pointlist, data_dim = 2, marker='.',
-            #     file = 'graph-results/{}/{}/{}/vector.png'.format(test_time, c, n_songs_reqd),
-            #     title = "Path ({} songs) from ({}, {}) to ({}, {})".format(
-            #         len(v_songlist),
-            #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-            #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-            #     )
-            # )
-
-        # helper.graph('valence', 'arousal', r_pointlists, data_dim = 2, line_count = len(r_pointlists),
-        #     file = 'graph-results/{}/{}/all-raster.png'.format(test_time, c),
-        #     title = "Non-Vector Paths ({} to {} songs, K={}) from ({}, {}) to ({}, {})".format(
-        #         minlength, minlength + maxlength - 1,  
-        #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-        #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
-        #     )
-        # )
-
-        # helper.graph('valence', 'arousal', v_pointlists, data_dim = 2, line_count = len(v_pointlists),
-        #     file = 'graph-results/{}/{}/all-vector.png'.format(test_time, c),
-        #     title = "Vectorized Paths ({} to {} songs, K={}) from ({}, {}) to ({}, {})".format(
-        #         minlength, minlength + maxlength - 1,  
-        #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-        #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
-        #     )
-        # )
-
-        # helper.graph('length of playlist', 'smoothness of path', [[smoothies[0], smoothies[1]], [smoothies[0], smoothies[2]]], 
-        #     data_dim = 2, line_count = 2, legend = ["Non-Vector", "Vector"],
-        #     file = 'graph-results/{}/{}/comparison.png'.format(test_time, c),
-        #     title = "MSE Vector Comparison from ({}, {}) to ({}, {})".format(
-        #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-        #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-        #     )
-        # )
-
-        smoothnesses.append(smoothies)
-
-        if (total_smoothnesses != [[],[],[]]):
-            for k in range(1,3):
-                for i in range(len(smoothnesses[k])):
-                    for j in range(len(smoothnesses[k][i])):
-                        total_smoothnesses[k][i][j] += smoothnesses[k][i][j]
-        else:
-            total_smoothnesses = smoothnesses
-
-    for k in range(1,3):    
-        for i in range(len(total_smoothnesses[k])):
-            for j in range(len(total_smoothnesses[k][i])):
-                total_smoothnesses[k][i][j] /= num_tests
-
-    # helper.graph('length of playlist', 'smoothness of path', total_smoothnesses, 
-    #     data_dim = 2, line_count = len(total_smoothnesses), legend = ["Non-Vector", "Vector"],
-    #     file = 'graph-results/{}/average.png'.format(test_time),
-    #     title = "MSE Vector Comparisons Averaged over the Past {} Runs".format(num_tests)
-    # )
-
-def test_lengths(model, songdata, songpoints, coords): 
+def test_lengths(model, songdata, coords): 
     user_orig       = 762954
     user_dest       = 1157536
     neighbors       = 10
     n_songs_reqd    = [i for i in range(2, int(input("Max. Playlist Length: ")))]
     avgDists        = []
     listLengths     = []
+    si              = 1
 
     print(songdata.loc[user_orig])
     print(songdata.loc[user_dest])
 
     for n in n_songs_reqd:
         newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-            songdata, songpoints, coords, 
+            songdata, coords, 
             user_orig, user_dest, n, 
-            model
+            model, si=si
         )
 
         minDist = 20
@@ -196,8 +76,8 @@ def test_lengths(model, songdata, songpoints, coords):
         file="graph-results/{}/listLengths.png".format(test_time),
         title = "Playlist Length Comparison (K={}) from ({},{}) to ({},{})".format(
             neighbors,
-            np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-            np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+            np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+            np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
         )
     )
 
@@ -205,28 +85,28 @@ def test_lengths(model, songdata, songpoints, coords):
         file="graph-results/{}/avgDists.png".format(test_time),
         title = "Average Inter-Point Distances (K={}) from ({},{}) to ({},{})".format(
             neighbors,
-            np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-            np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+            np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+            np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
         )
     )
 
-# TODO: make tests of neighbors & distance vs. max playlist length
-def test_neighbors(model, songdata, songpoints, coords):
+def test_neighbors(model, songdata, coords):
     the_dist = int(input("Distance: "))
     num_tests = int(input("Number of tests: "))
     maxlength = int(input("Max length: "))
     minlength = 2
+    si = 1
     # neighbor_counts = [i * int(np.sqrt(len(coords)) / 2) for i in range(3,8)]
     neighbor_counts = [i for i in range(5, 30, 2)]
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
     helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
-    used_points = ["-1, -1"]
+    used_points = []
 
     for c in range(num_tests):
         smoothnesses = []
         helper.makeDir('graph-results/{}/{}'.format(test_time, c))
-        user_orig, user_dest = get_points(songpoints, used_points, the_dist)
+        user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
         print(songdata.loc[user_orig])
         print(songdata.loc[user_dest])
 
@@ -240,9 +120,9 @@ def test_neighbors(model, songdata, songpoints, coords):
             # for loop for testing different amounts of points in between
             for n_songs_reqd in range(minlength, minlength + maxlength):
                 songlist, smoothie, pointlist = prodplay.makePlaylist(
-                    songdata, songpoints, coords, 
+                    songdata, coords, 
                     user_orig, user_dest, n_songs_reqd, 
-                    model, neighbors=neighbor_counts[i]
+                    model, neighbors=neighbor_counts[i], si=si
                 ) 
 
                 print("{}: {}".format(len(songlist), smoothie))
@@ -252,14 +132,14 @@ def test_neighbors(model, songdata, songpoints, coords):
                 songlists.append(songlist)
                 pointlists.append(pointlist)
 
-                helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
-                    file = 'graph-results/{}/{}/{}/{}.png'.format(test_time, c, neighbor_counts[i], len(songlist)),
-                    title = "Path ({} songs, K={}) from ({}, {}) to ({}, {})".format(
-                        len(songlist), neighbor_counts[i],
-                        np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-                        np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-                    )
-                )
+                # helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
+                #     file = 'graph-results/{}/{}/{}/{}.png'.format(test_time, c, neighbor_counts[i], len(songlist)),
+                #     title = "Path ({} songs, K={}) from ({}, {}) to ({}, {})".format(
+                #         len(songlist), neighbor_counts[i],
+                #         np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                #         np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
+                #     )
+                # )
 
             smoothest = np.argmin(smoothies[1])
             print(smoothest + minlength)
@@ -268,16 +148,16 @@ def test_neighbors(model, songdata, songpoints, coords):
                 file = 'graph-results/{}/{}/{}/all.png'.format(test_time, c, neighbor_counts[i]),
                 title = "Paths ({} to {} songs, K={}) from ({}, {}) to ({}, {})".format(
                     minlength, minlength + maxlength - 1, neighbor_counts[i],  
-                    np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-                    np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
+                    np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                    np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2)
                 )
             )
             helper.graph('valence', 'arousal', pointlists[smoothest], data_dim = 2, marker='.',
                 file = 'graph-results/{}/{}/{}/smoothest.png'.format(test_time, c, neighbor_counts[i]),
                 title = "Smoothest Playlist Path ({} songs) using {} Neighbors from ({}, {}) to ({}, {})".format(
                     smoothest + minlength, neighbor_counts[i],
-                    np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-                    np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
+                    np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                    np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2)
                 )
             )
             
@@ -296,8 +176,8 @@ def test_neighbors(model, songdata, songpoints, coords):
             data_dim = 2, line_count = len(smoothnesses), legend = neighbor_counts,
             file = 'graph-results/{}/{}/comparison.png'.format(test_time, c),
             title = "MSE Neighbor Comparison from ({}, {}) to ({}, {})".format(
-                np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-                np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
+                np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
             )
         )
 
@@ -318,17 +198,16 @@ def test_neighbors(model, songdata, songpoints, coords):
         title = "MSE Neighbor Comparisons Averaged over the Past {} Runs".format(num_tests)
     )
 
-def test_dists(model, songdata, songpoints, coords):
+def test_dists(model, songdata, coords):
     the_dist = int(input("Distance: "))
     maxlength = int(input("Max length: "))
     minlength = 2
+    si = 1
     test_time = str(time.strftime("%y-%m-%d_%H%M"))
     helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
-    used_points = ["-1, -1"]
-    # user_orig, user_dest = get_points(songpoints, used_points, the_dist)
-    user_orig       = 762954
-    user_dest       = 1157536
+    used_points = []
+    user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
     smoothnesses = []
     
     scores = [
@@ -352,10 +231,10 @@ def test_dists(model, songdata, songpoints, coords):
         # for loop for testing different amounts of points in between
         for n_songs_reqd in range(minlength, minlength + maxlength):
             songlist, smoothie, pointlist = prodplay.makePlaylist(
-                songdata, songpoints, coords, 
+                songdata, coords, 
                 user_orig, user_dest, n_songs_reqd, 
                 model, score = scores[0][i],
-                neighbors = 10
+                si=1
             ) 
 
             print("{}: {}".format(len(songlist), smoothie))
@@ -365,14 +244,14 @@ def test_dists(model, songdata, songpoints, coords):
             songlists.append(songlist)
             pointlists.append(pointlist)
 
-            # helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
-            #     file = 'graph-results/{}/{}/{}.png'.format(test_time, scores[1][i], len(songlist)),
-            #     title = "Playlist Path ({} songs using {}) from ({}, {}) to ({}, {})".format(
-            #         len(songlist), scores[1][i],
-            #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-            #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-            #     )
-            # ) 
+            helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
+                file = 'graph-results/{}/{}/{}.png'.format(test_time, scores[1][i], len(songlist)),
+                title = "Playlist Path ({} songs using {}) from ({}, {}) to ({}, {})".format(
+                    len(songlist), scores[1][i],
+                    np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                    np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
+                )
+            ) 
 
         smoothest = np.argmin(smoothies[1])
         print(smoothest + minlength)
@@ -383,18 +262,18 @@ def test_dists(model, songdata, songpoints, coords):
             title = "Playlists Generated by {}".format(
                 # minlength, minlength + maxlength - 1, 
                 scores[1][i],  
-                # np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-                # np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
+                # np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                # np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2)
             )
         )
-        # helper.graph('valence', 'arousal', pointlists[smoothest], data_dim = 2, marker='.',
-        #     file = 'graph-results/{}/{}/smoothest.png'.format(test_time, scores[1][i]),
-        #     title = "Smoothest Playlist Path ({} songs) using {} from ({}, {}) to ({}, {})".format(
-        #         smoothest + minlength, scores[1][i],
-        #         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-        #         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2)
-        #     )
-        # )
+        helper.graph('valence', 'arousal', pointlists[smoothest], data_dim = 2, marker='.',
+            file = 'graph-results/{}/{}/smoothest.png'.format(test_time, scores[1][i]),
+            title = "Smoothest Playlist Path ({} songs) using {} from ({}, {}) to ({}, {})".format(
+                smoothest + minlength, scores[1][i],
+                np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+                np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2)
+            )
+        )
         
     # # PUT THE "smoothest path" ON A SPOTIFY PLAYLIST
         # track_ids = []
