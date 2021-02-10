@@ -12,10 +12,11 @@ import time
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
-
 app = Flask(__name__)
 
-songdata = pd.read_csv("data/deezer/deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7])
+songdata = pd.read_csv("data/deezer/deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
+has_sp_id = [songdata.iloc[i][0] != "" for i in range(len(songdata))]
+songdata = songdata[has_sp_id]
 
 songpoints = {}
 with open("data/deezer/deezer-points.json") as f:
@@ -26,11 +27,19 @@ with open("data/deezer/deezer-points.json") as f:
 #     coords.append(helper.string2arrPoint(key))
 # coords = np.array(coords)
 
+info = helper.loadConfig("./config.json")
+sp = helper.Spotify(
+    info["auth"]["client_id"], 
+    info["auth"]["client_secret"], 
+    info["auth"]["redirect_uri"], 
+    info["auth"]["username"], 
+    info["main"]["scope"]
+)
+
 coords = []
 for i in range(len(songdata)):
     coords.append(songdata.iloc[i][3:].tolist())
 coords = np.array(coords)
-
 
 model = NearestNeighbors()
 model.fit(coords)
@@ -49,7 +58,7 @@ def hello_world():
 
 @app.route('/playlist', methods=['GET', 'POST'])
 def playlist():
-    list_arr = list_graph = song_orig = song_dest = n_songs = None
+    list_arr = list_graph = song_orig = song_dest = n_songs = sp_link = None
 
     if len(request.args) == 3:
         song_orig = int(request.args['song_orig'])
@@ -82,6 +91,13 @@ def playlist():
 
         # list_graph = url_for('static', filename='playlist_{}.png'.format(test_time))
 
+        track_ids = []
+        for i in range(len(songs)):
+            track_ids.append(songdata.loc[songs[i]][0])
+        print(track_ids)
+        title = "Flask Playlist"
+        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, info["auth"]["username"], title, track_ids, False))
+
     orig = dest = None
     if song_orig != None:
         i = 0
@@ -110,5 +126,6 @@ def playlist():
         list_graph=list_graph,
         orig = orig,
         dest = dest,
-        n = n_songs
+        n = n_songs,
+        sp_link = sp_link
     )

@@ -7,10 +7,12 @@ from spotipy.oauth2 import SpotifyClientCredentials
 import sys
 import json
 import numpy as np
+import pprint
 
-def loadConfig():
+def loadConfig(configFile=None):
     info = {}
-    configFile = sys.argv[1] if (len(sys.argv) > 1) else input("Please enter the path of your config file: ")
+    if configFile is None:
+        configFile = sys.argv[1] if (len(sys.argv) > 1) else input("Please enter the path of your config file: ")
     while not os.path.exists(configFile) or not configFile.endswith(".json"):
         configFile = input("Config JSON file not found! Please enter a valid path: ")
     with open(configFile) as f:
@@ -50,7 +52,9 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope):
 
 def makeSpotifyList(sp, username, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(username, title, public=public)
+    pprint.pprint(result_playlist)
     sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
+    return result_playlist['id']
 
 def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False):
     plt.figure(figsize=(width*unit_size,height*unit_size))

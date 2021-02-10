@@ -50,17 +50,17 @@
 
     {% if list_graph %}
         <img src={{list_graph}} style="width:500px;height:500px;" />
-    {% else %}
-        <p>No graph.</p>
     {% endif %}
     
+    {% if sp_link %}
+        <h4>You can find the playlist on Spotify <a href={{sp_link}} target="_blank">here</a>.</h4>
+    {% endif %}
+
     {% if list_arr %}
         <ol>
             {% for song in list_arr %}
                 <li> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</il>
             {% endfor %}
         </ol>
-    {% else %}
-        <p>No playlist made.</p>
     {% endif %}
 </body>
