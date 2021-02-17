@@ -5,9 +5,6 @@ graph-results/
 data/
 fonts/
 analysis/
-*.csv
-*.json
-*.png
 
 #ignore python files
 __pycache__
