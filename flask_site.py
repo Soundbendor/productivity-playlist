@@ -9,7 +9,6 @@ import prodplay
 import sys
 import time
 
-sys.setdefaultencoding('utf-8')
 app = Flask(__name__)
 
 songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
