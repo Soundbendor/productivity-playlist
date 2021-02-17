@@ -9,7 +9,7 @@ import prodplay
 import sys
 import time
 
-app = Flask(__name__)
+app = Flask("prodplay")
 
 songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
 has_sp_id = [songdata.iloc[i][0] != "" for i in range(len(songdata))]
