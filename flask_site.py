@@ -5,7 +5,6 @@ import pandas as pd
 from flask import Flask, render_template, url_for, request, redirect
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
-import pprint
 import prodplay
 import sys
 import time
