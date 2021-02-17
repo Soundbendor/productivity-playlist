@@ -14,12 +14,12 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 app = Flask(__name__)
 
-songdata = pd.read_csv("data/deezer/deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
+songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
 has_sp_id = [songdata.iloc[i][0] != "" for i in range(len(songdata))]
 songdata = songdata[has_sp_id]
 
 songpoints = {}
-with open("data/deezer/deezer-points.json") as f:
+with open("deezer-points.json") as f:
     songpoints = json.load(f)
 
 # coords = []
