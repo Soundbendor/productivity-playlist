@@ -9,7 +9,6 @@ import prodplay
 import sys
 import time
 
-reload(sys)
 sys.setdefaultencoding('utf-8')
 app = Flask(__name__)
 
