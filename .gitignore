@@ -5,7 +5,6 @@ graph-results/
 data/
 fonts/
 analysis/
-.vscode
 
 #ignore python files
 __pycache__
