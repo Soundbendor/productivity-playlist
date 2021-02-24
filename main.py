@@ -33,10 +33,8 @@ sp = helper.Spotify(
 )
 songdata = pd.read_csv(
     info["main"]["songdata"], 
-    header=0, index_col=0, usecols=twod
-)
-has_sp_id = [(songdata.iloc[i][0] != None) for i in range(len(songdata))]
-songdata = songdata[has_sp_id]
+    header=0, index_col=0, usecols=nd
+).dropna()
 
 # songpoints = {}
 # with open(info["main"]["songpoints"]) as f:
@@ -58,7 +56,7 @@ print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
 user_orig       = 3135555
 user_dest       = 3135561
 neighbors       = 10
-n_songs_reqd    = 20
+n_songs_reqd    = 12
 
 # none_count = 0
 # nan_count = 0
@@ -80,10 +78,10 @@ n_songs_reqd    = 20
 model = NearestNeighbors()
 model.fit(coords)
 
-# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-#     songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
-# )
-# newpoints = np.transpose(newpoints)
+newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+    songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
+)
+newpoints = np.transpose(newpoints)
 # labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
 # pprint.pprint(labels)
 
@@ -96,12 +94,12 @@ model.fit(coords)
 #     )
 # )
 
-# track_ids = []
-# for i in range(len(newsongs)):
-#     track_ids.append(songdata.loc[newsongs[i]][0])
-# pprint.pprint(track_ids)
-# title = "Genre-Based Playlist"
-# helper.makeSpotifyList(sp, info["auth"]["username"], title, track_ids, False)
+track_ids = []
+for i in range(len(newsongs)):
+    track_ids.append(songdata.loc[newsongs[i]][0])
+pprint.pprint(track_ids)
+title = "Genre-Based Playlist"
+helper.makeSpotifyList(sp, info["auth"]["username"], title, track_ids, False)
 
 # tests.test_lengths(model, songdata, coords)
 # tests.test_neighbors(model, songdata, coords)
