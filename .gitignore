@@ -12,3 +12,4 @@ __pycache__
 
 #ignore venv files
 venv/
+Miniconda*
