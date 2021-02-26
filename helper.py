@@ -43,17 +43,19 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope):
     client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     try:
         token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
-        sp = spotipy.Spotify(auth= token)
+        print("token: {}".format(token))
+        sp = spotipy.Spotify(auth=token)
     except:
         print('Token is not accessible for ' + username)
 
     sp = spotipy.Spotify(auth=token, client_credentials_manager=client_credentials_manager)    
+    print(sp.me())
     return sp
 
-def makeSpotifyList(sp, username, title, track_ids, public = False):
-    result_playlist = sp.user_playlist_create(username, title, public=public)
+def makeSpotifyList(sp, title, track_ids, public = False):
+    result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
     pprint.pprint(result_playlist)
-    sp.user_playlist_add_tracks(username, result_playlist['id'], track_ids)
+    sp.user_playlist_add_tracks(sp.me()["id"], result_playlist['id'], track_ids)
     return result_playlist['id']
 
 def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False):

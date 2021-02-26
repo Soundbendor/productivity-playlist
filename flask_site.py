@@ -8,12 +8,12 @@ from sklearn.neighbors import NearestNeighbors
 import prodplay
 import sys
 import time
+import pprint
 
 app = Flask("prodplay")
 
-songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7], keep_default_na=False)
-has_sp_id = [songdata.iloc[i][0] != "" for i in range(len(songdata))]
-songdata = songdata[has_sp_id]
+songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7]).dropna()
+print(len(songdata))
 
 songpoints = {}
 with open("deezer-points.json") as f:
@@ -68,11 +68,12 @@ def playlist():
         )
 
         list_arr = [{
-            "title": songdata.loc[i][1],
-            "artist": songdata.loc[i][2],
+            "title": songdata.loc[i][2],
+            "artist": songdata.loc[i][1],
             "arousal": np.around(songdata.loc[i][3], decimals=2),
             "valence": np.around(songdata.loc[i][4], decimals=2)
         } for i in songs]
+        pprint.pprint(list_arr)
 
         # points = np.transpose(points)
 
@@ -88,12 +89,10 @@ def playlist():
 
         # list_graph = url_for('static', filename='playlist_{}.png'.format(test_time))
 
-        track_ids = []
-        for i in range(len(songs)):
-            track_ids.append(songdata.loc[songs[i]][0])
-        print(track_ids)
-        title = "Flask Playlist"
-        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, info["auth"]["username"], title, track_ids, False))
+        track_ids = [songdata.loc[i][0] for i in songs]
+        pprint.pprint(track_ids)
+        title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
+        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, title, track_ids, False))
 
     orig = dest = None
     if song_orig != None:

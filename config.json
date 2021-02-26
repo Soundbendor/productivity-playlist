@@ -1,9 +1,9 @@
 {
     "auth": {
-        "client_id": "2a285d92069147f8a7e59cec1d0d9bb6",
-        "client_secret": "1eebc7035f74489db8f5597ce4afb863",
+        "client_id": "d997872320da45e19f5ac39c837bceab",
+        "client_secret": "d7e149341be04e608dcb24ea6622dd67",
         "redirect_uri": "https://www.google.com/",
-        "username": "eonkid46853",
+        "username": "soundbendor",
         "scope-main": "playlist-modify-public,playlist-modify-private"
     },
     "infoconvert": {

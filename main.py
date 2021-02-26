@@ -98,8 +98,8 @@ track_ids = []
 for i in range(len(newsongs)):
     track_ids.append(songdata.loc[newsongs[i]][0])
 pprint.pprint(track_ids)
-title = "Genre-Based Playlist"
-helper.makeSpotifyList(sp, info["auth"]["username"], title, track_ids, False)
+title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
+helper.makeSpotifyList(sp, title, track_ids, True)
 
 # tests.test_lengths(model, songdata, coords)
 # tests.test_neighbors(model, songdata, coords)
