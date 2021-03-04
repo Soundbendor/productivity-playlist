@@ -1,27 +1,37 @@
 import tensorflow as tf
 import pandas as pd
 import neptune
+import pathlib
+import numpy as np
+import pprint
 
+from sklearn.preprocessing import MinMaxScaler
 from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 
-api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
 frames_path = "./data/affsample"
-points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
+api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
+image_dir   = pathlib.Path(frames_path)
 
-batch_size = 32
-img_height = 360
-img_width  = 640
-img_count  = len(points_pd)
-epochs     = 10
+points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
+scaler = MinMaxScaler(feature_range=(-1,1)) 
+grid = np.transpose(np.array([points_pd.iloc[:,0], points_pd.iloc[:,1]]))
+labels = scaler.fit_transform(grid)
+
+batch_size  = 32
+img_height  = 360
+img_width   = 640
+img_count   = len(points_pd)
+epochs      = 10
+dropout     = 0.2
 
 PARAMS = {
-    "dataset_name" : "affsample",
+    "dataset_name" : frames_path[7:],
     "img_count"    : img_count,
-    "batch_size"   : 32,
+    "batch_size"   : batch_size,
     "epochs"       : epochs,
-    "dropout"      : 0.2
+    "dropout"      : dropout
 }
 
 class NeptuneMonitor(tf.keras.callbacks.Callback):
@@ -35,19 +45,19 @@ neptune.init("Soundbendor/playlist", api_token=api_token)
 exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
 neptune_callback = NeptuneMonitor()
 
-points = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(img_count)]
+def process_path(file_path):
+    img = tf.io.read_file(file_path)
+    img = tf.io.decode_png(img, channels=3)
+    img = tf.image.convert_image_dtype(img, tf.float32)
+    img = tf.image.resize(img, [img_width, img_height])
+    return img
 
-train_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    frames_path, labels=points, class_names=None, seed=123, validation_split=0.2, subset="training", color_mode='rgb', batch_size=batch_size, image_size=(img_height, img_width) 
-)
-
-val_ds = tf.keras.preprocessing.image_dataset_from_directory(
-    frames_path, labels=points, class_names=None, seed=123, validation_split=0.2, subset="validation", color_mode='rgb', batch_size=batch_size, image_size=(img_height, img_width) 
-)
-
-AUTOTUNE = tf.data.AUTOTUNE
-train_ds = train_ds.cache().prefetch(buffer_size=AUTOTUNE)
-val_ds = val_ds.cache().prefetch(buffer_size=AUTOTUNE)
+AUTOTUNE    = tf.data.AUTOTUNE
+image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
+label_ds    = tf.data.Dataset.from_tensor_slices(labels)
+ds          = tf.data.Dataset.zip((image_ds, label_ds))
+train_ds    = ds.skip(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
 
 data_augmentation = keras.Sequential([
     layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
@@ -64,7 +74,7 @@ model = tf.keras.Sequential([
     layers.MaxPooling2D(),
     layers.Conv2D(64, 3, padding='same', activation='relu'),
     layers.MaxPooling2D(),
-    layers.Dropout(0.2),
+    layers.Dropout(dropout),
     layers.Flatten(),
     layers.Dense(128, activation='relu'),
     layers.Dense(2)
@@ -76,7 +86,7 @@ model.compile(
   metrics=['accuracy'])
 
 history = model.fit(
-  train_ds, 
+  train_ds,
   validation_data=val_ds,
   epochs=epochs,
   callbacks=[neptune_callback]
