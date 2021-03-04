@@ -49,7 +49,7 @@ def process_path(file_path):
     img = tf.io.read_file(file_path)
     img = tf.io.decode_png(img, channels=3)
     img = tf.image.convert_image_dtype(img, tf.float32)
-    img = tf.image.resize(img, [img_width, img_height])
+    img = tf.image.resize(img, [img_height, img_width])
     return img
 
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
@@ -59,26 +59,28 @@ ds          = tf.data.Dataset.zip((image_ds, label_ds))
 train_ds    = ds.skip(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
 val_ds      = ds.take(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
 
-data_augmentation = keras.Sequential([
-    layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
-    layers.experimental.preprocessing.RandomRotation(0.1),
-    # layers.experimental.preprocessing.RandomZoom(0.1),
-])
+mirrored_strategy = tf.distribute.MirroredStrategy()
+with mirrored_strategy.scope():
+    data_augmentation = keras.Sequential([
+        layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
+        layers.experimental.preprocessing.RandomRotation(0.1),
+        # layers.experimental.preprocessing.RandomZoom(0.1),
+    ])
 
-model = tf.keras.Sequential([
-    # data_augmentation,
-    layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
-    layers.Conv2D(16, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(32, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Conv2D(64, 3, padding='same', activation='relu'),
-    layers.MaxPooling2D(),
-    layers.Dropout(dropout),
-    layers.Flatten(),
-    layers.Dense(128, activation='relu'),
-    layers.Dense(2)
-])
+    model = tf.keras.Sequential([
+        # data_augmentation,
+        layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
+        layers.Conv2D(16, 3, padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Conv2D(32, 3, padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Conv2D(64, 3, padding='same', activation='relu'),
+        layers.MaxPooling2D(),
+        layers.Dropout(dropout),
+        layers.Flatten(),
+        layers.Dense(128, activation='relu'),
+        layers.Dense(2)
+    ])
 
 model.compile(
   optimizer='adam',
