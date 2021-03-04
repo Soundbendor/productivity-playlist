@@ -15,7 +15,7 @@ api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJ
 image_dir   = pathlib.Path(frames_path)
 
 points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
-scaler = MinMaxScaler(feature_range=(-1,1)) 
+scaler = MinMaxScaler(feature_range=(0,1)) 
 grid = np.transpose(np.array([points_pd.iloc[:,0], points_pd.iloc[:,1]]))
 labels = scaler.fit_transform(grid)
 
