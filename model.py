@@ -64,16 +64,16 @@ val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(b
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
 
+data_augmentation = keras.Sequential([
+    layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
+    layers.experimental.preprocessing.RandomRotation(0.1),
+    # layers.experimental.preprocessing.RandomZoom(0.1),
+])
+
 mirrored_strategy = tf.distribute.MirroredStrategy()
 with mirrored_strategy.scope():
-    data_augmentation = keras.Sequential([
-        # layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
-        # layers.experimental.preprocessing.RandomRotation(0.1),
-        # layers.experimental.preprocessing.RandomZoom(0.1),
-    ])
-
     model = tf.keras.Sequential([
-        # data_augmentation,
+        data_augmentation,
         layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
         layers.Conv2D(16, 3, padding='same', activation='relu'),
         layers.MaxPooling2D(),
