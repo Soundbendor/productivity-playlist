@@ -25,13 +25,15 @@ img_width   = 640
 img_count   = len(points_pd)
 epochs      = 20
 dropout     = 0.2
+val_frac    = 5
 
 PARAMS = {
     "dataset_name" : frames_path[7:],
     "img_count"    : img_count,
     "batch_size"   : batch_size,
     "epochs"       : epochs,
-    "dropout"      : dropout
+    "dropout"      : dropout,
+    "split_frac"   : val_frac
 }
 
 class NeptuneMonitor(tf.keras.callbacks.Callback):
@@ -55,9 +57,9 @@ def process_path(file_path):
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-ds          = tf.data.Dataset.zip((image_ds, label_ds))
-train_ds    = ds.skip(img_count // 5).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(img_count // 5).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
+ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=1000)
+train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=1000).prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=1000).prefetch(buffer_size=AUTOTUNE)
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
