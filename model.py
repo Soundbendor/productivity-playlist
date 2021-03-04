@@ -10,7 +10,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 
-frames_path = "./data/affsample"
+frames_path = "./data/affsample2"
 api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
 image_dir   = pathlib.Path(frames_path)
 
@@ -23,7 +23,7 @@ batch_size  = 32
 img_height  = 360
 img_width   = 640
 img_count   = len(points_pd)
-epochs      = 10
+epochs      = 20
 dropout     = 0.2
 
 PARAMS = {
@@ -56,14 +56,17 @@ AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
 ds          = tf.data.Dataset.zip((image_ds, label_ds))
-train_ds    = ds.skip(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
+train_ds    = ds.skip(img_count // 5).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(img_count // 5).batch(batch_size).cache().prefetch(buffer_size=AUTOTUNE)
+
+print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
+print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
 
 mirrored_strategy = tf.distribute.MirroredStrategy()
 with mirrored_strategy.scope():
     data_augmentation = keras.Sequential([
-        layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
-        layers.experimental.preprocessing.RandomRotation(0.1),
+        # layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
+        # layers.experimental.preprocessing.RandomRotation(0.1),
         # layers.experimental.preprocessing.RandomZoom(0.1),
     ])
 
