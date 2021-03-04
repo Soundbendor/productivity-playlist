@@ -52,7 +52,7 @@ def process_path(file_path):
     img = tf.image.resize(img, [img_width, img_height])
     return img
 
-AUTOTUNE    = tf.data.AUTOTUNE
+AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
 ds          = tf.data.Dataset.zip((image_ds, label_ds))
@@ -62,11 +62,11 @@ val_ds      = ds.take(7000).batch(batch_size).cache().prefetch(buffer_size=AUTOT
 data_augmentation = keras.Sequential([
     layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
     layers.experimental.preprocessing.RandomRotation(0.1),
-    layers.experimental.preprocessing.RandomZoom(0.1),
+    # layers.experimental.preprocessing.RandomZoom(0.1),
 ])
 
 model = tf.keras.Sequential([
-    data_augmentation,
+    # data_augmentation,
     layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
     layers.Conv2D(16, 3, padding='same', activation='relu'),
     layers.MaxPooling2D(),
