@@ -80,8 +80,22 @@ def playlist():
         sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, spo, title, track_ids, False))
         print("Created playlist")
 
-    orig = list_arr[0] if song_orig != None else None
-    dest = list_arr[len(list_arr) - 1] if song_dest != None else None
+    orig = dest = None
+    if song_orig != None:
+        i = 0
+        while i < len(song_arr):
+            if song_arr[i]['id'] == song_orig: break
+            else: i += 1
+        if i < len(song_arr):
+            orig = song_arr[i]
+
+    if song_dest != None:
+        i = 0
+        while i < len(song_arr):
+            if song_arr[i]['id'] == song_dest: break
+            else: i += 1
+        if i < len(song_arr):
+            dest = song_arr[i] 
 
     if n_songs is None:
         n_songs = 10
