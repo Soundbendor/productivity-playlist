@@ -3,7 +3,6 @@ graph-results/
 
 #ignore datasets
 data/
-fonts/
 analysis/
 
 #ignore python files
