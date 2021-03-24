@@ -1,66 +1,178 @@
 <!doctype html>
 <head>
     <title>Productivity Playlist</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='favicon.png') }}" />
+    <style>
+        @font-face{
+            font-family: OSU-Title;
+            src: url("../static/fonts/Stratum2-Bold.otf");
+        }
+
+        @font-face{
+            font-family: OSU-Main;
+            src: url("../static/fonts/KievitOffc.ttf");
+        }
+
+        h1 {
+            color: #D73F09;
+            font-family: 'OSU-Title';
+            margin-bottom: 0px;
+        }
+  
+        .label {
+            margin-top: 20px;
+            box-shadow: none;
+            font-size: 20px;
+            font-family: 'OSU-Title';
+        }
+
+        .label label {
+            font-size: 20px;
+            font-family: 'OSU-Title';
+            box-shadow: none;
+        }  
+
+        * {
+            font-family: 'OSU-Main';
+            text-align: center;
+        }
+
+        .section-wrapper {
+            display: flex;
+            flex-flow: row-wrap;
+            justify-content: center;
+            flex: 1 1 auto;
+            align-items: center;
+        }
+
+        .section {
+            margin: 10px;
+        }
+
+        form {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            flex: 1 1 auto;
+            align-items: center;
+        }
+
+        form * {
+            border-radius: 5px;
+            height: 40px;
+            border-color: #D73F09;
+            border-width: 1px;
+        }
+        
+        select {
+            width: 400px;
+            padding: 10px;
+            box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .n_songs {
+            width: 40px;
+            text-align: center;
+            box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit {
+            background-color: #D73F09;
+            color: white;
+            font-family: 'OSU-Title';
+            font-size: 20px;
+            border-color: rgba(0,0,0,0);
+            box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .submit:hover {
+            background-color: #DD5315;
+        }
+
+        table {
+            display: flex;
+            flex-flow: column;
+            justify-content: center;
+            flex: 1 1 auto;
+            align-items: center;        
+            padding: 6px;    
+        }
+
+        td {
+            text-align: left;
+            margin: 0px 5px;
+        }
+
+    </style>
 </head>
 <body>
-    <h1>Productivity Playlist</h1>
-    
-    {% if graph %}
-        <img src={{graph}} style="width:500px;height:500px;" />
-    {% else %}
-        <p>No image provided.</p>
-    {% endif %}
+    <div class="content">
 
-    <form action="/playlist">
-        <br><label for="song_orig">Origin:</label><br>
-        <select name="song_orig" id="song_orig">
-            {% if orig %}
-                <option value={{orig.id}}> ({{orig.valence}}, {{orig.arousal}}) {{orig.artist}} - {{orig.title}}</option>
-            {% else %}
-                <option value="" selected> Choose a song</option>
-            {% endif %}
+        <img src="{{ url_for('static', filename='soundbendor.png') }}" style="width: 400px;margin-top: 20px;"/>
 
-            {% for song in song_arr %}
-                {% if (not orig) or (song.id != orig.id) %}
-                    <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
+        <h1>Productivity Playlist</h1>
+        <div>Created by Shaurya Gaur</div>
+        <div>Oregon State University / 2021</div>
 
-        <br><label for="song_dest">Destination:</label><br>      
-        <select name="song_dest" id="song_dest">
-            {% if dest %}
-                <option value={{dest.id}}> ({{dest.valence}}, {{dest.arousal}}) {{dest.artist}} - {{dest.title}}</option>
-            {% else %}
-                <option value="" selected> Choose a song</option>
-            {% endif %}
+        <div class="section-wrapper">
+            <div class="section">
+                <form action="/playlist">
+                    <div class="label"><label for="song_orig">Choose the first song in your playlist.</label></div>
+                    <select name="song_orig" id="song_orig">
+                        {% if orig %}
+                            <option value={{orig.id}}> ({{orig.valence}}, {{orig.arousal}}) {{orig.artist}} - {{orig.title}}</option>
+                        {% else %}
+                            <option value="" selected> Choose a song</option>
+                        {% endif %}
             
-            {% for song in song_arr %}
-                {% if (not dest) or (song.id != dest.id) %}
-                    <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
-                {% endif %}
-            {% endfor %}
-        </select>
-        
-        <br><label for="n_songs">Number of Songs: </label><br>
-        <input type="number" id="n_songs" name="n_songs" value={{n}} min="2" max="20">
+                        {% for song in song_arr %}
+                            {% if (not orig) or (song.id != orig.id) %}
+                                <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+            
+                    <div class="label"><label for="song_dest">Choose the last song.</label></div>      
+                    <select name="song_dest" id="song_dest">
+                        {% if dest %}
+                            <option value={{dest.id}}> ({{dest.valence}}, {{dest.arousal}}) {{dest.artist}} - {{dest.title}}</option>
+                        {% else %}
+                            <option value="" selected> Choose a song</option>
+                        {% endif %}
+                        
+                        {% for song in song_arr %}
+                            {% if (not dest) or (song.id != dest.id) %}
+                                <option value={{song.id}}> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    
+                    <div class="label"><label for="n_songs">Number of songs in between: </label></div>
+                    <input class="n_songs" type="number" id="n_songs" name="n_songs" value={{n}} min="2" max="20">
+                    <br>
+                    <input class="submit" type="submit" value="Create your playlist!">
+                    <h5>Disclaimer: It may take a while to load your playlist.</h5>
+                </form>
+            </div>
+            
+            {% if sp_link %}
+                <div class="section">
+                    <div class="label">The songs are below!</div>
+                    <h4>You can find the playlist on Spotify <a href={{sp_link}} target="_blank">here</a>.</h4>
+                    {% if list_arr %}
+                        <table>
+                            <tr>
+                                <th>Artist</th>
+                                <th>Title</th>
+                            </tr>
+                            {% for song in list_arr %}
+                                <tr><td>{{song.artist}}</td><td>{{song.title}}</td></tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}            
+                </div>
+            {% endif %}
+        </div>
 
-        <input type="submit" value="Submit">
-    </form>
-
-    {% if list_graph %}
-        <img src={{list_graph}} style="width:500px;height:500px;" />
-    {% endif %}
-    
-    {% if sp_link %}
-        <h4>You can find the playlist on Spotify <a href={{sp_link}} target="_blank">here</a>.</h4>
-    {% endif %}
-
-    {% if list_arr %}
-        <ol>
-            {% for song in list_arr %}
-                <li> ({{song.valence}}, {{song.arousal}}) {{song.artist}} - {{song.title}}</il>
-            {% endfor %}
-        </ol>
-    {% endif %}
+    </div>
 </body>

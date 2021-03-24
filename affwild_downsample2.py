@@ -22,7 +22,7 @@ sample   = {
     "valence": []
 }
 
-for i in range(0, len(ids), 30):
+for i in range(0, len(ids), 2):
     fid = ids[i]
     idsUsed.append(fid)
     print(fid, end="\r")
@@ -32,11 +32,11 @@ for i in range(0, len(ids), 30):
     sample["arousal"].append(allframe.loc[fid]['arousal'])
     sample["valence"].append(allframe.loc[fid]['valence'])
 
-    # orig = "{}/frames/{}.png".format(root, fid).encode('unicode-escape')
-    # dest = "{}/downsample/{}.png".format(root, fid).encode('unicode-escape')
-    # shutil.copyfile(orig, dest)
+    orig = "{}/frames/{}.png".format(root, fid).encode('unicode-escape')
+    dest = "{}3/frames/{}.png".format(root, fid).encode('unicode-escape')
+    shutil.copyfile(orig, dest)
 
-pd.DataFrame(sample, index=idsUsed).to_csv(path_or_buf="data/affsample2/data.csv")
+pd.DataFrame(sample, index=idsUsed).to_csv(path_or_buf="data/affsample3/data.csv")
 
 # stats = {}
 # stats["count"] = len(idsUsed)

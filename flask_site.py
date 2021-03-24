@@ -13,7 +13,6 @@ import pprint
 app = Flask("prodplay")
 
 songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7]).dropna()
-print(len(songdata))
 
 songpoints = {}
 with open("deezer-points.json") as f:
@@ -73,24 +72,8 @@ def playlist():
             "arousal": np.around(songdata.loc[i][3], decimals=2),
             "valence": np.around(songdata.loc[i][4], decimals=2)
         } for i in songs]
-        pprint.pprint(list_arr)
-
-        # points = np.transpose(points)
-
-        # test_time = str(time.strftime("%y-%m-%d_%H%M"))
-        # helper.graph('valence', 'arousal', points, data_dim = 2, marker='.',
-        #     file = 'static/playlist_{}.png'.format(test_time),
-        #     title = "Path ({} songs) from ({}, {}) to ({}, {})".format(
-        #         len(songs),
-        #         np.around(songdata.loc[song_orig][3], decimals=2), np.around(songdata.loc[song_orig][4], decimals=2), 
-        #         np.around(songdata.loc[song_dest][3], decimals=2), np.around(songdata.loc[song_dest][4], decimals=2), 
-        #     )
-        # )
-
-        # list_graph = url_for('static', filename='playlist_{}.png'.format(test_time))
 
         track_ids = [songdata.loc[i][0] for i in songs]
-        pprint.pprint(track_ids)
         title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
         sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, title, track_ids, False))
 
@@ -116,7 +99,6 @@ def playlist():
 
     return render_template(
         'index.html', 
-        graph=url_for('static', filename='test1.png'), 
         song_arr=song_arr,
         list_arr=list_arr,
         list_graph=list_graph,

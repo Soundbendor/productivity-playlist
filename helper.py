@@ -43,14 +43,20 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope):
     client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
     try:
         token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
-        print("token: {}".format(token))
         sp = spotipy.Spotify(auth=token)
     except:
         print('Token is not accessible for ' + username)
 
     sp = spotipy.Spotify(auth=token, client_credentials_manager=client_credentials_manager)    
-    print(sp.me())
     return sp
+
+def refresh_token(spo):
+    cached_token = spo.get_cached_token()
+    refreshed_token = cached_token['refresh_token']
+    new_token = spo.refresh_access_token(refreshed_token)
+    # also we need to specifically pass `auth=new_token['access_token']`
+    self.sp = spotipy.Spotify(auth=new_token['access_token'])
+    return new_token
 
 def makeSpotifyList(sp, title, track_ids, public = False):
     result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
@@ -63,9 +69,9 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     fig, ax= plt.subplots(dpi=600)
 
     # add formatted labels
-    titleFont = fm.FontProperties(fname="./fonts/KievitOffc-Bold.ttf",size='x-large')
-    axisFont = fm.FontProperties(fname="./fonts/KievitOffc.ttf",size='x-large')
-    legendFont = fm.FontProperties(fname="./fonts/KievitOffc-Ita.ttf",size='x-large')
+    titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
+    axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='x-large')
 
     ax.set_xlabel(xlabel, fontproperties=axisFont)
     ax.set_ylabel(ylabel, fontproperties=axisFont)
@@ -101,7 +107,7 @@ def plot_AV_box(plots, labels, title="test", file="./test.png", plt_size=10, ver
     plt.figure(figsize=(plt_size, plt_size))
     fig, ax= plt.subplots(dpi=600)
     
-    titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
+    titleFont = fm.FontProperties(fname="./static/fonts/Stratum2-Bold.otf")
     ax.set_title(title, fontproperties=titleFont)    
     
     plt.boxplot(plots, labels=labels, showmeans=True, meanline=True, vert=vert, showfliers=showfliers)
@@ -129,9 +135,9 @@ def plot_AV_data(v, a, title="", colors="#D73F09", file="./test.png", plt_size=1
     ax.spines["right"].set_position(("data",0))
 
     # add formatted labels
-    titleFont = fm.FontProperties(fname="./fonts/Stratum2-Bold.otf")
-    axisFont = fm.FontProperties(fname="./fonts/Stratum2-Medium.otf")
-    emotionFont = fm.FontProperties(fname="./fonts/KievitOffc-BoldIta.ttf", size='xx-large')
+    titleFont = fm.FontProperties(fname="./static/fonts/Stratum2-Bold.otf")
+    axisFont = fm.FontProperties(fname="./static/fonts/Stratum2-Medium.otf")
+    emotionFont = fm.FontProperties(fname="./static/fonts/KievitOffc-BoldIta.ttf", size='xx-large')
 
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)

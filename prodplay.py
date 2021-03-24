@@ -57,6 +57,7 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
     return candidates[choice].tolist(), candSmooth[choice]
 
 def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0):
+    n_songs_reqd -= 1
     smoothlist = np.empty(0)
     songlist = np.empty(0)
     pointlist = []
