@@ -24,7 +24,7 @@ with open("deezer-points.json") as f:
 # coords = np.array(coords)
 
 info = helper.loadConfig("./config.json")
-sp = helper.Spotify(
+sp, spo = helper.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
@@ -65,6 +65,7 @@ def playlist():
         songs, smooth, points = prodplay.makePlaylist(
             songdata, coords, song_orig, song_dest, n_songs, model, si = 3
         )
+        print("Got the songs")
 
         list_arr = [{
             "title": songdata.loc[i][2],
@@ -72,27 +73,15 @@ def playlist():
             "arousal": np.around(songdata.loc[i][3], decimals=2),
             "valence": np.around(songdata.loc[i][4], decimals=2)
         } for i in songs]
+        print("Listed the songs")
 
         track_ids = [songdata.loc[i][0] for i in songs]
         title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, title, track_ids, False))
+        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, spo, title, track_ids, False))
+        print("Created playlist")
 
-    orig = dest = None
-    if song_orig != None:
-        i = 0
-        while i < len(song_arr):
-            if song_arr[i]['id'] == song_orig: break
-            else: i += 1
-        if i < len(song_arr):
-            orig = song_arr[i]
-    
-    if song_dest != None:
-        i = 0
-        while i < len(song_arr):
-            if song_arr[i]['id'] == song_dest: break
-            else: i += 1
-        if i < len(song_arr):
-            dest = song_arr[i]    
+    orig = list_arr[0] if song_orig != None else None
+    dest = list_arr[len(list_arr) - 1] if song_dest != None else None
 
     if n_songs is None:
         n_songs = 10

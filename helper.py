@@ -3,7 +3,7 @@ import matplotlib.font_manager as fm
 import os
 import spotipy
 import spotipy.util as util
-from spotipy.oauth2 import SpotifyClientCredentials
+import spotipy.oauth2 as oauth
 import sys
 import json
 import numpy as np
@@ -40,27 +40,47 @@ def arr2stringPoint(arr):
     return s[:-1]
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope):
-    client_credentials_manager = SpotifyClientCredentials(client_id=client_id, client_secret=client_secret)
+    spo = oauth.SpotifyOAuth(
+        client_id = client_id,
+        client_secret = client_secret,
+        redirect_uri = redirect_uri,
+        scope = scope,
+        cache_path = '.cache-{}'.format(username)
+    )
+    client_credentials_manager = oauth.SpotifyClientCredentials(
+        client_id=client_id, 
+        client_secret=client_secret
+    )
     try:
-        token = util.prompt_for_user_token(username, scope, client_id=client_id, client_secret=client_secret, redirect_uri=redirect_uri)
+        token = util.prompt_for_user_token(
+            username, 
+            scope, 
+            client_id=client_id, 
+            client_secret=client_secret, 
+            redirect_uri=redirect_uri
+        )
         sp = spotipy.Spotify(auth=token)
     except:
         print('Token is not accessible for ' + username)
 
     sp = spotipy.Spotify(auth=token, client_credentials_manager=client_credentials_manager)    
-    return sp
+    return sp, spo
 
 def refresh_token(spo):
     cached_token = spo.get_cached_token()
     refreshed_token = cached_token['refresh_token']
     new_token = spo.refresh_access_token(refreshed_token)
     # also we need to specifically pass `auth=new_token['access_token']`
-    self.sp = spotipy.Spotify(auth=new_token['access_token'])
-    return new_token
+    sp = spotipy.Spotify(auth=new_token['access_token'])
+    return sp
 
-def makeSpotifyList(sp, title, track_ids, public = False):
-    result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
-    pprint.pprint(result_playlist)
+def makeSpotifyList(sp, spo, title, track_ids, public = False):
+    try:
+        result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
+    except spotipy.client.SpotifyException:
+        sp = refresh_token(spo)
+        result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
+    
     sp.user_playlist_add_tracks(sp.me()["id"], result_playlist['id'], track_ids)
     return result_playlist['id']
 

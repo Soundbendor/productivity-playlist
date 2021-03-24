@@ -13,7 +13,7 @@ import os
 #get important personal information from Spotify API
 info = helper.loadConfig()
 
-sp = helper.Spotify(
+sp, spo = helper.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 

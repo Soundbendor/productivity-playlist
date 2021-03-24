@@ -24,7 +24,7 @@ info = helper.loadConfig()
 twod = [0,3,6,7]
 nd = [0,3,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 
-sp = helper.Spotify(
+sp, spo = helper.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
@@ -99,7 +99,7 @@ for i in range(len(newsongs)):
     track_ids.append(songdata.loc[newsongs[i]][0])
 pprint.pprint(track_ids)
 title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-helper.makeSpotifyList(sp, title, track_ids, True)
+helper.makeSpotifyList(sp, spo, title, track_ids, True)
 
 # tests.test_lengths(model, songdata, coords)
 # tests.test_neighbors(model, songdata, coords)
