@@ -110,3 +110,12 @@ def playlist():
         n = n_songs,
         sp_link = sp_link
     )
+
+    # return {
+    #     "song_arr": song_arr,
+    #     "list_arr": list_arr,
+    #     "orig": orig,
+    #     "dest": dest,
+    #     "n":  n_songs,
+    #     "sp_link": sp_link        
+    # }
