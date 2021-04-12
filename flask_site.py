@@ -29,7 +29,8 @@ sp, spo = helper.Spotify(
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
     info["auth"]["username"], 
-    info["main"]["scope"]
+    info["main"]["scope"],
+    auto=True
 )
 
 coords = []
