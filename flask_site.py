@@ -98,7 +98,7 @@ def playlist():
             dest = song_arr[i] 
 
     if n_songs is None:
-        n_songs = 10
+        n_songs = 5
 
     return render_template(
         'index.html', 

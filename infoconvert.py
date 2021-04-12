@@ -51,18 +51,20 @@ sp_artist_genres = {}
 song_points = {}
 
 print(len(songdata))
+location = info["infoconvert"]["location"]
 
 for i in range(len(songdata)):
     print(i, end = "\r")
     song = songdata.iloc[i]
-    joined_titles.append(song[3] + " " + song[4])
+    joined_titles.append(song[location['artist']] + " " + song[location['title']])
     result = sp.search(joined_titles[i], limit=1, type='track')
-    
-    song = songdata.iloc[i]
-    songstring = "{}{} {}{}".format(helper.sign(song[1]), abs(song[1]), helper.sign(song[2]), abs(song[2]))
+
+    songstring = "{}{} {}{}".format(
+        helper.sign(song[location['valence']]), abs(song[location['valence']]), helper.sign(song[location['arousal']]), abs(song[location['arousal']])
+    )
     if songstring not in song_points.keys():
         song_points[songstring] = []
-    song_points[songstring].append(str(song[0]))
+    song_points[songstring].append(str(song[location['id']]))
 
     try:
         uri = result['tracks']['items'][0]['uri']

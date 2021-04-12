@@ -8,6 +8,7 @@ import sys
 import json
 import numpy as np
 import pprint
+import re
 
 def loadConfig(configFile=None):
     info = {}
@@ -52,18 +53,24 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope):
         client_secret=client_secret
     )
     try:
-        token = util.prompt_for_user_token(
+        _auth_finder = re.compile("code=(.*?)$", re.MULTILINE)
+        auth = spo.get_authorize_url()
+        print(auth)
+        auth_url = input('Click the link above and copy and paste the url here: ')
+        _re_auth = re.findall(_auth_finder, auth_url)
+        token = spo.get_access_token(_re_auth[0])
+        token2 = util.prompt_for_user_token(
             username, 
             scope, 
             client_id=client_id, 
             client_secret=client_secret, 
             redirect_uri=redirect_uri
         )
-        sp = spotipy.Spotify(auth=token)
+        sp = spotipy.Spotify(auth=token['access_token'])
     except:
         print('Token is not accessible for ' + username)
 
-    sp = spotipy.Spotify(auth=token, client_credentials_manager=client_credentials_manager)    
+    sp = spotipy.Spotify(auth=token['access_token'], client_credentials_manager=client_credentials_manager)    
     return sp, spo
 
 def refresh_token(spo):

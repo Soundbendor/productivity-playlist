@@ -8,12 +8,19 @@
     },
     "infoconvert": {
         "scope": "user-library-read playlist-read-private",
-        "in_csv": "data/Emo-Soundscapes/songs_and_annotations_2.csv",
-        "cols": [0, 2, 4, 6, 7],
-        "out_csv": "data/Emo-Soundscapes/with_spotify.csv",
-        "out_artists": "data/Emo-Soundscapes/artist_genres.json",
-        "out_points": "data/Emo-Soundscapes/points.json",
-        "title": "Emo-Soundscapes"
+        "in_csv": "data/AMG1608_release/AMG1608_formed.csv",
+        "cols": [0, 1, 2, 4, 5],
+        "location": {
+            "valence": 3,
+            "arousal": 4,
+            "artist": 1,
+            "title": 2,
+            "id": 0 
+        },
+        "out_csv": "data/AMG1608_release/with_spotify.csv",
+        "out_artists": "data/AMG1608_release/artist_genres.json",
+        "out_points": "data/AMG1608_release/points.json",
+        "title": "AMG1608"
     },
     "main": {
         "scope": "playlist-modify-public,playlist-modify-private",
