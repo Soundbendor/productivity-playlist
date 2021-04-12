@@ -79,10 +79,10 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False)
     #         )
         
     #     sp = spotipy.Spotify(auth=token['access_token'])
-    except:
-        print('Token is not accessible for ' + username)
+    # except:
+    #     print('Token is not accessible for ' + username)
 
-    sp = spotipy.Spotify(auth=token['access_token'], client_credentials_manager=client_credentials_manager)    
+    # sp = spotipy.Spotify(auth=token['access_token'], client_credentials_manager=client_credentials_manager)    
     return sp, spo
 
 def refresh_token(spo):
