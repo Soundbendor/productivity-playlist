@@ -41,13 +41,14 @@ def arr2stringPoint(arr):
     return s[:-1]
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False):
-    cache_handler = spotipy.cache.CacheFileHandler(cache_path='.cache-{}'.format(username))
+    cache_path='.cache-{}'.format(username)
+    # cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=)
     spo = oauth.SpotifyOAuth(
         client_id = client_id,
         client_secret = client_secret,
         redirect_uri = redirect_uri,
         scope = scope,
-        cache_handler=cache_handler
+        cache_path=cache_path
     )
     sp = spotipy.Spotify(auth_manager=spo)
     # client_credentials_manager = oauth.SpotifyClientCredentials(
