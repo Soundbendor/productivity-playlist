@@ -6,6 +6,7 @@
 #SBATCH -o train.out
 #SBATCH -e train.err
 #SBATCH --gres=gpu:1
+#SBATCH --mem=100G
 #SBATCH -t 4-00:00:00      #set max job time to 4 days, 0h (default is around 36-48h)
 
 #my commands

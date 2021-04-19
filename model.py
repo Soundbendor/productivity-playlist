@@ -10,7 +10,7 @@ from tensorflow import keras
 from tensorflow.keras import layers
 from tensorflow.keras.models import Sequential
 
-frames_path = "./data/affsample2"
+frames_path = "./data/affsample"
 api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
 image_dir   = pathlib.Path(frames_path)
 
@@ -58,9 +58,9 @@ def process_path(file_path):
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=1000)
-train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=1000).prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=1000).prefetch(buffer_size=AUTOTUNE)
+ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
+train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
@@ -90,7 +90,7 @@ with mirrored_strategy.scope():
 
 model.compile(
   optimizer='adam',
-  loss='categorical_crossentropy',
+  loss='mean_squared_error',
   metrics=['accuracy'])
 
 history = model.fit(
