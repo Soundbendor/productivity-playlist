@@ -16,7 +16,7 @@ image_dir   = pathlib.Path(frames_path)
 
 points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
 # scaler = MinMaxScaler(feature_range=(0,1)) 
-scaler = StandardScaler()
+scaler = MinMaxScaler()
 grid = np.transpose(np.array([points_pd.iloc[:,0], points_pd.iloc[:,1]]))
 labels = scaler.fit_transform(grid)
 
@@ -78,11 +78,11 @@ with mirrored_strategy.scope():
         layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
         layers.Conv2D(16, 3, padding='same', activation='relu'),
         layers.MaxPooling2D(),
-        layers.Conv2D(32, 3, padding='same', activation='relu'),
-        layers.MaxPooling2D(),
-        layers.Conv2D(64, 3, padding='same', activation='relu'),
-        layers.MaxPooling2D(),
-        layers.Dropout(dropout),
+        # layers.Conv2D(32, 3, padding='same', activation='relu'),
+        # layers.MaxPooling2D(),
+        # layers.Conv2D(64, 3, padding='same', activation='relu'),
+        # layers.MaxPooling2D(),
+        # layers.Dropout(dropout),
         layers.Flatten(),
         layers.Dense(128, activation='relu'),
         layers.Dense(2)
