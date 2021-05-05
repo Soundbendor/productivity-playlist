@@ -58,9 +58,13 @@ def process_path(file_path):
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
-train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+ds          = tf.data.Dataset.zip((image_ds, label_ds))
+
+for elem in ds.take(1).as_numpy_iterator():
+    print(elem)
+
+train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).prefetch(buffer_size=AUTOTUNE)
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
@@ -74,8 +78,8 @@ data_augmentation = keras.Sequential([
 mirrored_strategy = tf.distribute.MirroredStrategy()
 with mirrored_strategy.scope():
     model = tf.keras.Sequential([
-        data_augmentation,
-        layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
+        # data_augmentation,
+        # layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
         layers.Conv2D(16, 3, padding='same', activation='relu'),
         layers.MaxPooling2D(),
         # layers.Conv2D(32, 3, padding='same', activation='relu'),
