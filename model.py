@@ -24,7 +24,7 @@ batch_size  = 32
 img_height  = 360
 img_width   = 640
 img_count   = len(points_pd)
-epochs      = 20
+epochs      = 200
 dropout     = 0.2
 val_frac    = 5
 
