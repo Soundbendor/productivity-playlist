@@ -58,13 +58,13 @@ def process_path(file_path):
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
 image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-ds          = tf.data.Dataset.zip((image_ds, label_ds))
+ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
 
 for elem in ds.take(1).as_numpy_iterator():
     print(elem)
 
-train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).prefetch(buffer_size=AUTOTUNE)
+train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
@@ -72,7 +72,6 @@ print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())
 data_augmentation = keras.Sequential([
     layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
     layers.experimental.preprocessing.RandomRotation(0.1),
-    # layers.experimental.preprocessing.RandomZoom(0.1),
 ])
 
 mirrored_strategy = tf.distribute.MirroredStrategy()
@@ -88,7 +87,7 @@ with mirrored_strategy.scope():
         # layers.MaxPooling2D(),
         # layers.Dropout(dropout),
         layers.Flatten(),
-        layers.Dense(128, activation='relu'),
+        layers.Dense(128, activation='sigmoid'),
         layers.Dense(2)
     ])
 
