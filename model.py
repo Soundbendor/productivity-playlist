@@ -85,7 +85,7 @@ with mirrored_strategy.scope():
         # layers.MaxPooling2D(),
         # layers.Conv2D(64, 3, padding='same', activation='relu'),
         # layers.MaxPooling2D(),
-        # layers.Dropout(dropout),
+        # layers.Dropout(dropout),  
         layers.Flatten(),
         layers.Dense(128, activation='sigmoid'),
         layers.Dense(2)

@@ -8,8 +8,8 @@
     },
     "infoconvert": {
         "scope": "user-library-read playlist-read-private",
-        "in_csv": "data/AMG1608_release/AMG1608_formed.csv",
-        "cols": [0, 1, 2, 4, 5],
+        "in_csv": "data/deezer/deezer-spotify.csv",
+        "cols": [0, 4, 5, 6, 7],
         "location": {
             "valence": 3,
             "arousal": 4,
@@ -17,10 +17,10 @@
             "title": 2,
             "id": 0 
         },
-        "out_csv": "data/AMG1608_release/with_spotify.csv",
-        "out_artists": "data/AMG1608_release/artist_genres.json",
-        "out_points": "data/AMG1608_release/points.json",
-        "title": "AMG1608"
+        "out_csv": "data/deezer/with_spotify.csv",
+        "out_artists": "data/deezer/artist_genres.json",
+        "out_points": "deezer-points.json",
+        "title": "Deezer"
     },
     "main": {
         "scope": "playlist-modify-public,playlist-modify-private",

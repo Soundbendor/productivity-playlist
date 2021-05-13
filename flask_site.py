@@ -64,7 +64,7 @@ def playlist():
 
     if song_orig != None and song_dest != None:
         songs, smooth, points = prodplay.makePlaylist(
-            songdata, coords, song_orig, song_dest, n_songs, model, si = 3
+            songdata, coords, song_orig, song_dest, n_songs, model, si = 3, songobj = songpoints
         )
         print("Got the songs")
 
@@ -111,12 +111,3 @@ def playlist():
         n = n_songs,
         sp_link = sp_link
     )
-
-    # return {
-    #     "song_arr": song_arr,
-    #     "list_arr": list_arr,
-    #     "orig": orig,
-    #     "dest": dest,
-    #     "n":  n_songs,
-    #     "sp_link": sp_link        
-    # }

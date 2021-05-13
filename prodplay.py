@@ -17,7 +17,7 @@ def filter_candiates(coords, pointlist, candidates):
             bad = True
             k = 0
             while k < len(coords[i]) and bad:
-                if (abs(coords[i][k] - pointlist[j][k]) > .0000001):
+                if (abs(coords[i][k] - pointlist[j][k]) > .000000000001):
                     bad = False
                 k = k + 1
             if bad:
@@ -37,7 +37,7 @@ def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model,
     candidates = []
     multiplier = 1
     while (candidates == []):
-        nearest = model.kneighbors(target, n_neighbors=neighbors)
+        nearest = model.kneighbors(target, n_neighbors=neighbors*multiplier)
         # pprint.pprint(nearest[0][0])
         candidates = np.array(nearest[1])[0]
         candidates = filter_candiates(coords, pointlist, candidates)
@@ -54,9 +54,10 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
         candSmooth.append(algos.smoothness_mse(cand, origin, destination))
 
     choice = np.argmin(candScores)
+    print(candidates[choice])
     return candidates[choice].tolist(), candSmooth[choice]
 
-def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0):
+def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0, songobj = None):
     n_songs_reqd -= 1
     smoothlist = np.empty(0)
     songlist = np.empty(0)
@@ -70,35 +71,37 @@ def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, sco
     currPoint = origPoint
 
     while ((len(pointlist) < n_songs_reqd) and currPoint != destPoint):
-        # print(len(pointlist), end="\r")
         
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
         else:
             candidates = get_candidates(coords, pointlist, currPoint, destPoint, n_songs_reqd, model, neighbors)
-            # pprint.pprint(candidates)
             if (score == algos.neighbors_rand):
                 nextPoint, nextSmooth = score(candidates, origPoint, destPoint)
             else:
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 
         if (nextPoint != destPoint):
-            i = 0
-            found = False
-            while i < len(songdata) and not found:
-                j = 0
-                good = True
-                while j < len(nextPoint) and good:
-                    if (nextPoint[j] != songdata.iloc[i][j+si]):
-                        good = False
-                    j = j + 1
+            if songobj is None:
+                i = 0
+                found = False
+                while i < len(songdata) and not found:
+                    j = 0
+                    good = True
+                    while j < len(nextPoint) and good:
+                        if (nextPoint[j] != songdata.iloc[i][j+si]):
+                            good = False
+                        j = j + 1
+                    
+                    if good:
+                        found = True
+                    else:
+                        i = i + 1
                 
-                if good:
-                    found = True
-                else:
-                    i = i + 1
-            
-            nextSong = songdata.index.values[i]
+                nextSong = songdata.index.values[i]
+            else:
+                nextString = helper.arr2stringPoint(nextPoint)
+                nextSong = songobj[nextString][random.randint(0, len(songobj[nextString])-1)]
         else:
             nextSong = destination
 

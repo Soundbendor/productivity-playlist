@@ -37,7 +37,7 @@ def string2arrPoint(key):
 def arr2stringPoint(arr):
     s = ""
     for i in range(len(arr)):
-        s = s + "{}{} ".format(sign(arr[i]), abs(arr[i]))
+        s = s + "{}{:.9f} ".format(sign(arr[i]), abs(arr[i]))
     return s[:-1]
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False):
