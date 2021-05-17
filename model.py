@@ -88,7 +88,7 @@ with mirrored_strategy.scope():
         # layers.Dropout(dropout),  
         layers.Flatten(),
         layers.Dense(128, activation='sigmoid'),
-        layers.Dense(2)
+        layers.Dense(2, activation='tanh')
     ])
 
 model.compile(
