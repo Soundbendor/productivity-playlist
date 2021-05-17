@@ -54,7 +54,6 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
         candSmooth.append(algos.smoothness_mse(cand, origin, destination))
 
     choice = np.argmin(candScores)
-    print(candidates[choice])
     return candidates[choice].tolist(), candSmooth[choice]
 
 def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0, songobj = None):

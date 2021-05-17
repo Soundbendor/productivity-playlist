@@ -23,7 +23,7 @@ info = helper.loadConfig()
 songdata = pd.read_csv(
     info["infoconvert"]["in_csv"], 
     header=0, usecols=info["infoconvert"]["cols"]
-)
+).dropna(axis=0)
 song_ids = list(songdata.index.values)
 
 # merge the artist and track to get a single search item

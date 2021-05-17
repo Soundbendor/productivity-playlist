@@ -15,7 +15,7 @@ app = Flask("prodplay")
 songdata = pd.read_csv("deezer-spotify.csv", header=0, index_col=0, usecols=[0,3,4,5,6,7]).dropna()
 
 songpoints = {}
-with open("deezer-points.json") as f:
+with open("deezer-spot-points.json") as f:
     songpoints = json.load(f)
 
 # coords = []

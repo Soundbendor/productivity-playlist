@@ -9,17 +9,18 @@
     "infoconvert": {
         "scope": "user-library-read playlist-read-private",
         "in_csv": "data/deezer/deezer-spotify.csv",
-        "cols": [0, 4, 5, 6, 7],
+        "cols": [0, 3, 4, 5, 6, 7],
         "location": {
-            "valence": 3,
-            "arousal": 4,
-            "artist": 1,
-            "title": 2,
-            "id": 0 
+            "valence": 4,
+            "arousal": 5,
+            "artist": 2,
+            "title": 3,
+            "id": 0,
+            "spotify": 1 
         },
         "out_csv": "data/deezer/with_spotify.csv",
         "out_artists": "data/deezer/artist_genres.json",
-        "out_points": "deezer-points.json",
+        "out_points": "deezer-spot-points.json",
         "title": "Deezer"
     },
     "main": {
