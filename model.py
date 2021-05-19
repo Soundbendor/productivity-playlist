@@ -79,7 +79,7 @@ with mirrored_strategy.scope():
     model = tf.keras.Sequential([
         # data_augmentation,
         # layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
-        layers.Conv2D(16, 3, padding='same', activation='relu'),
+        layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(img_height, img_width, 3), activation='tanh'),
         layers.MaxPooling2D(),
         # layers.Conv2D(32, 3, padding='same', activation='relu'),
         # layers.MaxPooling2D(),
@@ -90,6 +90,8 @@ with mirrored_strategy.scope():
         layers.Dense(128, activation='sigmoid'),
         layers.Dense(2, activation='tanh')
     ])
+
+print(model)
 
 model.compile(
   optimizer='adam',
