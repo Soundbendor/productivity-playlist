@@ -4,6 +4,7 @@ import neptune
 import pathlib
 import numpy as np
 import pprint
+import helper
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from tensorflow import keras
@@ -16,7 +17,7 @@ image_dir   = pathlib.Path(frames_path)
 
 points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
 # scaler = MinMaxScaler(feature_range=(0,1)) 
-scaler = MinMaxScaler()
+scaler = MinMaxScaler(feature_range=(-1,1))
 grid = np.transpose(np.array([points_pd.iloc[:,0], points_pd.iloc[:,1]]))
 labels = scaler.fit_transform(grid)
 
@@ -43,6 +44,14 @@ class NeptuneMonitor(tf.keras.callbacks.Callback):
         neptune.send_metric("val_loss", epoch, logs["val_loss"])
         neptune.send_metric("acc", epoch, logs["accuracy"])
         neptune.send_metric("val_acc", epoch, logs["val_accuracy"])
+        neptune.send_metric("mean_squared_error", epoch, logs["mean_squared_error"])
+        neptune.send_metric("val_mean_squared_error", epoch, logs["val_mean_squared_error"])
+        neptune.send_metric("mean_absolute_error", epoch, logs["mean_absolute_error"])
+        neptune.send_metric("val_mean_absolute_error", epoch, logs["val_mean_absolute_error"])
+        neptune.send_metric("mean_absolute_percentage_error", epoch, logs["mean_absolute_percentage_error"])
+        neptune.send_metric("val_mean_absolute_percentage_error", epoch, logs["val_mean_absolute_percentage_error"])
+        neptune.send_metric("cosine_proximity", epoch, logs["cosine_proximity"])
+        neptune.send_metric("val_cosine_proximity", epoch, logs["val_cosine_proximity"])
 
 neptune.init("Soundbendor/playlist", api_token=api_token)
 exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
@@ -60,7 +69,7 @@ image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path,
 label_ds    = tf.data.Dataset.from_tensor_slices(labels)
 ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
 
-for elem in ds.take(1).as_numpy_iterator():
+for elem in ds.take(1):
     print(elem)
 
 train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
@@ -79,7 +88,7 @@ with mirrored_strategy.scope():
     model = tf.keras.Sequential([
         # data_augmentation,
         # layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
-        layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(img_height, img_width, 3), activation='tanh'),
+        layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(img_height, img_width, 3)),
         layers.MaxPooling2D(),
         # layers.Conv2D(32, 3, padding='same', activation='relu'),
         # layers.MaxPooling2D(),
@@ -91,12 +100,10 @@ with mirrored_strategy.scope():
         layers.Dense(2, activation='tanh')
     ])
 
-print(model)
-
 model.compile(
   optimizer='adam',
   loss='mean_squared_error',
-  metrics=['accuracy'])
+  metrics=['accuracy', 'mean_squared_error', 'mean_absolute_error', 'mean_absolute_percentage_error', 'cosine_proximity'])
 
 history = model.fit(
   train_ds,
