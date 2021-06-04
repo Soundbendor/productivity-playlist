@@ -101,7 +101,7 @@ with mirrored_strategy.scope():
     ])
 
 model.compile(
-  optimizer='adam',
+  optimizer='RMSprop',
   loss='mean_squared_error',
   metrics=['accuracy', 'mean_squared_error', 'mean_absolute_error', 'mean_absolute_percentage_error', 'cosine_proximity'])
 
