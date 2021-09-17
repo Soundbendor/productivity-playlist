@@ -58,22 +58,6 @@ user_dest       = 3135561
 neighbors       = 10
 n_songs_reqd    = 12
 
-# none_count = 0
-# nan_count = 0
-# inf_count = 0
-
-# for i in range(len(coords)):
-#     for j in range(len(coords[i])):
-#         if coords[i][j] == None:
-#             none_count = none_count + 1
-#         if np.isnan(coords[i][j]):
-#             nan_count = nan_count + 1
-#             print(songdata.iloc[i][0], i, j, coords[i][j], np.dtype(coords[i][j]))
-#         if np.isinf(coords[i][j]):
-#             inf_count = inf_count + 1
-
-# print("Nones: {}, NaNs: {}, Infs: {}".format(none_count, nan_count, inf_count))
-
 # train a KNN model 
 model = NearestNeighbors()
 model.fit(coords)

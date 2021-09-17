@@ -42,7 +42,6 @@ def arr2stringPoint(arr):
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False):
     cache_path='.cache-{}'.format(username)
-    # cache_handler = spotipy.cache_handler.CacheFileHandler(cache_path=)
     spo = oauth.SpotifyOAuth(
         client_id = client_id,
         client_secret = client_secret,
@@ -51,39 +50,6 @@ def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False)
         cache_path=cache_path
     )
     sp = spotipy.Spotify(auth_manager=spo)
-    # client_credentials_manager = oauth.SpotifyClientCredentials(
-    #     client_id=client_id, 
-    #     client_secret=client_secret
-    # )
-    # try:
-    #     if (auto):
-    #         token = util.prompt_for_user_token(
-    #             username, 
-    #             scope, 
-    #             client_id=client_id, 
-    #             client_secret=client_secret, 
-    #             redirect_uri=redirect_uri
-    #         )
-    #     else:
-    #         _auth_finder = re.compile("code=(.*?)$", re.MULTILINE)
-    #         auth = spo.get_authorize_url()
-    #         print(auth)
-    #         auth_url = input('Click the link above and copy and paste the url here: ')
-    #         _re_auth = re.findall(_auth_finder, auth_url)
-    #         token = spo.get_access_token(_re_auth[0])
-    #         token2 = util.prompt_for_user_token(
-    #             username, 
-    #             scope, 
-    #             client_id=client_id, 
-    #             client_secret=client_secret, 
-    #             redirect_uri=redirect_uri
-    #         )
-        
-    #     sp = spotipy.Spotify(auth=token['access_token'])
-    # except:
-    #     print('Token is not accessible for ' + username)
-
-    # sp = spotipy.Spotify(auth=token['access_token'], client_credentials_manager=client_credentials_manager)    
     return sp, spo
 
 def refresh_token(spo):

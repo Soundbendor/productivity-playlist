@@ -16,7 +16,6 @@ api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJ
 image_dir   = pathlib.Path(frames_path)
 
 points_pd  = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
-# scaler = MinMaxScaler(feature_range=(0,1)) 
 scaler = MinMaxScaler(feature_range=(-1,1))
 grid = np.transpose(np.array([points_pd.iloc[:,0], points_pd.iloc[:,1]]))
 labels = scaler.fit_transform(grid)
@@ -53,10 +52,6 @@ class NeptuneMonitor(tf.keras.callbacks.Callback):
         neptune.send_metric("cosine_proximity", epoch, logs["cosine_proximity"])
         neptune.send_metric("val_cosine_proximity", epoch, logs["val_cosine_proximity"])
 
-neptune.init("Soundbendor/playlist", api_token=api_token)
-exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
-neptune_callback = NeptuneMonitor()
-
 def process_path(file_path):
     img = tf.io.read_file(file_path)
     img = tf.io.decode_png(img, channels=3)
@@ -87,18 +82,22 @@ mirrored_strategy = tf.distribute.MirroredStrategy()
 with mirrored_strategy.scope():
     model = tf.keras.Sequential([
         # data_augmentation,
-        # layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
+        layers.experimental.preprocessing.Rescaling(1./255, input_shape=(img_height, img_width, 3)),
         layers.Conv2D(16, 3, padding='same', activation='relu', input_shape=(img_height, img_width, 3)),
         layers.MaxPooling2D(),
         layers.Conv2D(32, 3, padding='same', activation='relu'),
         layers.MaxPooling2D(),
         layers.Conv2D(64, 3, padding='same', activation='relu'),
         layers.MaxPooling2D(),
-        # layers.Dropout(dropout),  
+        layers.Dropout(dropout),  
         layers.Flatten(),
         layers.Dense(128, activation='sigmoid'),
         layers.Dense(2, activation='tanh')
     ])
+
+neptune.init("Soundbendor/playlist", api_token=api_token)
+exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
+neptune_callback = NeptuneMonitor()
 
 model.compile(
   optimizer='RMSprop',
