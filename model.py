@@ -101,7 +101,7 @@ neptune_callback = NeptuneMonitor()
 
 model.compile(
   optimizer='RMSprop',
-  loss='mean_squared_error',
+  loss='cosine_similarity',
   metrics=['accuracy', 'mean_squared_error', 'mean_absolute_error', 'mean_absolute_percentage_error', 'cosine_proximity'])
 
 history = model.fit(
