@@ -14,5 +14,5 @@ venv/
 Miniconda*
 
 #ignore misc
-.cache-soundbendor
 fonts/
+.cache-soundbendor

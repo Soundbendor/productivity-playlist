@@ -7,42 +7,13 @@ import helper
 import pprint
 import warnings
 
-def filter_candiates(coords, pointlist, candidates):
-    filtered = []
-
-    for i in candidates:
-        unique = True
-        j = 0
-        while unique and j < len(pointlist):
-            bad = True
-            k = 0
-            while k < len(coords[i]) and bad:
-                if (abs(coords[i][k] - pointlist[j][k]) > .000000000001):
-                    bad = False
-                k = k + 1
-            if bad:
-                unique = False
-            j = j + 1
-        
-        if (unique == True):
-            filtered.append(coords[i].tolist())
-    
-    return np.array(filtered)
-
-def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model, neighbors = 7):
+def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model, neighbors = 3):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
-    candidates = []
-    multiplier = 1
-    while (candidates == []):
-        nearest = model.kneighbors(target, n_neighbors=neighbors*multiplier)
-        # pprint.pprint(nearest[0][0])
-        candidates = np.array(nearest[1])[0]
-        candidates = filter_candiates(coords, pointlist, candidates)
-        multiplier = multiplier + 1
-
+    nearest = model.kneighbors(target, n_neighbors=(len(pointlist) * neighbors))
+    candidates = np.array([coords[i].tolist() for i in np.array(nearest[1])[0]])
     return candidates
 
 def choose_candidate(candidates, current, origin, destination, songs_left, score):
@@ -70,7 +41,6 @@ def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, sco
     currPoint = origPoint
 
     while ((len(pointlist) < n_songs_reqd) and currPoint != destPoint):
-        
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
         else:
