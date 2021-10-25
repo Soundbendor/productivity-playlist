@@ -7,13 +7,36 @@ import helper
 import pprint
 import warnings
 
+def filter_candiates(coords, pointlist, candidate_indices):
+    filtered = []
+
+    for i in candidate_indices:
+        unique = True
+        j = 0
+        while unique and j < len(pointlist):
+            bad = True
+            k = 0
+            while k < len(coords[i]) and bad:
+                if (abs(coords[i][k] - pointlist[j][k]) > .000000000001):
+                    bad = False
+                k = k + 1
+            if bad:
+                unique = False
+            j = j + 1
+
+        if (unique == True):
+            filtered.append(coords[i].tolist())
+
+    return np.array(filtered)
+
 def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model, neighbors = 3):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
     nearest = model.kneighbors(target, n_neighbors=(len(pointlist) * neighbors))
-    candidates = np.array([coords[i].tolist() for i in np.array(nearest[1])[0]])
+    candidate_indices = np.array(nearest[1])[0]
+    candidates = filter_candiates(coords, pointlist, candidate_indices)
     return candidates
 
 def choose_candidate(candidates, current, origin, destination, songs_left, score):

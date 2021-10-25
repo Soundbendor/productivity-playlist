@@ -33,7 +33,7 @@ sp, spo = helper.Spotify(
 )
 songdata = pd.read_csv(
     info["main"]["songdata"], 
-    header=0, index_col=0, usecols=nd
+    header=0, index_col=0, usecols=twod
 ).dropna()
 
 # songpoints = {}
@@ -62,10 +62,10 @@ n_songs_reqd    = 12
 model = NearestNeighbors()
 model.fit(coords)
 
-newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-    songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
-)
-newpoints = np.transpose(newpoints)
+# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+#     songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
+# )
+# newpoints = np.transpose(newpoints)
 # labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
 # pprint.pprint(labels)
 
@@ -78,13 +78,13 @@ newpoints = np.transpose(newpoints)
 #     )
 # )
 
-track_ids = []
-for i in range(len(newsongs)):
-    track_ids.append(songdata.loc[newsongs[i]][0])
-pprint.pprint(track_ids)
-title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-helper.makeSpotifyList(sp, spo, title, track_ids, True)
+# track_ids = []
+# for i in range(len(newsongs)):
+#     track_ids.append(songdata.loc[newsongs[i]][0])
+# pprint.pprint(track_ids)
+# title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
+# helper.makeSpotifyList(sp, spo, title, track_ids, True)
 
 # tests.test_lengths(model, songdata, coords)
 # tests.test_neighbors(model, songdata, coords)
-# tests.test_dists(model, songdata, coords)
+tests.test_dists(model, songdata, coords)

@@ -208,6 +208,7 @@ def test_dists(model, songdata, coords):
     total_smoothnesses = [[],[]]
     used_points = []
     user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
+    
     smoothnesses = []
     
     scores = [
@@ -283,6 +284,13 @@ def test_dists(model, songdata, coords):
 
         # title = "Productivity Playlist Test " + test_time
         # helper.makeSpotifyList(sp, username, title, track_ids, False)
+
+    csv_data = {}
+    for i in range(len(smoothnesses)):
+        csv_data[scores[1][i]] = smoothnesses[i][1]
+    
+    csv_df = pd.DataFrame(csv_data)
+    csv_df.to_csv("graph_results/{}/test_dist_output.csv".format(test_time))
 
     helper.graph('length of playlist', 'smoothness of path', smoothnesses, 
         data_dim = 2, line_count = len(smoothnesses), legend = scores[1],
