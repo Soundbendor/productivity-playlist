@@ -34,7 +34,7 @@ def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model,
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
-    nearest = model.kneighbors(target, n_neighbors=(len(pointlist) * neighbors))
+    nearest = model.kneighbors(target, n_neighbors=(n_songs_reqd * neighbors))
     candidate_indices = np.array(nearest[1])[0]
     candidates = filter_candiates(coords, pointlist, candidate_indices)
     return candidates

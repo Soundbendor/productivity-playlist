@@ -26,7 +26,7 @@
     "main": {
         "scope": "playlist-modify-public,playlist-modify-private",
         "songdata": "data/deezer/deezer-spotify.csv",
-        "songpoints": "data/deezer/deezer-points.json"
+        "songpoints": "data/deezer/deezer-spot-points.json"
     },
     "analysis": [
         {

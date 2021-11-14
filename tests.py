@@ -198,7 +198,7 @@ def test_neighbors(model, songdata, coords):
         title = "MSE Neighbor Comparisons Averaged over the Past {} Runs".format(num_tests)
     )
 
-def test_dists(model, songdata, coords):
+def test_dists(model, songdata, coords, songpoints):
     the_dist = int(input("Distance: "))
     maxlength = int(input("Max length: "))
     minlength = 2
@@ -208,6 +208,7 @@ def test_dists(model, songdata, coords):
     total_smoothnesses = [[],[]]
     used_points = []
     user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
+    # user_orig, user_dest = 3135555, 3135561
     
     smoothnesses = []
     
@@ -217,13 +218,13 @@ def test_dists(model, songdata, coords):
         ,[algos.manhattan_score, "Manhattan Distance"]
         ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
         ,[algos.jaccard_score, "Jaccard Distance"]
-        ,[algos.mult_score, "Multiplied Ratios"]
+        # ,[algos.mult_score, "Multiplied Ratios"]
         ,[algos.neighbors_rand, "Random Neighbors"]
     ]
     scores = np.transpose(scores)
 
     for i in range(len(scores[0])):
-        helper.makeDir('graph-results/{}/{}'.format(test_time, scores[1][i]))
+        # helper.makeDir('graph-results/{}/{}'.format(test_time, scores[1][i]))
         print("\n\n{}".format(scores[1][i]))
         smoothies = [[],[]]     
         songlists = []
@@ -235,7 +236,7 @@ def test_dists(model, songdata, coords):
                 songdata, coords, 
                 user_orig, user_dest, n_songs_reqd, 
                 model, score = scores[0][i],
-                si=1
+                si=1, songobj=songpoints,
             ) 
 
             print("{}: {}".format(len(songlist), smoothie))
@@ -245,14 +246,14 @@ def test_dists(model, songdata, coords):
             songlists.append(songlist)
             pointlists.append(pointlist)
 
-            helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
-                file = 'graph-results/{}/{}/{}.png'.format(test_time, scores[1][i], len(songlist)),
-                title = "Playlist Path ({} songs using {}) from ({}, {}) to ({}, {})".format(
-                    len(songlist), scores[1][i],
-                    np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
-                    np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
-                )
-            ) 
+            # helper.graph('valence', 'arousal', pointlist, data_dim = 2, marker='.',
+            #     file = 'graph-results/{}/{}/{}.png'.format(test_time, scores[1][i], len(songlist)),
+            #     title = "Playlist Path ({} songs using {}) from ({}, {}) to ({}, {})".format(
+            #         len(songlist), scores[1][i],
+            #         np.around(songdata.loc[user_orig][si+0], decimals=2), np.around(songdata.loc[user_orig][si+1], decimals=2), 
+            #         np.around(songdata.loc[user_dest][si+0], decimals=2), np.around(songdata.loc[user_dest][si+1], decimals=2), 
+            #     )
+            # ) 
 
         smoothest = np.argmin(smoothies[1])
         print(smoothest + minlength)
@@ -288,12 +289,12 @@ def test_dists(model, songdata, coords):
     csv_data = {}
     for i in range(len(smoothnesses)):
         csv_data[scores[1][i]] = smoothnesses[i][1]
-    
-    csv_df = pd.DataFrame(csv_data)
-    csv_df.to_csv("graph_results/{}/test_dist_output.csv".format(test_time))
 
     helper.graph('length of playlist', 'smoothness of path', smoothnesses, 
         data_dim = 2, line_count = len(smoothnesses), legend = scores[1],
         file = 'graph-results/{}/comparison.png'.format(test_time),
         title = "MSE of Playlists by Distance"
     )
+
+    csv_df = pd.DataFrame(csv_data)
+    csv_df.to_csv("test_dist_output.csv".format(test_time))

@@ -70,14 +70,41 @@ def makeSpotifyList(sp, spo, title, track_ids, public = False):
     sp.user_playlist_add_tracks(sp.me()["id"], result_playlist['id'], track_ids)
     return result_playlist['id']
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False):
-    plt.figure(figsize=(width*unit_size,height*unit_size))
+def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False, point_annotations=None, av_circle = False):
+
+    figsize = (20,20) if av_circle else (width*unit_size,height*unit_size)
+    plt.figure(figsize=figsize)
     fig, ax= plt.subplots(dpi=600)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
     axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
-    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
+
+    if av_circle:
+        plt.xlim(-2,2)
+        plt.ylim(-1.5,1.5)  
+        # draw the unit circle
+        fig = plt.gcf()
+        ax = fig.gca()
+        circle1 = plt.Circle((0, 0), 1.0, color='0.25', fill=False)
+        ax.add_artist(circle1)
+
+        # print emotion labels
+        emotionFont = fm.FontProperties(fname="./static/fonts/KievitOffc-BoldIta.ttf", size='large')
+        ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=10)
+        ax.text(0.2, 1.05, 'Excited', fontproperties=emotionFont, size=10)
+        ax.text(-1.3, 0.35, 'Afraid', fontproperties=emotionFont, size=10)
+        ax.text(-0.7, 1, 'Angry', fontproperties=emotionFont, size=10)
+        ax.text(-1.13, -0.55, 'Sad', fontproperties=emotionFont, size=10)
+        ax.text(-0.9, -1, 'Depressed', fontproperties=emotionFont, size=10)
+        ax.text(1, -0.25, 'Content', fontproperties=emotionFont, size=10)
+        ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=10) 
+
+        ax.spines["left"].set_visible(False)
+        ax.spines["bottom"].set_visible(False)
+        ax.spines["top"].set_position(("data",0))
+        ax.spines["right"].set_position(("data",0))
 
     ax.set_xlabel(xlabel, fontproperties=axisFont)
     ax.set_ylabel(ylabel, fontproperties=axisFont)
@@ -97,8 +124,22 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     else:
         n, bins, patches = ax.hist(data, bins=int(1+3.3*np.log10(len(data))), facecolor="#D73F09")
     
+    if point_annotations != None:
+        for i in range(len(point_annotations)):
+            if (i != 0 and i != len(point_annotations) - 1):
+                ha = 'left' if (i % 2 == 0) else 'right'
+                yoffset = -4 if (i % 2 == 0) else 4
+                plt.annotate(point_annotations[i], # this is the text
+                    (data[0][i],data[1][i]), # these are the coordinates to position the label
+                    textcoords="offset points", # how to position the text
+                    xytext=(4,yoffset), # distance from text to points (x,y)
+                    size='small',
+                    fontweight='bold',
+                    color='blue',
+                    ha=ha) # horizontal alignment can be left, right or center
+
     if (legend != []):
-        ax.legend(legend, prop=legendFont)
+        ax.legend(legend, prop=legendFont, fontsize='small')
 
     if (title != ""):
         plt.title(title)
@@ -156,7 +197,7 @@ def plot_AV_data(v, a, title="", colors="#D73F09", file="./test.png", plt_size=1
     ax.text(0.5, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*2.5))
     ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*2.5))
     ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(-1.13, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*2.5))
+    ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*2.5))
     ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*2.5))
     ax.text(0.98, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*2.5))
     ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*2.5)) 
