@@ -67,8 +67,21 @@ ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
 for elem in ds.take(1):
     print(elem)
 
-train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
-val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+points = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(img_count)]
+
+train_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    frames_path, labels=points, class_names=None, seed=123, validation_split=0.2, subset="training", color_mode='rgb', batch_size=batch_size, image_size=(img_height, img_width) 
+)
+
+val_ds = tf.keras.preprocessing.image_dataset_from_directory(
+    frames_path, labels=points, class_names=None, seed=123, validation_split=0.2, subset="validation", color_mode='rgb', batch_size=batch_size, image_size=(img_height, img_width) 
+)
+
+train_ds = train_ds.cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+val_ds = val_ds.cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+
+# train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+# val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds).numpy())
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds).numpy())

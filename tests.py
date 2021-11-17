@@ -199,7 +199,7 @@ def test_neighbors(model, songdata, coords):
     )
 
 def test_dists(model, songdata, coords, songpoints):
-    the_dist = int(input("Distance: "))
+    # the_dist = int(input("Distance: "))
     maxlength = int(input("Max length: "))
     minlength = 2
     si = 1
@@ -207,24 +207,24 @@ def test_dists(model, songdata, coords, songpoints):
     helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
     used_points = []
-    user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
-    # user_orig, user_dest = 3135555, 3135561
+    # user_orig, user_dest = get_points(songdata, used_points, the_dist, si)
+    user_orig, user_dest = 3135555, 3135561
     
     smoothnesses = []
     
     scores = [
         [algos.cosine_score, "Cosine Similarity"]
         ,[algos.euclidean_score, "Euclidean Distance"]
-        ,[algos.manhattan_score, "Manhattan Distance"]
+        # ,[algos.manhattan_score, "Manhattan Distance"]
         ,[algos.minkowski3_score, "Minkowski Distance (order 3)"]
         ,[algos.jaccard_score, "Jaccard Distance"]
         # ,[algos.mult_score, "Multiplied Ratios"]
-        ,[algos.neighbors_rand, "Random Neighbors"]
+        # ,[algos.neighbors_rand, "Random Neighbors"]
     ]
     scores = np.transpose(scores)
 
     for i in range(len(scores[0])):
-        # helper.makeDir('graph-results/{}/{}'.format(test_time, scores[1][i]))
+        helper.makeDir('graph-results/{}/{}'.format(test_time, scores[1][i]))
         print("\n\n{}".format(scores[1][i]))
         smoothies = [[],[]]     
         songlists = []
