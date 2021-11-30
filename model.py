@@ -60,12 +60,12 @@ def process_path(file_path):
     return img
 
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
-image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
-label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
+#image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
+#label_ds    = tf.data.Dataset.from_tensor_slices(labels)
+#ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
 
-for elem in ds.take(1):
-    print(elem)
+#for elem in ds.take(1):
+    #print(elem)
 
 points = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(img_count)]
 

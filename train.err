@@ -1,0 +1,81 @@
+/var/spool/slurmd/job406630/slurm_script: line 14: activate: No such file or directory
+2021-11-30 13:50:44.339844: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2021-11-30 13:51:14.207079: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2021-11-30 13:51:14.212832: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2021-11-30 13:51:15.518126: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
+coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
+2021-11-30 13:51:15.518202: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2021-11-30 13:51:15.663324: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2021-11-30 13:51:15.663397: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2021-11-30 13:51:15.744683: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-11-30 13:51:15.816793: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-11-30 13:51:15.966963: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-11-30 13:51:16.038811: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2021-11-30 13:51:16.354858: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2021-11-30 13:51:16.359016: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-11-30 13:51:16.360089: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-11-30 13:51:16.362286: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
+coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
+2021-11-30 13:51:16.362333: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2021-11-30 13:51:16.362390: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2021-11-30 13:51:16.362420: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2021-11-30 13:51:16.362448: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2021-11-30 13:51:16.362476: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2021-11-30 13:51:16.362505: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2021-11-30 13:51:16.362533: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2021-11-30 13:51:16.362562: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2021-11-30 13:51:16.366073: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2021-11-30 13:51:16.366134: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2021-11-30 13:51:20.181831: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2021-11-30 13:51:20.181881: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2021-11-30 13:51:20.181899: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2021-11-30 13:51:20.186280: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 22477 MB memory) -> physical GPU (device: 0, name: Quadro RTX 6000, pci bus id: 0000:3b:00.0, compute capability: 7.5)
+2021-11-30 13:51:20.186679: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+Traceback (most recent call last):
+  File "/nfs/guille/eecs_research/soundbendor/playlist/model.py", line 89, in <module>
+    data_augmentation = keras.Sequential([
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper
+    result = method(self, *args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/sequential.py", line 144, in __init__
+    self.add(layer)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/training/tracking/base.py", line 517, in _method_wrapper
+    result = method(self, *args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/sequential.py", line 223, in add
+    output_tensor = layer(self.outputs[0])
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/base_layer.py", line 951, in __call__
+    return self._functional_construction_call(inputs, args, kwargs,
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/base_layer.py", line 1090, in _functional_construction_call
+    outputs = self._keras_tensor_symbolic_call(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/base_layer.py", line 822, in _keras_tensor_symbolic_call
+    return self._infer_output_signature(inputs, args, kwargs, input_masks)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/base_layer.py", line 863, in _infer_output_signature
+    outputs = call_fn(inputs, *args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/layers/preprocessing/image_preprocessing.py", line 866, in call
+    output = control_flow_util.smart_cond(training, random_rotated_inputs,
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/utils/control_flow_util.py", line 114, in smart_cond
+    return smart_module.smart_cond(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/framework/smart_cond.py", line 54, in smart_cond
+    return true_fn()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/layers/preprocessing/image_preprocessing.py", line 861, in random_rotated_inputs
+    get_rotation_matrix(angles, img_hd, img_wd),
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/layers/preprocessing/image_preprocessing.py", line 757, in get_rotation_matrix
+    array_ops.zeros((num_angles, 2), dtypes.float32),
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/util/dispatch.py", line 201, in wrapper
+    return target(*args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/ops/array_ops.py", line 2819, in wrapped
+    tensor = fun(*args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/ops/array_ops.py", line 2868, in zeros
+    output = _constant_if_small(zero, shape, dtype, name)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/ops/array_ops.py", line 2804, in _constant_if_small
+    if np.prod(shape) < 1000:
+  File "<__array_function__ internals>", line 5, in prod
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 3051, in prod
+    return _wrapreduction(a, np.multiply, 'prod', axis, dtype, out,
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/numpy/core/fromnumeric.py", line 86, in _wrapreduction
+    return ufunc.reduce(obj, axis, dtype, out, **passkwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/framework/ops.py", line 852, in __array__
+    raise NotImplementedError(
+NotImplementedError: Cannot convert a symbolic Tensor (random_rotation/rotation_matrix/strided_slice:0) to a numpy array. This error may indicate that you're trying to pass a Tensor to a NumPy call, which is not supported
