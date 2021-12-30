@@ -17,6 +17,7 @@ import helper
 import prodplay
 import algos
 import tests
+from songdataset import SongDataset
 
 #get important personal information from Spotify API
 info = helper.loadConfig()
@@ -31,24 +32,15 @@ sp, spo = helper.Spotify(
     info["auth"]["username"], 
     info["main"]["scope"]
 )
-songdata = pd.read_csv(
-    info["main"]["songdata"], 
-    header=0, index_col=0, usecols=twod
-).dropna()
 
-songpoints = {}
-with open(info["main"]["songpoints"]) as f:
-    songpoints = json.load(f)
-
-coords = []
-for key in songpoints.keys():
-    coords.append(helper.string2arrPoint(key))
-coords = np.array(coords)
-
-# coords = []
-# for i in range(len(songdata)):
-#     coords.append(songdata.iloc[i][1:].tolist())
-# coords = np.array(coords)
+songdata = SongDataset(
+    name="Deezer",
+    path=info["main"]["songdata"],
+    cols=twod, 
+    start_index = 1, 
+    spotify=True
+)
+songdata.make_knn()
 
 print("N: {}".format(len(songdata)))
 print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
@@ -63,12 +55,8 @@ user_dest       = 540954
 neighbors       = 10
 n_songs_reqd    = 15
 
-# train a KNN model 
-model = NearestNeighbors()
-model.fit(coords)
-
 # newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-#     songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
+#     songdata, user_orig, user_dest, n_songs_reqd
 # )
 # newpoints = np.transpose(newpoints)
 # newsmooth = [0] + newsmooth.tolist() + [0]
@@ -107,7 +95,6 @@ model.fit(coords)
 # helper.graph('valence', 'arousal', newpoints, data_dim=2, marker='.', title='Example Playlist', file='exgraph.png', av_circle=True, point_annotations=mse_annotations)
 
 
-
-# tests.test_lengths(model, songdata, coords)
-# tests.test_neighbors(model, songdata, coords)
-tests.test_dists(model, songdata, coords, songpoints)
+# tests.test_lengths(songdata)
+# tests.test_neighbors(songdata)
+tests.test_dists(songdata)

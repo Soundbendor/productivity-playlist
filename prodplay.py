@@ -6,6 +6,7 @@ import algos
 import helper
 import pprint
 import warnings
+from songdataset import SongDataset
 
 def filter_candiates(coords, pointlist, candidate_indices):
     filtered = []
@@ -29,14 +30,14 @@ def filter_candiates(coords, pointlist, candidate_indices):
 
     return np.array(filtered)
 
-def get_candidates(coords, pointlist, current, destination, n_songs_reqd, model, neighbors = 3):
+def get_candidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 3):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
-    nearest = model.kneighbors(target, n_neighbors=(n_songs_reqd * neighbors))
+    nearest = dataset.knn_model.kneighbors(target, n_neighbors=(n_songs_reqd * neighbors))
     candidate_indices = np.array(nearest[1])[0]
-    candidates = filter_candiates(coords, pointlist, candidate_indices)
+    candidates = filter_candiates(dataset.unique_points, pointlist, candidate_indices)
     return candidates
 
 def choose_candidate(candidates, current, origin, destination, songs_left, score):
@@ -50,14 +51,17 @@ def choose_candidate(candidates, current, origin, destination, songs_left, score
     choice = np.argmin(candScores)
     return candidates[choice].tolist(), candSmooth[choice]
 
-def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, score = algos.cosine_score, neighbors = 7, si = 0, songobj = None):
+def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7):
+    if dataset.knn_model is None:
+        dataset.make_knn()
+
     n_songs_reqd -= 1
     smoothlist = np.empty(0)
     songlist = np.empty(0)
     pointlist = []
 
-    origPoint = songdata.loc[origin][si:].tolist()
-    destPoint = songdata.loc[destination][si:].tolist()
+    origPoint = dataset.data_df.loc[origin].tolist()
+    destPoint = dataset.data_df.loc[destination].tolist()
 
     songlist = np.append(songlist, origin)
     pointlist.append(origPoint)
@@ -65,35 +69,16 @@ def makePlaylist(songdata, coords, origin, destination, n_songs_reqd, model, sco
 
     while ((len(pointlist) < n_songs_reqd) and currPoint != destPoint):
         if (score == algos.full_rand):
-            nextPoint, nextSmooth = score(coords, pointlist, origPoint, destPoint)
+            nextPoint, nextSmooth = score(dataset.unique_points, pointlist, origPoint, destPoint)
         else:
-            candidates = get_candidates(coords, pointlist, currPoint, destPoint, n_songs_reqd, model, neighbors)
+            candidates = get_candidates(dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors)
             if (score == algos.neighbors_rand):
                 nextPoint, nextSmooth = score(candidates, origPoint, destPoint)
             else:
                 nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
 
         if (nextPoint != destPoint):
-            if songobj is None:
-                i = 0
-                found = False
-                while i < len(songdata) and not found:
-                    j = 0
-                    good = True
-                    while j < len(nextPoint) and good:
-                        if (nextPoint[j] != songdata.iloc[i][j+si]):
-                            good = False
-                        j = j + 1
-                    
-                    if good:
-                        found = True
-                    else:
-                        i = i + 1
-                
-                nextSong = songdata.index.values[i]
-            else:
-                nextString = helper.arr2stringPoint(nextPoint)
-                nextSong = songobj[nextString][random.randint(0, len(songobj[nextString])-1)]
+            nextSong = dataset.get_song(nextPoint)
         else:
             nextSong = destination
 
