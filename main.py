@@ -17,6 +17,7 @@ import helper
 import prodplay
 import algos
 import tests
+from songdataset import SongDataset
 
 #get important personal information from Spotify API
 info = helper.loadConfig()
@@ -31,60 +32,69 @@ sp, spo = helper.Spotify(
     info["auth"]["username"], 
     info["main"]["scope"]
 )
-songdata = pd.read_csv(
-    info["main"]["songdata"], 
-    header=0, index_col=0, usecols=nd
-).dropna()
 
-# songpoints = {}
-# with open(info["main"]["songpoints"]) as f:
-#     songpoints = json.load(f)
-
-# coords = []
-# for key in songpoints.keys():
-#     coords.append(helper.string2arrPoint(key))
-# coords = np.array(coords)
-
-coords = []
-for i in range(len(songdata)):
-    coords.append(songdata.iloc[i][1:].tolist())
-coords = np.array(coords)
+songdata = SongDataset(
+    name="Deezer",
+    path=info["main"]["songdata"],
+    cols=twod, 
+    start_index = 1, 
+    spotify=True
+)
+songdata.make_knn()
 
 print("N: {}".format(len(songdata)))
 print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
 
-user_orig       = 3135555
-user_dest       = 3135561
+# 3135555   = Daft Punk         - Digital Love          (0.950468991,0.572575336)
+# 3135561   = Daft Punk         - Something About Us    (-0.317973857,-0.399224044)
+# 540954    = Rachael Yamagata  - 1963                  (1.070081923,1.018911652)
+# 533164    = Patty Loveless    - How Can I Help U ...  (-1.636899729,-0.45914527)
+
+user_orig       = 533164
+user_dest       = 540954
 neighbors       = 10
-n_songs_reqd    = 12
+n_songs_reqd    = 15
 
-# train a KNN model 
-model = NearestNeighbors()
-model.fit(coords)
+# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+#     songdata, user_orig, user_dest, n_songs_reqd
+# )
+# newpoints = np.transpose(newpoints)
+# newsmooth = [0] + newsmooth.tolist() + [0]
+# newsongs = newsongs.tolist()
 
-newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-    songdata, coords, user_orig, user_dest, n_songs_reqd, model, si=1
-)
-newpoints = np.transpose(newpoints)
+# fullsongdata = pd.read_csv(info["main"]["songdata"], header=0, index_col=0)
+# songtitles = [fullsongdata.loc[s]["track_name"] for s in newsongs]
+# songartists = [fullsongdata.loc[s]["artist_name"] for s in newsongs]
+
+# jsondata = {
+#     "id": newsongs,
+#     "track": songtitles,
+#     "artist": songartists,
+#     "valence": newpoints[0].tolist(),
+#     "arousal": newpoints[1].tolist(),
+#     "smooth": newsmooth
+# }
+
+# pprint.pprint(jsondata)
+
+# csv_df = pd.DataFrame(jsondata)
+# csv_df.to_csv("expoints.csv")
+
+# newpoints = np.transpose(newpoints)
 # labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
 # pprint.pprint(labels)
 
-# helper.graph('valence', 'arousal', newpoints, data_dim = 2, marker='.',
-#     file="graph-results/playlist.png",
-#     title = "Example Playlist Path".format(
-#         len(newpoints[0]), neighbors,
-#         np.around(songdata.loc[user_orig][0], decimals=2), np.around(songdata.loc[user_orig][1], decimals=2), 
-#         np.around(songdata.loc[user_dest][0], decimals=2), np.around(songdata.loc[user_dest][1], decimals=2), 
-#     )
-# )
+# track_ids = []
+# for i in range(len(newsongs)):
+#     track_ids.append(songdata.loc[newsongs[i]][0])
+# pprint.pprint(track_ids)
+# title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
+# helper.makeSpotifyList(sp, spo, title, track_ids, True)
 
-track_ids = []
-for i in range(len(newsongs)):
-    track_ids.append(songdata.loc[newsongs[i]][0])
-pprint.pprint(track_ids)
-title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-helper.makeSpotifyList(sp, spo, title, track_ids, True)
+# mse_annotations = ["{:.2e}".format(p) for p in newsmooth]
+# helper.graph('valence', 'arousal', newpoints, data_dim=2, marker='.', title='Example Playlist', file='exgraph.png', av_circle=True, point_annotations=mse_annotations)
 
-# tests.test_lengths(model, songdata, coords)
-# tests.test_neighbors(model, songdata, coords)
-# tests.test_dists(model, songdata, coords)
+
+# tests.test_lengths(songdata)
+# tests.test_neighbors(songdata)
+tests.test_dists(songdata)

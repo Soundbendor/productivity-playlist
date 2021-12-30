@@ -81,7 +81,7 @@ def jaccard_score(cand, current, destination, songs_left):
     return score
 
 def neighbors_rand(candidates, origin, destination):
-    cand = candidates[random.randrange(0, len(candidates))]
+    cand = candidates[random.randrange(0, len(candidates))].tolist()
     smooth = smoothness_mse(cand, origin, destination)
     return cand, smooth
 
