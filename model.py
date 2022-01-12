@@ -49,8 +49,8 @@ class NeptuneMonitor(tf.keras.callbacks.Callback):
         neptune.send_metric("val_mean_absolute_error", epoch, logs["val_mean_absolute_error"])
         neptune.send_metric("mean_absolute_percentage_error", epoch, logs["mean_absolute_percentage_error"])
         neptune.send_metric("val_mean_absolute_percentage_error", epoch, logs["val_mean_absolute_percentage_error"])
-        neptune.send_metric("cosine_proximity", epoch, logs["cosine_proximity"])
-        neptune.send_metric("val_cosine_proximity", epoch, logs["val_cosine_proximity"])
+        neptune.send_metric("cosine_similarity", epoch, logs["cosine_similarity"])
+        neptune.send_metric("val_cosine_similarity", epoch, logs["val_cosine_similarity"])
 
 def process_path(file_path):
     img = tf.io.read_file(file_path)
@@ -62,7 +62,7 @@ def process_path(file_path):
 AUTOTUNE    = tf.data.experimental.AUTOTUNE
 #image_ds    = tf.data.Dataset.list_files(str(image_dir/'*/*')).map(process_path, num_parallel_calls=AUTOTUNE)
 #label_ds    = tf.data.Dataset.from_tensor_slices(labels)
-#ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10)
+#ds          = tf.data.Dataset.zip((image_ds, label_ds)).shuffle(buffer_size=10) 
 
 #for elem in ds.take(1):
     #print(elem)
@@ -120,7 +120,7 @@ neptune_callback = NeptuneMonitor()
 model.compile(
   optimizer='RMSprop',
   loss='cosine_similarity',
-  metrics=['accuracy', 'mean_squared_error', 'mean_absolute_error', 'mean_absolute_percentage_error', 'cosine_proximity'])
+  metrics=['mean_squared_error', 'mean_absolute_error', 'mean_absolute_percentage_error', 'cosine_similarity'])
 
 history = model.fit(
   train_ds,
