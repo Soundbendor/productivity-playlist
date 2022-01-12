@@ -2,5 +2,8 @@ Found 33747 files belonging to 1 classes.
 Using 26998 files for training.
 Found 33747 files belonging to 1 classes.
 Using 6749 files for validation.
-Train Dataset Length:  27
-Validation Length:  7
+=========== Datasets read ==============
+Train Dataset Length:  tf.Tensor(27, shape=(), dtype=int64)
+Validation Length:  tf.Tensor(7, shape=(), dtype=int64)
+https://ui.neptune.ai/Soundbendor/playlist/e/PROD-47
+Epoch 1/200
