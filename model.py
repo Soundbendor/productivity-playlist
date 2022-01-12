@@ -77,8 +77,8 @@ val_ds = tf.keras.preprocessing.image_dataset_from_directory(
     frames_path, labels=points, class_names=None, seed=123, validation_split=0.2, subset="validation", color_mode='rgb', batch_size=batch_size, image_size=(img_height, img_width) 
 )
 
-train_ds = train_ds.cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
-val_ds = val_ds.cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+train_ds = train_ds.cache().shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
+val_ds = val_ds.cache().shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
 
 # train_ds    = ds.skip(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
 # val_ds      = ds.take(img_count // val_frac).cache().batch(batch_size).shuffle(buffer_size=10).prefetch(buffer_size=AUTOTUNE)
@@ -87,6 +87,9 @@ print("=========== Datasets read ==============")
 
 print("Train Dataset Length: ", tf.data.experimental.cardinality(train_ds))
 print("Validation Length: ", tf.data.experimental.cardinality(val_ds))
+
+for elem in train_ds.take(1):
+    print(elem)
 
 # data_augmentation = keras.Sequential([
 #     layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
