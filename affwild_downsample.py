@@ -34,9 +34,9 @@ for idx in ids:
         sample["arousal"].append(allframe.loc[fid]['arousal'])
         sample["valence"].append(allframe.loc[fid]['valence'])
 
-        orig = "{}/frames/{}/{}.png".format(root, idx, frm).encode('unicode-escape')
-        dest = "{}/frames/{}.png".format(dest, fid).encode('unicode-escape')
-        shutil.copyfile(orig, dest)
+        oldfile = "{}/frames/{}/{}.png".format(root, idx, frm).encode('unicode-escape')
+        newfile = "{}/frames/{}.png".format(dest, fid).encode('unicode-escape')
+        shutil.copyfile(oldfile, newfile)
 
 pd.DataFrame(sample, index=idsUsed).to_csv(path_or_buf="{}/data.csv".format(dest))
 
