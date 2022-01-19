@@ -41,14 +41,16 @@ class NeptuneMonitor(tf.keras.callbacks.Callback):
     def on_epoch_end(self, epoch, logs={}):
         neptune.send_metric("loss", epoch, logs["loss"])
         neptune.send_metric("val_loss", epoch, logs["val_loss"])
-        neptune.send_metric("acc", epoch, logs["accuracy"])
-        neptune.send_metric("val_acc", epoch, logs["val_accuracy"])
+        
         neptune.send_metric("mean_squared_error", epoch, logs["mean_squared_error"])
         neptune.send_metric("val_mean_squared_error", epoch, logs["val_mean_squared_error"])
+        
         neptune.send_metric("mean_absolute_error", epoch, logs["mean_absolute_error"])
         neptune.send_metric("val_mean_absolute_error", epoch, logs["val_mean_absolute_error"])
+        
         neptune.send_metric("mean_absolute_percentage_error", epoch, logs["mean_absolute_percentage_error"])
         neptune.send_metric("val_mean_absolute_percentage_error", epoch, logs["val_mean_absolute_percentage_error"])
+        
         neptune.send_metric("cosine_similarity", epoch, logs["cosine_similarity"])
         neptune.send_metric("val_cosine_similarity", epoch, logs["val_cosine_similarity"])
 

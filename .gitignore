@@ -16,3 +16,4 @@ Miniconda*
 #ignore misc
 fonts/
 .cache-soundbendor
+*.code-workspace
