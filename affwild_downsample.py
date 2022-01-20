@@ -16,9 +16,10 @@ allframe = pd.read_csv("{}/analysis/all.csv".format(root), header=0, index_col=0
 
 helper.makeDir("./data/affsamples")
 
-for num in range(0, 30):
+for num in range(5, 30, 5):
     dest     = "./data/affsamples/{:02d}".format(num)
     helper.makeDir(dest)
+    helper.makeDir("{}/frames".format(dest))
 
     idsUsed  = []
     sample   = {
@@ -73,7 +74,7 @@ for num in range(0, 30):
         title="Distribution of AffWild Points",
         file="{}/box.png".format(dest),
     )
-
+    '''
     hists = [(i, sample[i]) for i in ["valence", "arousal"]]
     for attr, arr in hists:
         helper.graph(
@@ -81,3 +82,4 @@ for num in range(0, 30):
             title="{} Distribution in Sample".format(attr), 
             file="{}/{}.png".format(dest, attr)
         )
+    '''
