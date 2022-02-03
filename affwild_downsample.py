@@ -83,3 +83,7 @@ def make_dataset(name, ids):
 
 
 print(ids)
+
+splitidx = int(len(ids) * 0.8)
+ids_train   = ids[0:splitidx]
+ids_test    = ids[splitidx:]
