@@ -14,10 +14,8 @@ ids      = [int(i) for i in os.listdir("{}/frames".format(root))]
 framecnt = pd.read_csv("{}/analysis/summary.csv".format(root), index_col=0, header=0, usecols=[0,1])
 allframe = pd.read_csv("{}/analysis/all.csv".format(root), header=0, index_col=0)
 
-helper.makeDir("./data/affsamples")
-
-for num in range(5, 30, 5):
-    dest     = "./data/affsamples/{:02d}".format(num)
+def make_dataset(name, ids):
+    dest    = "./data/{}/".format(name)
     helper.makeDir(dest)
     helper.makeDir("{}/frames".format(dest))
 
@@ -30,7 +28,7 @@ for num in range(5, 30, 5):
     }
 
     for idx in ids:
-        for frm in range(num, framecnt.loc[idx][0], 30):
+        for frm in range(0, framecnt.loc[idx][0], 20):
             fid = int(1e5 * idx + frm)
             idsUsed.append(fid)
             print(fid, end="\r")
@@ -74,7 +72,7 @@ for num in range(5, 30, 5):
         title="Distribution of AffWild Points",
         file="{}/box.png".format(dest),
     )
-    '''
+
     hists = [(i, sample[i]) for i in ["valence", "arousal"]]
     for attr, arr in hists:
         helper.graph(
@@ -82,4 +80,6 @@ for num in range(5, 30, 5):
             title="{} Distribution in Sample".format(attr), 
             file="{}/{}.png".format(dest, attr)
         )
-    '''
+
+
+print(ids)
