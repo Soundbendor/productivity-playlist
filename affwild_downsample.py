@@ -94,4 +94,4 @@ print(ids_train)
 print(ids_test)
 
 make_dataset("afftrain", ids_train)
-make_dataset("affest", ids_test)
+make_dataset("afftest", ids_test)
