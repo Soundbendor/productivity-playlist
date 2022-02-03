@@ -1,47 +1,42 @@
-2022-01-12 14:32:35.233990: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-01-12 14:33:35.370088: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
-2022-01-12 14:33:35.383502: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
-2022-01-12 14:33:36.447073: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+2022-01-19 19:08:22.487430: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-01-19 19:08:42.096383: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2022-01-19 19:08:42.098661: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2022-01-19 19:08:44.022851: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
 pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
 coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
-2022-01-12 14:33:36.447131: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-01-12 14:33:36.665261: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-01-12 14:33:36.665378: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
-2022-01-12 14:33:36.751134: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
-2022-01-12 14:33:36.832937: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
-2022-01-12 14:33:37.076507: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
-2022-01-12 14:33:37.148460: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
-2022-01-12 14:33:37.798573: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-01-12 14:33:37.802403: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
-2022-01-12 14:33:37.828764: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
+2022-01-19 19:08:44.022913: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-01-19 19:08:44.031113: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-01-19 19:08:44.031209: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2022-01-19 19:08:44.037379: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2022-01-19 19:08:44.040055: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2022-01-19 19:08:44.046664: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2022-01-19 19:08:44.051408: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2022-01-19 19:08:44.063460: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-01-19 19:08:44.067170: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2022-01-19 19:08:44.068041: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
 To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2022-01-12 14:33:37.831153: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+2022-01-19 19:08:44.070053: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
 pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
 coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
-2022-01-12 14:33:37.831207: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-01-12 14:33:37.831264: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-01-12 14:33:37.831297: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
-2022-01-12 14:33:37.831328: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
-2022-01-12 14:33:37.831359: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
-2022-01-12 14:33:37.831391: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
-2022-01-12 14:33:37.831423: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
-2022-01-12 14:33:37.831455: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-01-12 14:33:37.835623: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
-2022-01-12 14:33:37.835691: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-01-12 14:33:43.824940: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
-2022-01-12 14:33:43.825245: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
-2022-01-12 14:33:43.825264: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
-2022-01-12 14:33:43.828662: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 22477 MB memory) -> physical GPU (device: 0, name: Quadro RTX 6000, pci bus id: 0000:3b:00.0, compute capability: 7.5)
-2022-01-12 14:33:43.839943: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
-2022-01-12 14:33:46.036816: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
-2022-01-12 14:33:46.038050: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2500000000 Hz
-2022-01-12 14:33:56.071162: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 250 of 256
-2022-01-12 14:33:56.279220: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-01-12 14:33:57.521823: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 1 of 10
-2022-01-12 14:34:06.651273: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 8 of 10
-2022-01-12 14:34:09.017222: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-01-12 14:34:10.381686: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
-2022-01-12 14:34:17.586500: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
+2022-01-19 19:08:44.070093: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-01-19 19:08:44.070134: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-01-19 19:08:44.070162: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2022-01-19 19:08:44.070187: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2022-01-19 19:08:44.070213: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2022-01-19 19:08:44.070239: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2022-01-19 19:08:44.070264: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2022-01-19 19:08:44.070291: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-01-19 19:08:44.073782: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2022-01-19 19:08:44.073838: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-01-19 19:08:45.882966: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-01-19 19:08:45.883128: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2022-01-19 19:08:45.883137: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2022-01-19 19:08:45.885333: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 22477 MB memory) -> physical GPU (device: 0, name: Quadro RTX 6000, pci bus id: 0000:3b:00.0, compute capability: 7.5)
+2022-01-19 19:08:45.885530: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2022-01-19 19:08:46.794390: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+2022-01-19 19:08:46.794894: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2500000000 Hz
+2022-01-19 19:08:51.813309: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
+2022-01-19 19:08:58.146735: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
 op: "TensorSliceDataset"
 input: "Placeholder/_0"
 attr {
@@ -62,14 +57,14 @@ attr {
   }
 }
 
-2022-01-12 14:34:18.448500: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-01-12 14:34:23.912068: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-01-12 14:34:31.201027: W tensorflow/stream_executor/gpu/asm_compiler.cc:63] Running ptxas --version returned 256
-2022-01-12 14:34:31.261287: W tensorflow/stream_executor/gpu/redzone_allocator.cc:314] Internal: ptxas exited with non-zero error code 256, output: 
+2022-01-19 19:08:58.912738: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-01-19 19:09:03.201960: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-01-19 19:09:04.126303: W tensorflow/stream_executor/gpu/asm_compiler.cc:63] Running ptxas --version returned 256
+2022-01-19 19:09:04.185323: W tensorflow/stream_executor/gpu/redzone_allocator.cc:314] Internal: ptxas exited with non-zero error code 256, output: 
 Relying on driver to perform ptx compilation. 
 Modify $PATH to customize ptxas location.
 This message will be only logged once.
-2022-01-12 14:54:06.595773: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
+2022-01-19 19:14:48.307092: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
 op: "TensorSliceDataset"
 input: "Placeholder/_0"
 attr {
@@ -90,18 +85,105 @@ attr {
   }
 }
 
-2022-01-12 14:54:16.949391: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 255 of 256
-2022-01-12 14:54:16.991399: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-01-12 14:54:18.254991: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 1 of 10
-2022-01-12 14:54:27.682329: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 8 of 10
-2022-01-12 14:54:30.355318: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
+Unexpected error in ping thread.
 Traceback (most recent call last):
-  File "/nfs/guille/eecs_research/soundbendor/playlist/model.py", line 125, in <module>
-    history = model.fit(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/engine/training.py", line 1145, in fit
-    callbacks.on_epoch_end(epoch, epoch_logs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/tensorflow/python/keras/callbacks.py", line 432, in on_epoch_end
-    callback.on_epoch_end(epoch, numpy_logs)
-  File "/nfs/guille/eecs_research/soundbendor/playlist/model.py", line 44, in on_epoch_end
-    neptune.send_metric("acc", epoch, logs["accuracy"])
-KeyError: 'accuracy'
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 699, in urlopen
+    httplib_response = self._make_request(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 445, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 440, in _make_request
+    httplib_response = conn.getresponse()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 1371, in getresponse
+    response.begin()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 319, in begin
+    version, status, reason = self._read_status()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 280, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1241, in recv_into
+    return self.read(nbytes, buffer)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1099, in read
+    return self._sslobj.read(len, buffer)
+ConnectionResetError: [Errno 104] Connection reset by peer
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 755, in urlopen
+    retries = retries.increment(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/util/retry.py", line 532, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/packages/six.py", line 769, in reraise
+    raise value.with_traceback(tb)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 699, in urlopen
+    httplib_response = self._make_request(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 445, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 440, in _make_request
+    httplib_response = conn.getresponse()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 1371, in getresponse
+    response.begin()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 319, in begin
+    version, status, reason = self._read_status()
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 280, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1241, in recv_into
+    return self.read(nbytes, buffer)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1099, in read
+    return self._sslobj.read(len, buffer)
+urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
+    return func(self, *args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 291, in _get_incoming_response
+    inner_response = self.future.result(timeout=timeout)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/requests_client.py", line 266, in result
+    response = self.session.send(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/sessions.py", line 655, in send
+    r = adapter.send(request, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/ping_thread.py", line 37, in run
+    self.__backend.ping_experiment(self.__experiment)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 667, in ping_experiment
+    self.leaderboard_swagger_client.api.ping(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
+    six.reraise(*sys.exc_info())
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
+    raise value
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 197, in response
+    incoming_response = self._get_incoming_response(timeout)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 126, in wrapper
+    self.future._raise_connection_error(exception)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 91, in _raise_connection_error
+    self._raise_error(BravadoConnectionError, 'ConnectionError', exception)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 79, in _raise_error
+    six.reraise(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 718, in reraise
+    raise value.with_traceback(tb)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
+    return func(self, *args, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 291, in _get_incoming_response
+    inner_response = self.future.result(timeout=timeout)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/requests_client.py", line 266, in result
+    response = self.session.send(
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/sessions.py", line 655, in send
+    r = adapter.send(request, **kwargs)
+  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 498, in send
+    raise ConnectionError(err, request=request)
+bravado.http_future.RequestsFutureAdapterConnectionError

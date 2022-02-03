@@ -27,6 +27,8 @@ def make_dataset(name, ids):
         "valence": []
     }
 
+    print("Creating dataset {}".format(name))
+
     for idx in ids:
         for frm in range(0, framecnt.loc[idx][0], 20):
             fid = int(1e5 * idx + frm)
@@ -87,3 +89,9 @@ print(ids)
 splitidx = int(len(ids) * 0.8)
 ids_train   = ids[0:splitidx]
 ids_test    = ids[splitidx:]
+
+print(ids_train)
+print(ids_test)
+
+make_dataset("afftrain", ids_train)
+make_dataset("affest", ids_test)
