@@ -17,7 +17,7 @@ def load_dataset(frames_path, val_split = 0):
     scaler = MinMaxScaler(feature_range=(-1,1))
     points_pd[['arousal', 'valence']] = scaler.fit_transform(points_pd[['arousal', 'valence']])
 
-    points = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(img_count)]
+    points = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(len(points_pd))]
 
     datasets = []
 
