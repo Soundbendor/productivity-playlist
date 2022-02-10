@@ -86,9 +86,9 @@ class NeptuneMonitor(tf.keras.callbacks.Callback):
 
         return
 
-neptune.init("Soundbendor/playlist", api_token=api_token)
-exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
-neptune_callback = NeptuneMonitor()
+# neptune.init("Soundbendor/playlist", api_token=api_token)
+# exp = neptune.create_experiment(params=PARAMS, upload_source_files=["model.py"])
+# neptune_callback = NeptuneMonitor()
 
 # data_augmentation = keras.Sequential([
 #     layers.experimental.preprocessing.RandomFlip("horizontal", input_shape=(img_height, img_width, 3)),
