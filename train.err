@@ -1,40 +1,46 @@
-2022-02-07 22:43:32.729534: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-02-07 22:44:05.331962: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
-2022-02-07 22:44:05.338496: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
-2022-02-07 22:44:08.282003: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
-pciBusID: 0000:5e:00.0 name: Tesla T4 computeCapability: 7.5
-coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
-2022-02-07 22:44:08.282138: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-02-07 22:44:08.535301: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-02-07 22:44:08.535394: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
-2022-02-07 22:44:08.691033: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
-2022-02-07 22:44:08.874923: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
-2022-02-07 22:44:09.158614: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
-2022-02-07 22:44:09.266391: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
-2022-02-07 22:44:10.333328: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-02-07 22:44:10.335235: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
-2022-02-07 22:44:10.336589: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
+2022-02-09 23:34:49.337939: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-02-09 23:35:04.096360: I tensorflow/compiler/jit/xla_cpu_device.cc:41] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2022-02-09 23:35:04.098191: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcuda.so.1
+2022-02-09 23:35:05.050192: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
+coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
+2022-02-09 23:35:05.050243: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-02-09 23:35:05.056769: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-02-09 23:35:05.056832: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2022-02-09 23:35:05.060802: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2022-02-09 23:35:05.062440: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2022-02-09 23:35:05.066607: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2022-02-09 23:35:05.069950: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2022-02-09 23:35:05.077497: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-02-09 23:35:05.079698: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2022-02-09 23:35:05.080671: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  SSE4.1 SSE4.2 AVX AVX2 AVX512F FMA
 To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
-2022-02-07 22:44:10.337191: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
-pciBusID: 0000:5e:00.0 name: Tesla T4 computeCapability: 7.5
-coreClock: 1.59GHz coreCount: 40 deviceMemorySize: 14.75GiB deviceMemoryBandwidth: 298.08GiB/s
-2022-02-07 22:44:10.337230: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-02-07 22:44:10.337276: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-02-07 22:44:10.337301: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
-2022-02-07 22:44:10.337324: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
-2022-02-07 22:44:10.337346: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
-2022-02-07 22:44:10.337369: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
-2022-02-07 22:44:10.337392: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
-2022-02-07 22:44:10.337415: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-02-07 22:44:10.338086: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
-2022-02-07 22:44:10.338131: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
-2022-02-07 22:44:16.915973: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
-2022-02-07 22:44:16.916827: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
-2022-02-07 22:44:16.916853: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
-2022-02-07 22:44:16.918921: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 13971 MB memory) -> physical GPU (device: 0, name: Tesla T4, pci bus id: 0000:5e:00.0, compute capability: 7.5)
-2022-02-07 22:44:16.919252: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2022-02-09 23:35:05.081852: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1720] Found device 0 with properties: 
+pciBusID: 0000:3b:00.0 name: Quadro RTX 6000 computeCapability: 7.5
+coreClock: 1.77GHz coreCount: 72 deviceMemorySize: 23.65GiB deviceMemoryBandwidth: 625.94GiB/s
+2022-02-09 23:35:05.081875: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-02-09 23:35:05.081899: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-02-09 23:35:05.081913: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublasLt.so.10
+2022-02-09 23:35:05.081927: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcufft.so.10
+2022-02-09 23:35:05.081940: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcurand.so.10
+2022-02-09 23:35:05.081953: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusolver.so.10
+2022-02-09 23:35:05.081967: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcusparse.so.10
+2022-02-09 23:35:05.081981: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-02-09 23:35:05.083968: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1862] Adding visible gpu devices: 0
+2022-02-09 23:35:05.084000: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudart.so.10.1
+2022-02-09 23:35:05.607488: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1261] Device interconnect StreamExecutor with strength 1 edge matrix:
+2022-02-09 23:35:05.607538: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1267]      0 
+2022-02-09 23:35:05.607555: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1280] 0:   N 
+2022-02-09 23:35:05.610007: I tensorflow/core/common_runtime/gpu/gpu_device.cc:1406] Created TensorFlow device (/job:localhost/replica:0/task:0/device:GPU:0 with 22477 MB memory) -> physical GPU (device: 0, name: Quadro RTX 6000, pci bus id: 0000:3b:00.0, compute capability: 7.5)
+2022-02-09 23:35:05.610229: I tensorflow/compiler/jit/xla_gpu_device.cc:99] Not creating XLA devices, tf_xla_enable_xla_devices not set
+2022-02-09 23:35:06.387654: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
+2022-02-09 23:35:06.388152: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 2500000000 Hz
+2022-02-09 23:35:10.850168: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
+2022-02-09 23:35:15.341002: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
+2022-02-09 23:35:20.423345: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
+2022-02-09 23:35:24.277838: W tensorflow/core/kernels/data/cache_dataset_ops.cc:757] The calling iterator did not fully read the dataset being cached. In order to avoid unexpected truncation of the dataset, the partially cached contents of the dataset will be discarded. This can happen if you have an input pipeline similar to `dataset.cache().take(k).repeat()`. You should use `dataset.take(k).cache().repeat()` instead.
 WARNING: We recommend an upgrade to a new version of neptune-client - 0.14.2 (installed - 0.13.3).
-2022-02-07 22:44:31.018628: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
+2022-02-09 23:37:09.146529: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
 op: "TensorSliceDataset"
 input: "Placeholder/_0"
 attr {
@@ -55,22 +61,14 @@ attr {
   }
 }
 
-2022-02-07 22:44:31.069444: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:116] None of the MLIR optimization passes are enabled (registered 2)
-2022-02-07 22:44:31.070242: I tensorflow/core/platform/profile_utils/cpu_utils.cc:112] CPU Frequency: 3800000000 Hz
-2022-02-07 22:44:31.943895: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
-2022-02-07 22:44:43.329399: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 174 of 256
-2022-02-07 22:44:47.850422: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-02-07 22:44:49.360215: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 1 of 10
-2022-02-07 22:44:53.538560: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 3 of 10
-2022-02-07 22:45:03.490057: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 9 of 10
-2022-02-07 22:45:05.355696: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-02-07 22:45:05.675215: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
-2022-02-07 22:45:15.108067: W tensorflow/stream_executor/gpu/asm_compiler.cc:63] Running ptxas --version returned 256
-2022-02-07 22:45:15.147236: W tensorflow/stream_executor/gpu/redzone_allocator.cc:314] Internal: ptxas exited with non-zero error code 256, output: 
+2022-02-09 23:37:09.931629: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcublas.so.10
+2022-02-09 23:37:14.902284: I tensorflow/stream_executor/platform/default/dso_loader.cc:49] Successfully opened dynamic library libcudnn.so.7
+2022-02-09 23:37:16.734413: W tensorflow/stream_executor/gpu/asm_compiler.cc:63] Running ptxas --version returned 256
+2022-02-09 23:37:17.513422: W tensorflow/stream_executor/gpu/redzone_allocator.cc:314] Internal: ptxas exited with non-zero error code 256, output: 
 Relying on driver to perform ptx compilation. 
 Modify $PATH to customize ptxas location.
 This message will be only logged once.
-2022-02-07 23:06:58.373360: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
+2022-02-09 23:44:16.017094: W tensorflow/core/grappler/optimizers/data/auto_shard.cc:656] In AUTO-mode, and switching to DATA-based sharding, instead of FILE-based sharding as we cannot find appropriate reader dataset op(s) to shard. Error: Found an unshardable source dataset: name: "TensorSliceDataset/_1"
 op: "TensorSliceDataset"
 input: "Placeholder/_0"
 attr {
@@ -91,561 +89,7 @@ attr {
   }
 }
 
-2022-02-07 23:07:08.706155: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 231 of 256
-2022-02-07 23:07:09.897944: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-2022-02-07 23:07:11.319163: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 1 of 10
-2022-02-07 23:07:18.781055: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:177] Filling up shuffle buffer (this may take a while): 6 of 10
-2022-02-07 23:07:24.653178: I tensorflow/core/kernels/data/shuffle_dataset_op.cc:230] Shuffle buffer filled.
-Unexpected error in ping thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 699, in urlopen
-    httplib_response = self._make_request(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 445, in _make_request
-    six.raise_from(e, None)
-  File "<string>", line 3, in raise_from
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 440, in _make_request
-    httplib_response = conn.getresponse()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 1371, in getresponse
-    response.begin()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 319, in begin
-    version, status, reason = self._read_status()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 280, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/socket.py", line 704, in readinto
-    return self._sock.recv_into(b)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1241, in recv_into
-    return self.read(nbytes, buffer)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1099, in read
-    return self._sslobj.read(len, buffer)
-ConnectionResetError: [Errno 104] Connection reset by peer
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 439, in send
-    resp = conn.urlopen(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 755, in urlopen
-    retries = retries.increment(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/util/retry.py", line 532, in increment
-    raise six.reraise(type(error), error, _stacktrace)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/packages/six.py", line 769, in reraise
-    raise value.with_traceback(tb)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 699, in urlopen
-    httplib_response = self._make_request(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 445, in _make_request
-    six.raise_from(e, None)
-  File "<string>", line 3, in raise_from
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/urllib3/connectionpool.py", line 440, in _make_request
-    httplib_response = conn.getresponse()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 1371, in getresponse
-    response.begin()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 319, in begin
-    version, status, reason = self._read_status()
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/http/client.py", line 280, in _read_status
-    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/socket.py", line 704, in readinto
-    return self._sock.recv_into(b)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1241, in recv_into
-    return self.read(nbytes, buffer)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/ssl.py", line 1099, in read
-    return self._sslobj.read(len, buffer)
-urllib3.exceptions.ProtocolError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 291, in _get_incoming_response
-    inner_response = self.future.result(timeout=timeout)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/requests_client.py", line 266, in result
-    response = self.session.send(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/sessions.py", line 655, in send
-    r = adapter.send(request, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 498, in send
-    raise ConnectionError(err, request=request)
-requests.exceptions.ConnectionError: ('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/ping_thread.py", line 37, in run
-    self.__backend.ping_experiment(self.__experiment)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 667, in ping_experiment
-    self.leaderboard_swagger_client.api.ping(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 197, in response
-    incoming_response = self._get_incoming_response(timeout)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 126, in wrapper
-    self.future._raise_connection_error(exception)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 91, in _raise_connection_error
-    self._raise_error(BravadoConnectionError, 'ConnectionError', exception)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 79, in _raise_error
-    six.reraise(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 718, in reraise
-    raise value.with_traceback(tb)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 291, in _get_incoming_response
-    inner_response = self.future.result(timeout=timeout)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/requests_client.py", line 266, in result
-    response = self.session.send(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/sessions.py", line 655, in send
-    r = adapter.send(request, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/requests/adapters.py", line 498, in send
-    raise ConnectionError(err, request=request)
-bravado.http_future.RequestsFutureAdapterConnectionError
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (3948a088df2)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected error in ping thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/ping_thread.py", line 37, in run
-    self.__backend.ping_experiment(self.__experiment)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 667, in ping_experiment
-    self.leaderboard_swagger_client.api.ping(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (0ef16f424de)"}
-Failed to send channel value.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (ba1aebbed90)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/channels/channels_values_sender.py", line 204, in _send_values
-    self._experiment._send_channels_values(channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/experiments.py", line 1075, in _send_channels_values
-    self._backend.send_channels_values(self, channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 647, in send_channels_values
-    self._execute_operations(experiment, send_operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"code":500,"errorType":"INTERNAL_SERVER_ERROR","title":"Internal Server Error (a953db6c4a1)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"code":500,"errorType":"INTERNAL_SERVER_ERROR","title":"Internal Server Error (6edff499d9b)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Failed to send channel value.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (a1e94c7ad1c)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/channels/channels_values_sender.py", line 204, in _send_values
-    self._experiment._send_channels_values(channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/experiments.py", line 1075, in _send_channels_values
-    self._backend.send_channels_values(self, channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 647, in send_channels_values
-    self._execute_operations(experiment, send_operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (4e731299d79)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Failed to send channel value.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (a5649e108f7)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/channels/channels_values_sender.py", line 204, in _send_values
-    self._experiment._send_channels_values(channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/experiments.py", line 1075, in _send_channels_values
-    self._backend.send_channels_values(self, channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 647, in send_channels_values
-    self._execute_operations(experiment, send_operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"code":500,"errorType":"INTERNAL_SERVER_ERROR","title":"Internal Server Error (69a93688e53)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Failed to send channel value.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (79379193f9f)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/channels/channels_values_sender.py", line 204, in _send_values
-    self._experiment._send_channels_values(channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/experiments.py", line 1075, in _send_channels_values
-    self._backend.send_channels_values(self, channels_with_values)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 647, in send_channels_values
-    self._execute_operations(experiment, send_operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
-Unexpected HTTP error in hardware metric reporting thread.
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 970, in _execute_operations
-    self.leaderboard_swagger_client.api.executeOperations(**kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 239, in response
-    six.reraise(*sys.exc_info())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/six.py", line 719, in reraise
-    raise value
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 200, in response
-    swagger_result = self._get_swagger_result(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 124, in wrapper
-    return func(self, *args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 300, in _get_swagger_result
-    unmarshal_response(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 334, in unmarshal_response
-    raise_on_unexpected(incoming_response)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/bravado/http_future.py", line 408, in raise_on_unexpected
-    raise make_http_exception(response=http_response)
-bravado.exception.HTTPInternalServerError: 500 : {"errorType":"INTERNAL_SERVER_ERROR","code":500,"title":"Internal Server Error (62235cbe4a4)"}
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/threads/hardware_metric_reporting_thread.py", line 39, in run
-    self.__metric_service.report_and_send(timestamp=time.time())
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/hardware/metrics/service/metric_service.py", line 27, in report_and_send
-    self.__backend.send_hardware_metric_reports(
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 295, in wrapper
-    return func(*args, **kwargs)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/internal/api_clients/hosted_api_clients/hosted_alpha_leaderboard_api_client.py", line 727, in send_hardware_metric_reports
-    self._execute_operations(experiment, operations)
-  File "/nfs/stak/users/gaurs/playlist/miniconda3/envs/tf_gpu/lib/python3.9/site-packages/neptune/utils.py", line 335, in wrapper
-    raise ServerError()
-neptune.api_exceptions.ServerError: 
-[95m
-----ServerError-----------------------------------------------------------------------
-[0m
-Neptune Client Library encountered an unexpected Server Error.
-
-Please try again later or contact Neptune support.
-
+2022-02-09 23:48:16.943511: W tensorflow/core/framework/cpu_allocator_impl.cc:80] Allocation of 21272371200 exceeds 10% of free system memory.
+2022-02-09 23:48:42.658457: W tensorflow/core/framework/cpu_allocator_impl.cc:80] Allocation of 21272371200 exceeds 10% of free system memory.
+/var/spool/slurmd/job474301/slurm_script: line 15: 199891 Killed                  python3 model.py
+slurmstepd: error: Detected 1 oom-kill event(s) in StepId=474301.batch. Some of your processes may have been killed by the cgroup out-of-memory handler.

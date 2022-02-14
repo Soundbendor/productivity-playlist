@@ -30,7 +30,7 @@ def make_dataset(name, ids):
     print("Creating dataset {}".format(name))
 
     for idx in ids:
-        for frm in range(0, framecnt.loc[idx][0], 20):
+        for frm in range(0, framecnt.loc[idx][0], 30):
             fid = int(1e5 * idx + frm)
             idsUsed.append(fid)
             print(fid, end="\r")
