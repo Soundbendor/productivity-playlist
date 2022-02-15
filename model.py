@@ -8,6 +8,7 @@ import helper
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras import layers
 
+api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
 
 PARAMS = {
     "batch_size"    : 32,
@@ -15,8 +16,8 @@ PARAMS = {
     "img_width"     : 640,
     "dropout"       : 0.2,
     "val_split"     : 0.2,
-    "train_epochs"  : 1,
-    "test_epochs"   : 1,
+    "train_epochs"  : 200,
+    "test_epochs"   : 20,
     "train_dir"     : "./data/afftrain",
     "test_dir"      : "./data/afftest"
 }
@@ -80,7 +81,7 @@ def load_dataset(frames_path, train = True):
         return split_dataset(ds)
 
 train_ds, val_ds = load_dataset(PARAMS["train_dir"], True)
-test_images, test_labels  = load_dataset(PARAMS["test_dir"], False)
+test_images, test_labels = load_dataset(PARAMS["test_dir"], False)
 print(test_images.shape)
 print(test_labels.shape)
 
@@ -106,7 +107,6 @@ with mirrored_strategy.scope():
         layers.Dense(2, activation='tanh')
     ])
 
-    api_token = "eyJhcGlfYWRkcmVzcyI6Imh0dHBzOi8vdWkubmVwdHVuZS5haSIsImFwaV91cmwiOiJodHRwczovL3VpLm5lcHR1bmUuYWkiLCJhcGlfa2V5IjoiNThkNWU4ZDQtZWU0Mi00YmQ3LTk2MWMtMTEyNTQ0N2MwOWNiIn0="
     class NeptuneMonitor(tf.keras.callbacks.Callback):
         def on_epoch_end(self, epoch, logs={}):
             # send logs
@@ -117,13 +117,14 @@ with mirrored_strategy.scope():
             if epoch % PARAMS["test_epochs"] == 0:
                 test_preds = model.predict(test_images, batch_size=1)
                 print(test_preds.shape, test_labels.shape)
-                
+                print(test_preds[0], test_labels[0])
+
                 y_true = np.transpose(test_labels)
                 y_pred = np.transpose(test_preds)
 
                 for i in range(2):
                     pearson = np.corrcoef(y_true[i], y_pred[i])
-                    neptune.send_metric("{}_pearson".format(dims[i]), epoch, pearson)
+                    neptune.send_metric("{}_pearson".format(dims[i]), epoch, pearson[0][1])
 
             return
 
