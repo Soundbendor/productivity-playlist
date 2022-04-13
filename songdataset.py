@@ -29,7 +29,7 @@ class SongDataset:
         return self.data_df.loc[song]
     
     def get_spid(self, song):
-        return self.full_df.loc[song]['sp_id']
+        return self.full_df.loc[song]['sp_track_id']
 
     def make_unique(self):
         self.unique_points = []

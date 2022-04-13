@@ -2,7 +2,7 @@
     "auth": {
         "client_id": "d997872320da45e19f5ac39c837bceab",
         "client_secret": "d7e149341be04e608dcb24ea6622dd67",
-        "redirect_uri": "https://www.google.com/",
+        "redirect_uri": "http://localhost:8080/",
         "username": "soundbendor",
         "scope-main": "playlist-modify-public,playlist-modify-private"
     },

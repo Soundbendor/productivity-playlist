@@ -55,46 +55,41 @@ user_dest       = 540954
 neighbors       = 10
 n_songs_reqd    = 15
 
-# newsongs, newsmooth, newpoints = prodplay.makePlaylist(
-#     songdata, user_orig, user_dest, n_songs_reqd
-# )
-# newpoints = np.transpose(newpoints)
-# newsmooth = [0] + newsmooth.tolist() + [0]
-# newsongs = newsongs.tolist()
+scores = [
+    { "func": algos.cosine_score, "name": "Cosine Similarity"}
+    ,{ "func": algos.euclidean_score, "name": "Euclidean Distance"}
+    ,{ "func": algos.manhattan_score, "name": "Manhattan Distance"}
+    ,{ "func": algos.minkowski3_score, "name": "Minkowski Distance (order 3)"}
+    ,{ "func": algos.jaccard_score, "name": "Jaccard Distance"}
+    ,{ "func": algos.mult_score, "name": "Multiplied Ratios"}
+    ,{ "func": algos.neighbors_rand, "name": "Random Neighbors"}
+]
 
-# fullsongdata = pd.read_csv(info["main"]["songdata"], header=0, index_col=0)
-# songtitles = [fullsongdata.loc[s]["track_name"] for s in newsongs]
-# songartists = [fullsongdata.loc[s]["artist_name"] for s in newsongs]
+test_dir = "graph-results/{}".format(str(time.strftime("%y-%m-%d_%H%M")))
+helper.makeDir(test_dir)
 
-# jsondata = {
-#     "id": newsongs,
-#     "track": songtitles,
-#     "artist": songartists,
-#     "valence": newpoints[0].tolist(),
-#     "arousal": newpoints[1].tolist(),
-#     "smooth": newsmooth
-# }
+for s in scores:
+    newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+        songdata, user_orig, user_dest, n_songs_reqd, score = s['func']
+    )
+    newpoints = np.transpose(newpoints)
+    newsongs = newsongs.tolist()
 
-# pprint.pprint(jsondata)
+    track_ids = []
+    for song in newsongs:
+        track_ids.append(songdata.get_spid(song))
+    pprint.pprint(track_ids)
 
-# csv_df = pd.DataFrame(jsondata)
-# csv_df.to_csv("expoints.csv")
+    title = "Playlist {} {}".format(s["name"], str(time.strftime("%Y-%m-%d %H:%M")))
+    helper.makeSpotifyList(sp, spo, title, track_ids, True)
 
-# newpoints = np.transpose(newpoints)
-# labels = ["{} - {}".format(songdata.loc[song][2], songdata.loc[song][3]) for song in newsongs]
-# pprint.pprint(labels)
-
-# track_ids = []
-# for i in range(len(newsongs)):
-#     track_ids.append(songdata.loc[newsongs[i]][0])
-# pprint.pprint(track_ids)
-# title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-# helper.makeSpotifyList(sp, spo, title, track_ids, True)
-
-# mse_annotations = ["{:.2e}".format(p) for p in newsmooth]
-# helper.graph('valence', 'arousal', newpoints, data_dim=2, marker='.', title='Example Playlist', file='exgraph.png', av_circle=True, point_annotations=mse_annotations)
-
+    helper.graph(
+        "valence", "arousal", newpoints, data_dim=2,
+        title="Example Path using {}".format(s['name']),
+        marker=".",
+        file="{}/{}.png".format(test_dir, s['name'])
+    )
 
 # tests.test_lengths(songdata)
 # tests.test_neighbors(songdata)
-tests.test_dists(songdata)
+# tests.test_dists(songdata)
