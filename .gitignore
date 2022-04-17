@@ -15,5 +15,7 @@ Miniconda*
 sb/
 
 #ignore misc
-.cache-soundbendor
+fonts/
+.cache-*
+core.*
 *.code-workspace

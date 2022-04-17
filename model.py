@@ -17,7 +17,7 @@ PARAMS = {
     "dropout"       : 0.2,
     "val_split"     : 0.2,
     "train_epochs"  : 200,
-    "test_epochs"   : 20,
+    "test_epochs"   : 50,
     "train_dir"     : "./data/afftrain",
     "test_dir"      : "./data/afftest"
 }
@@ -48,8 +48,8 @@ def print_datasets(datasets, frames_path):
 def load_dataset(frames_path, train = True):
     AUTOTUNE        = tf.data.experimental.AUTOTUNE
     points_pd       = pd.read_csv("{}/data.csv".format(frames_path), header=0, usecols=[0, 3, 4], index_col = 0)
-    scaler          = StandardScaler()
-    points_pd[dims] = scaler.fit_transform(points_pd[dims])
+    # scaler          = StandardScaler()
+    # points_pd[dims] = scaler.fit_transform(points_pd[dims])
     points          = [(points_pd.iloc[i]['valence'], points_pd.iloc[i]['arousal']) for i in range(len(points_pd))]
 
     if train:
@@ -141,6 +141,7 @@ with mirrored_strategy.scope():
         train_ds,
         validation_data=val_ds,
         epochs=PARAMS["train_epochs"],
+        verbose=2,
         callbacks=[neptune_callback]
     )
 
