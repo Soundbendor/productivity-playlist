@@ -32,6 +32,7 @@ count = int(sys.argv[1]) if len(sys.argv) > 1 else len(songdata)
 #  "track_7digitalid"
 # ]
 attributes = [k[4:] for k in filter(lambda x : x[:4] == 'get_', hdf5_getters.__dict__.keys())]
+attributes.remove("num_songs")
 
 # msdata = {}
 # for a in attributes: msdata[a] = ["" for _ in range(count)]
