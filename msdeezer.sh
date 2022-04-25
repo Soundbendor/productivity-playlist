@@ -3,13 +3,12 @@
 #SBATCH -J playlist      #job name
 #SBATCH -p cascades
 #SBATCH -A cascades
-#SBATCH -o msdeezer.out
-#SBATCH -e msdeezer.err
+#SBATCH -o msd-one.out
 #SBATCH -t 4-00:00:00      #set max job time to 4 days, 0h (default is around 36-48h)
 
 #my commands
 #source ./venv/bin/activate      #activate tensorflow environment
 source activate tf_gpu
-python3 msdeezer.py
+python3 msdeezer.py 1
 #deactivate
 
