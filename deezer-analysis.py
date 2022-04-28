@@ -3,7 +3,7 @@ import numpy as np
 import helper
 import json
 
-songdata = pd.read_csv("./msdeezer.csv", header=0, index_col=0)
+songdata = pd.read_csv("./msdeezerplus.csv", header=0, index_col=0)
 
 dirname = "./deezer-analysis"
 helper.makeDir(dirname)
