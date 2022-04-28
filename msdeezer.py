@@ -107,7 +107,7 @@ for i in range(count):
 
     h5.close()
 
-for a in attributes:
+for a in msdata.keys():
     songdata["MSD_" + a] = msdata[a]
 songdata.to_csv(path_or_buf="msdeezerplus.csv")
 
