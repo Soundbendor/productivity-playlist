@@ -6,9 +6,8 @@ from sklearn.neighbors import NearestNeighbors
 import helper
 
 class SongDataset:
-    def __init__(self, name, path, cols, start_index, spotify=False):
+    def __init__(self, name, path, cols, start_index):
         self.name = name
-        self.spotify = spotify
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
         self.data_df = self.full_df.iloc[:, start_index:].copy()
         self.size = len(self.data_df)

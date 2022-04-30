@@ -37,8 +37,7 @@ songdata = SongDataset(
     name="Deezer",
     path=info["main"]["songdata"],
     cols=twod, 
-    start_index = 1, 
-    spotify=True
+    start_index = 1
 )
 songdata.make_knn()
 
