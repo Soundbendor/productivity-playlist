@@ -6,16 +6,23 @@ from sklearn.neighbors import NearestNeighbors
 import helper
 
 class SongDataset:
-    def __init__(self, name, path, cols, start_index):
+    def __init__(self, name, path, cols, start_index, knn = False, verbose = False):
         self.name = name
+        self.start_index = start_index
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
         self.data_df = self.full_df.iloc[:, start_index:].copy()
         self.size = len(self.data_df)
+        self.verbose = verbose
 
         self.unique_points = None
         self.points_hash = None
         self.knn_model = None
         self.unique_size = None
+
+        if verbose: 
+            print("\n{}: dataset created".format(name))
+        if knn:
+            self.make_knn()
         return
     
     def get_song(self, point):
@@ -33,6 +40,8 @@ class SongDataset:
     def make_unique(self):
         self.unique_points = []
         self.points_hash = {}
+        if self.verbose: 
+            print("{}: making unique points ... ".format(self.name), end='')
 
         for i in range(self.size):
             id = self.full_df.index.values[i]
@@ -46,14 +55,23 @@ class SongDataset:
 
         self.unique_points = np.unique(np.array(self.unique_points), axis=0)
         self.unique_size = len(self.unique_points)
+        
+        if self.verbose:
+            print("done!")
         return
 
     def make_knn(self):
         if self.unique_points is None:
             self.make_unique()
+
+        if self.verbose:
+            print("{}: making KNN model ... ".format(self.name), end='')
         
         self.knn_model = NearestNeighbors()
         self.knn_model.fit(self.unique_points)
+    
+        if self.verbose:
+            print("done!")
         return self.knn_model
     
     def __len__(self):

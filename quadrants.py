@@ -32,13 +32,18 @@ helper.makeDir("./quadrants")
 
 scalers = [
     ('mms', MinMaxScaler(feature_range=(-1,1))),
-    ('std', StandardScaler())
+    ('std', StandardScaler()),
+    ('no', None)
 ]
 
 def make_scale_quadrants(id, scaler):
     dirname = "./quadrants/{}-{}".format(id, test_time)
     helper.makeDir(dirname)
-    scaled_points = scaler.fit_transform(pd.DataFrame(songdata.unique_points).iloc[:, 0:2])
+    
+    scaled_points = np.array(songdata.unique_points)
+    if scaler is not None:
+        scaled_points = scaler.fit_transform(pd.DataFrame(songdata.unique_points).iloc[:, 0:2])
+
     scaled_to_og = {}
     print("\nUsing {} scaler, data in directory {}".format(id, dirname))
 
