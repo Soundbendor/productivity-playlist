@@ -56,7 +56,7 @@ def playlist():
         n_songs = int(request.args['n_songs'])
 
     if song_orig != None and song_dest != None:
-        songs, smooth, points = prodplay.makePlaylist(
+        songs, points, smooth, even = prodplay.makePlaylist(
             dataset, song_orig, song_dest, n_songs
         )
         print("Got the songs")

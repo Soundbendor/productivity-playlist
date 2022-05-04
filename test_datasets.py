@@ -152,11 +152,11 @@ for dataset in datasets:
             # TODO: test at various neighbor counts
             neighbors = 7
 
-            songlist_cos, smoothie_cos, pointlist_cos = prodplay.makePlaylist(
+            songlist_cos, pointlist_cos, smooth_cos, even_cos = prodplay.makePlaylist(
                 dataset, orig, dest, length, algos.cosine_score, neighbors
             )
             
-            songlist_cos, smoothie_cos, pointlist_cos = prodplay.makePlaylist(
+            songlist_cos, pointlist_cos, smooth_cos, even_cos = prodplay.makePlaylist(
                 dataset, orig, dest, length, algos.euclidean_score, neighbors
             )
 

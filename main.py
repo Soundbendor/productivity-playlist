@@ -68,7 +68,7 @@ test_dir = "graph-results/{}".format(str(time.strftime("%y-%m-%d_%H%M")))
 helper.makeDir(test_dir)
 
 for s in scores:
-    newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+    newsongs, newpoints, newsmooth, neweven = prodplay.makePlaylist(
         songdata, user_orig, user_dest, n_songs_reqd, score = s['func']
     )
     newpoints = np.transpose(newpoints)

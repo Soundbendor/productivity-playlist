@@ -58,6 +58,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     n_songs_reqd -= 1
     smoothlist = np.empty(0)
     songlist = np.empty(0)
+    steplist = np.empty(0)
     pointlist = []
 
     origPoint = dataset.data_df.loc[origin].tolist()
@@ -83,6 +84,9 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
             nextSong = destination
 
         smoothlist = np.append(smoothlist, nextSmooth)
+        steplist = np.append(steplist, np.linalg.norm(
+            np.array(nextPoint) - np.array(currPoint))
+        )
         songlist = np.append(songlist, nextSong)
         pointlist.append(nextPoint)
 
@@ -93,4 +97,5 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         songlist = np.append(songlist, destination)
 
     smoothness = np.mean(smoothlist)
-    return songlist, smoothness, np.array(pointlist)
+    evenness = np.var(steplist)
+    return songlist, np.array(pointlist), smoothness, evenness

@@ -46,7 +46,7 @@ def test_lengths(dataset):
         dataset.make_knn()
 
     for n in n_songs_reqd:
-        newsongs, newsmooth, newpoints = prodplay.makePlaylist(
+        newsongs, newpoints, newsmooth, neweven = prodplay.makePlaylist(
             dataset,
             user_orig, user_dest, n
         )
@@ -127,7 +127,7 @@ def test_neighbors(dataset):
 
             # for loop for testing different amounts of points in between
             for n_songs_reqd in range(minlength, minlength + maxlength):
-                songlist, smoothie, pointlist = prodplay.makePlaylist(
+                songlist, pointlist, smoothie, even = prodplay.makePlaylist(
                     dataset, user_orig, user_dest, n_songs_reqd, neighbors=neighbor_counts[i]
                 ) 
 
@@ -239,7 +239,7 @@ def test_dists(dataset):
 
         # for loop for testing different amounts of points in between
         for n_songs_reqd in range(minlength, minlength + maxlength):
-            songlist, smoothie, pointlist = prodplay.makePlaylist(
+            songlist, pointlist, smoothie, even = prodplay.makePlaylist(
                 dataset,
                 user_orig, user_dest, n_songs_reqd, 
                 score = scores[0][i]
