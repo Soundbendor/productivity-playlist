@@ -98,6 +98,9 @@ def full_rand(coords, pointlist, origin, destination):
     smooth = smoothness_mse(cand, origin, destination)
     return cand, smooth
 
-def smoothness_mse(current, origin, destination):
-    slope = (destination[1] - origin[1]) / (destination[0] - origin[0])
-    return np.square(current[1] - (origin[1] + slope * (current[0] - origin[0])))
+def smoothness_mse(current, origin, destination, n_songs_reqd, songs_left):
+    n = len(destination)
+    step = [(destination[i] - origin[i] + .0000001) / n_songs_reqd for i in range(n)]
+    target = [(destination[i] - songs_left * step[i]) for i in range(n)]
+    squaresum = sum([np.square(current[i] - target[i]) for i in range(n)])
+    return squaresum / n

@@ -25,6 +25,11 @@ datasheet   = "./msdeezerplus.csv"
 samplejson  = "./quadrants/std-22-05-03_1229/songs.json"
 samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
 
+# set up output directories
+dirname = "./ismir-test/{}".format(str(time.strftime("%y-%m-%d_%H%M")))
+helper.makeDir("./ismir-test")
+helper.makeDir(dirname)
+
 # Load random sample points.
 samples = {}
 while not os.path.exists(samplejson) or not samplejson.endswith(".json"):
@@ -115,17 +120,17 @@ datasets = [
         path=datasheet, knn=True, verbose=True, start_index=3
     ),
     SongDataset(
-        name="Deezer + Spotify",
+        name="Deezer+Spotify",
         cols=cols["deezer"] + cols["spotify"],
         path=datasheet, knn=True, verbose=True, start_index=3
     ),
     SongDataset(
-        name="Deezer + MSD",
+        name="Deezer+MSD",
         cols=cols["deezer"] + cols["msd"],
         path=datasheet, knn=True, verbose=True, start_index=3
     ),
     SongDataset(
-        name="Deezer + Spotify + MSD",
+        name="Deezer+Spotify+MSD",
         cols=cols["deezer"] + cols["spotify"] + cols["msd"],
         path=datasheet, knn=True, verbose=True, start_index=3
     )
@@ -134,36 +139,91 @@ datasets = [
 # TODO: PCA and feature selection on MSD and Spotify columns
 # Then we can refactor it into the SongDataset object and add to 'datasets'.
 
+# TODO?: test at various lengths
+length = 10
+
+# TODO?: test at various neighbor counts
+neighbors = 7
+
+# Columns for our result sheets
+base_cols = ["oq", "dq", "orig", "dest"] 
+score_cols = ["cos_smooth", "cos_even", "euc_smooth", "euc_even"]
+cos_cols = ["cos_{}".format(i) for i in range(length)]
+euc_cols = ["euc_{}".format(i) for i in range(length)]
+resultcols = base_cols + score_cols + cos_cols + euc_cols
+print(resultcols)
+
 # For each dataset and point combination:
 for dataset in datasets:
-    print()
-    print(dataset.name)
-    print("length: ", len(dataset))
-    dataset.full_df.info(verbose=False)
-    dataset.data_df.info(verbose=False)
+    print("Testing {}".format(dataset.name))
+    helper.makeDir("{}/{}".format(dirname, dataset.name))
+
+    # collect table of results
+    results = {}
+    for col in resultcols: results[col] = []
 
     # For each point combination:
-    for name, pairs in point_combos.items():
+    for oq, dq in quadrant_combos:
+        qc = "{}{}".format(oq, dq)
+        pairs = point_combos[qc]
+        print(" - {}".format(qc))
+
+        curdirname = "{}/{}/{}".format(dirname, dataset.name, qc)
+        helper.makeDir(curdirname)
+
+        # use cosine similarity and euclidean distance
+        # use mean squared error for smoothness
+        # use variance of step sizes for even steps
         for orig, dest in pairs:
 
-            # TODO: test at various lengths
-            length = 10
+            # Generate playlists with each distance
+            cos_songs, cos_points, cos_smooth, cos_even = prodplay.makePlaylist(
+                dataset, orig, dest, length, algos.cosine_score, neighbors)
+            euc_songs, euc_points, euc_smooth, euc_even = prodplay.makePlaylist(
+                dataset, orig, dest, length, algos.euclidean_score, neighbors)
 
-            # TODO: test at various neighbor counts
-            neighbors = 7
+            # Graph playlists if we want:
+            cos_points = np.transpose(cos_points)
+            euc_points = np.transpose(euc_points)
+            points = [cos_points, euc_points]
+            origPoint = dataset.data_df.loc[orig]
+            destPoint = dataset.data_df.loc[dest]
 
-            songlist_cos, pointlist_cos, smooth_cos, even_cos = prodplay.makePlaylist(
-                dataset, orig, dest, length, algos.cosine_score, neighbors
+            helper.graph('valence', 'arousal', points, 
+                data_dim = 2, line_count = 2, marker='.',
+                legend=['Cosine Similarity', 'Euclidean Distance'],
+                file = "{}/{}-{}.png".format(curdirname, orig, dest),
+                title = "Playlists from {} ({}, {}) to {} ({}, {})".format(
+                    orig,
+                    np.around(origPoint[0], decimals=2), 
+                    np.around(origPoint[1], decimals=2), 
+                    dest,
+                    np.around(destPoint[0], decimals=2), 
+                    np.around(destPoint[1], decimals=2), 
+                )
             )
-            
-            songlist_cos, pointlist_cos, smooth_cos, even_cos = prodplay.makePlaylist(
-                dataset, orig, dest, length, algos.euclidean_score, neighbors
-            )
 
-            # use cosine similarity and euclidean distance
-            # use mean squared error for smoothness
-            # use variance of step sizes for even steps
-            # collect table of results
+            # We have this problem where (cosine) gets to the destination faster btw. 
+
+            # Add results to our collection
+            results["oq"].append(oq)
+            results["dq"].append(dq)
+            results["orig"].append(orig)
+            results["dest"].append(dest)
+
+            results["cos_smooth"].append(cos_smooth)
+            results["cos_even"].append(cos_even)
+            results["euc_smooth"].append(euc_smooth)
+            results["euc_even"].append(euc_even)
+
+            for idx in range(length):
+                results["cos_{}".format(idx)].append(cos_songs[idx])
+                results["euc_{}".format(idx)].append(euc_songs[idx])
+        
+    # Convert table of results into a DataFrame
+    results[qc] = pd.DataFrame(results)
+    results[qc].to_csv("{}/{}/results.csv".format(dirname, dataset.name))
+
 
 # grab summmary results
 # create relevant graphs

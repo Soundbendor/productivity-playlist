@@ -40,13 +40,14 @@ def get_candidates(dataset, pointlist, current, destination, n_songs_reqd, neigh
     candidates = filter_candiates(dataset.unique_points, pointlist, candidate_indices)
     return candidates
 
-def choose_candidate(candidates, current, origin, destination, songs_left, score):
+def choose_candidate(candidates, current, origin, destination, n_songs_reqd, pointlen, score):
     candScores = []
     candSmooth = []
+    songs_left = n_songs_reqd - pointlen + 1
 
     for cand in candidates:
         candScores.append(score(cand, current, destination, songs_left))
-        candSmooth.append(algos.smoothness_mse(cand, origin, destination))
+        candSmooth.append(algos.smoothness_mse(cand, origin, destination, n_songs_reqd, songs_left))
 
     choice = np.argmin(candScores)
     return candidates[choice].tolist(), candSmooth[choice]
@@ -68,7 +69,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     pointlist.append(origPoint)
     currPoint = origPoint
 
-    while ((len(pointlist) < n_songs_reqd) and currPoint != destPoint):
+    while ((len(pointlist) <= n_songs_reqd)):
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(dataset.unique_points, pointlist, origPoint, destPoint)
         else:
@@ -76,7 +77,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
             if (score == algos.neighbors_rand):
                 nextPoint, nextSmooth = score(candidates, origPoint, destPoint)
             else:
-                nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd - len(pointlist) + 1, score)
+                nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd, len(pointlist), score)
 
         if (nextPoint != destPoint):
             nextSong = dataset.get_song(nextPoint)

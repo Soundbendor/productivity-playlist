@@ -1,10 +1,9 @@
-#ignore graph results
-graph-results/
-
-#ignore datasets
+#ignore datasets and test folders
 data/
 analysis/
 quadrants/
+ismir-test/
+graph-results/
 
 #ignore python files
 __pycache__

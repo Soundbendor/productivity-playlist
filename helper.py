@@ -146,9 +146,11 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
 
     if (file != ""):
         plt.savefig(file, dpi=600)
-
-    plt.show(block=False)
+    else:
+        plt.show(block=False)
+    
     plt.clf()
+    plt.close()
 
 def plot_AV_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=True, showfliers=True):
     plt.figure(figsize=(plt_size, plt_size))
