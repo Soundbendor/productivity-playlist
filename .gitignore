@@ -4,6 +4,7 @@ analysis/
 quadrants/
 ismir-test/
 graph-results/
+deezer-analysis/
 
 #ignore python files
 __pycache__

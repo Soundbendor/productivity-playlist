@@ -6,7 +6,7 @@ from sklearn.neighbors import NearestNeighbors
 import helper
 
 class SongDataset:
-    def __init__(self, name, path, cols, start_index, knn = False, verbose = False):
+    def __init__(self, name, path, cols = None, start_index = 0, knn = False, verbose = False):
         self.name = name
         self.start_index = start_index
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()

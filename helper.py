@@ -9,6 +9,8 @@ import json
 import numpy as np
 import pprint
 import re
+from sklearn.decomposition import PCA
+from songdataset import SongDataset
 
 def loadConfig(configFile=None):
     info = {}
@@ -69,6 +71,31 @@ def makeSpotifyList(sp, spo, title, track_ids, public = False):
     
     sp.user_playlist_add_tracks(sp.me()["id"], result_playlist['id'], track_ids)
     return result_playlist['id']
+
+def find_nc_PCA(dataset, n_c = 0, file = ""):
+    X = dataset.data_df.iloc[:,:].values
+    evr = np.cumsum(PCA(None).fit(X).explained_variance_ratio_)
+    
+    if n_c == 0:
+        while evr[n_c] < 0.95: n_c += 1
+
+    plt.plot(evr)
+    plt.xlabel("Number of dimensions")
+    plt.ylabel("% of total variance")
+    plt.title("PCA Analysis for {} ({} at {})".format(
+        dataset.name, np.around(evr[n_c], decimals=3), n_c
+    ))
+    
+    if file != "":
+        plt.savefig(file, dpi=600)
+    else:
+        plt.show(block=False)
+
+    plt.clf()
+    plt.close()
+
+    X_pca = PCA(n_components=n_c).fit_transform(X)
+    return n_c, X_pca
 
 def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False, point_annotations=None, av_circle = False):
 

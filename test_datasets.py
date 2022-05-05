@@ -21,7 +21,7 @@ import tests
 from songdataset import SongDataset
 
 # Some constants good to figure out now
-datasheet   = "./msdeezerplus.csv"
+datasheet   = "./deezer-std.csv"
 samplejson  = "./quadrants/std-22-05-03_1229/songs.json"
 samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
 
@@ -133,11 +133,23 @@ datasets = [
         name="Deezer+Spotify+MSD",
         cols=cols["deezer"] + cols["spotify"] + cols["msd"],
         path=datasheet, knn=True, verbose=True, start_index=3
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify",
+        path="deezerpca-spotify.csv", 
+        knn=True, verbose=True, start_index=3
+    ),
+    SongDataset(
+        name="PCA-Deezer+MSD",
+        path="deezerpca-msd.csv", 
+        knn=True, verbose=True, start_index=3
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify+MSD",
+        path="deezerpca-spotify+msd.csv", 
+        knn=True, verbose=True, start_index=3
     )
 ]
-
-# TODO: PCA and feature selection on MSD and Spotify columns
-# Then we can refactor it into the SongDataset object and add to 'datasets'.
 
 # TODO?: test at various lengths
 length = 10
