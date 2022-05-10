@@ -69,7 +69,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     pointlist.append(origPoint)
     currPoint = origPoint
 
-    while ((len(pointlist) <= n_songs_reqd)):
+    while ((len(pointlist) <= n_songs_reqd) and currPoint != destPoint):
         if (score == algos.full_rand):
             nextPoint, nextSmooth = score(dataset.unique_points, pointlist, origPoint, destPoint)
         else:

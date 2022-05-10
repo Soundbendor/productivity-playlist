@@ -229,8 +229,10 @@ for dataset in datasets:
             results["euc_even"].append(euc_even)
 
             for idx in range(length):
-                results["cos_{}".format(idx)].append(cos_songs[idx])
-                results["euc_{}".format(idx)].append(euc_songs[idx])
+                results["cos_{}".format(idx)].append(
+                    cos_songs[idx] if idx < len(cos_songs) else float(0))
+                results["euc_{}".format(idx)].append(
+                    euc_songs[idx] if idx < len(euc_songs) else float(0))
         
     # Convert table of results into a DataFrame
     results[qc] = pd.DataFrame(results)
