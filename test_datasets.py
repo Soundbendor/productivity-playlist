@@ -38,7 +38,7 @@ with open(samplejson) as f:
     samples = json.load(f)
     print("Sample file loaded!")
 
-# TODO: create random sample pairs
+# create random sample pairs
 quadrants = ["BL", "BR", "TL", "TR"]
 point_combos = {}
 
@@ -163,7 +163,6 @@ score_cols = ["cos_smooth", "cos_even", "euc_smooth", "euc_even"]
 cos_cols = ["cos_{}".format(i) for i in range(length)]
 euc_cols = ["euc_{}".format(i) for i in range(length)]
 resultcols = base_cols + score_cols + cos_cols + euc_cols
-print(resultcols)
 
 # For each dataset and point combination:
 for dataset in datasets:
