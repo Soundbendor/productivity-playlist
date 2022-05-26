@@ -83,7 +83,7 @@ def process_bbox(points):
     x, y = points[0], points[1]
     left, right = min(x), max(x)
     top, bottom = min(y), max(y)
-    return (left, top, right, bottom)
+    return left, top, right, bottom
 
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False):
