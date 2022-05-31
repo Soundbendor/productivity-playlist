@@ -13,8 +13,12 @@
 #my commands
 #source ./venv/bin/activate      #activate tensorflow environment
 source activate tf_gpu
-tar -xvf data/affwild/bboxes/train
-tar -xvf data/affwild/landmarks/train
+#cd data/affwild
+#rm -rf train
+#cd ./bboxes
+#tar -xvf train.tar.gz
+#cd ../landmarks
+#tar -xvf train.tar.gz
 python3 affwild_bbox.py
 #deactivate
 
