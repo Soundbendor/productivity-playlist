@@ -80,23 +80,29 @@ def jaccard_score(cand, current, destination, songs_left):
     score = 1 - jaccard
     return score
 
-def neighbors_rand(candidates, origin, destination):
-    cand = candidates[random.randrange(0, len(candidates))].tolist()
-    smooth = smoothness_mse(cand, origin, destination)
-    return cand, smooth
+# -------------------------------------------------------------------------------
+# Commented because out of date.
+# -------------------------------------------------------------------------------
+# def neighbors_rand(candidates, origin, destination):
+#     cand = candidates[random.randrange(0, len(candidates))].tolist()
+#     smooth = smoothness_mse(cand, origin, destination)
+#     return cand, smooth
 
-def full_rand(coords, pointlist, origin, destination):
-    pointFound = False
-    while (pointFound == False):
-        cand = coords[random.randrange(0, len(coords))]
-        pointFound == True
+# -------------------------------------------------------------------------------
+# Commented because out of date.
+# -------------------------------------------------------------------------------
+# def full_rand(coords, pointlist, origin, destination):
+#     pointFound = False
+#     while (pointFound == False):
+#         cand = coords[random.randrange(0, len(coords))]
+#         pointFound == True
 
-        for j in range(len(pointlist)):
-            if (abs(cand[0] - pointlist[j][0]) < .0000001 and abs(cand[1] - pointlist[j][1]) < .0000001):
-                pointFound == False     
+#         for j in range(len(pointlist)):
+#             if (abs(cand[0] - pointlist[j][0]) < .0000001 and abs(cand[1] - pointlist[j][1]) < .0000001):
+#                 pointFound == False     
 
-    smooth = smoothness_mse(cand, origin, destination)
-    return cand, smooth
+#     smooth = smoothness_mse(cand, origin, destination)
+#     return cand, smooth
 
 def smoothness_mse(current, origin, destination, n_songs_reqd, songs_left):
     n = len(destination)

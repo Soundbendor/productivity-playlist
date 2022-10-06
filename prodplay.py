@@ -8,7 +8,7 @@ import pprint
 import warnings
 from songdataset import SongDataset
 
-def filter_candiates(coords, pointlist, candidate_indices):
+def filterCandidates(coords, pointlist, candidate_indices):
     filtered = []
 
     for i in candidate_indices:
@@ -18,7 +18,7 @@ def filter_candiates(coords, pointlist, candidate_indices):
             bad = True
             k = 0
             while k < len(coords[i]) and bad:
-                if (abs(coords[i][k] - pointlist[j][k]) > .000000000001):
+                if (abs(coords[i][k] - pointlist[j][k]) > .0000001):
                     bad = False
                 k = k + 1
             if bad:
@@ -30,59 +30,88 @@ def filter_candiates(coords, pointlist, candidate_indices):
 
     return np.array(filtered)
 
-def get_candidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 3):
+def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 7, radius = 0.1, mode = "radius"):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
-    nearest = dataset.knn_model.kneighbors(target, n_neighbors=(n_songs_reqd * neighbors))
-    candidate_indices = np.array(nearest[1])[0]
-    candidates = filter_candiates(dataset.unique_points, pointlist, candidate_indices)
+    nearest = None
+    if mode == "radius":
+        nearest = dataset.knn_model.radius_neighbors(target, radius=radius, return_distance=False)
+    else:
+        nearest = dataset.knn_model.kneighbors(target, n_neighbors=neighbors, return_distance=False)
+    
+    candidate_indices = np.array(nearest)[0]
+    candidates = filterCandidates(dataset.unique_points, pointlist, candidate_indices)
     return candidates
 
-def choose_candidate(candidates, current, origin, destination, n_songs_reqd, pointlen, score):
-    candScores = []
-    candSmooth = []
-    songs_left = n_songs_reqd - pointlen + 1
+def chooseCandidate(candidates, current, origin, destination, nSongsReqd, pointLen, score):
+    songsLeft   = nSongsReqd - pointLen + 1
+    minScore    = None
+    minSong     = None
+    minSmooth   = None
 
-    for cand in candidates:
-        candScores.append(score(cand, current, destination, songs_left))
-        candSmooth.append(algos.smoothness_mse(cand, origin, destination, n_songs_reqd, songs_left))
+    for song, feats in candidates.iterrows():
+        distScore = score(feats.tolist(), current, destination, songsLeft)
+        smoothness = algos.smoothness_mse(feats.tolist(), origin, destination, nSongsReqd, songsLeft)
 
-    choice = np.argmin(candScores)
-    return candidates[choice].tolist(), candSmooth[choice]
+        if minScore is None or distScore < minScore:
+            minScore   = distScore
+            minSong    = song
+            minSmooth  = smoothness
 
-def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7):
+    return minSong, minSmooth
+
+def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, radius = 0.1):
     if dataset.knn_model is None:
         dataset.make_knn()
 
     n_songs_reqd -= 1
-    smoothlist = np.empty(0)
     songlist = np.empty(0)
+    smoothlist = np.empty(0)
     steplist = np.empty(0)
+    featlist = []
     pointlist = []
 
-    origPoint = dataset.data_df.loc[origin].tolist()
-    destPoint = dataset.data_df.loc[destination].tolist()
+    origPoint = dataset.va_df.loc[origin].tolist()
+    destPoint = dataset.va_df.loc[destination].tolist()
+    origFeats = dataset.data_df.loc[origin].tolist()
+    destFeats = dataset.data_df.loc[destination].tolist()
 
     songlist = np.append(songlist, origin)
+    smoothlist = np.append(smoothlist, 0)
+    steplist = np.append(steplist, 0)
     pointlist.append(origPoint)
+    featlist.append(origFeats)
+    
+    current = origin
     currPoint = origPoint
+    currFeats = origFeats
 
-    while ((len(pointlist) <= n_songs_reqd) and currPoint != destPoint):
-        if (score == algos.full_rand):
-            nextPoint, nextSmooth = score(dataset.unique_points, pointlist, origPoint, destPoint)
-        else:
-            candidates = get_candidates(dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors)
-            if (score == algos.neighbors_rand):
-                nextPoint, nextSmooth = score(candidates, origPoint, destPoint)
-            else:
-                nextPoint, nextSmooth = choose_candidate(candidates, currPoint, origPoint, destPoint, n_songs_reqd, len(pointlist), score)
+    while ((len(pointlist) <= n_songs_reqd) and current != destination):
 
-        if (nextPoint != destPoint):
-            nextSong = dataset.get_song(nextPoint)
-        else:
-            nextSong = destination
+        # Step 1: Get candidate points from KNN in Valence-Arousal space.
+        candPoints = getCandidates(
+            dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors, radius
+        )
+
+        # Step 2: get candidate features.
+        
+        ## - Get all candidate IDs from points.
+        candIDs = []
+        for point in candPoints:
+            candIDs.extend(dataset.get_all_songs(point))
+
+        ## - Get features from candidate IDs.
+        candFeatsDF = dataset.data_df.loc[candIDs]
+
+        # Step 3: Use a distance score to evaluate candidate features.
+        ## - Return song ID based on distance score from features.
+        nextSong, nextSmooth = chooseCandidate(
+            candFeatsDF, currFeats, origFeats, destFeats, n_songs_reqd, len(pointlist), score
+        )
+        nextPoint = dataset.va_df.loc[nextSong].tolist()
+        nextFeats = dataset.data_df.loc[nextSong].tolist()
 
         smoothlist = np.append(smoothlist, nextSmooth)
         steplist = np.append(steplist, np.linalg.norm(
@@ -91,12 +120,31 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         songlist = np.append(songlist, nextSong)
         pointlist.append(nextPoint)
 
+        current = nextSong
         currPoint = nextPoint
+        currFeats = nextFeats
     
-    if (pointlist[len(pointlist) - 1] != destPoint):
+    if (songlist[len(songlist) - 1] != destination):
         pointlist.append(destPoint)
         songlist = np.append(songlist, destination)
 
-    smoothness = np.mean(smoothlist)
-    evenness = np.var(steplist)
-    return songlist, np.array(pointlist), smoothness, evenness
+    # smoothness = np.mean(smoothlist)
+    # evenness = np.var(steplist)
+    return songlist, np.array(pointlist), np.array(featlist), smoothlist, steplist
+
+def printPlaylist(dataset, songs, points, smooths, steps):
+    length = len(songs)
+    print("#\tID\tArtist\tTitle\tPoint\tSmoothness\tEvenness")
+
+    for i in range(length):
+        print(i, int(songs[i]), 
+            dataset.full_df.loc[int(songs[i])]['artist_name'], "\t",
+            dataset.full_df.loc[int(songs[i])]['track_name'], "\t",
+            "({},{})".format(
+                np.around(points[i][0], decimals=2), 
+                np.around(points[i][1], decimals=2)
+            ), "\t",
+            np.around(smooths[i], decimals=8), "\t",
+            np.around(steps[i], decimals=6)
+        )
+        print()
