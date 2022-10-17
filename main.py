@@ -87,6 +87,14 @@ songdata = SongDataset(
 )
 songdata.make_knn()
 
+pointdata = SongDataset(
+    name="Deezer",
+    cols=cols["deezer"],
+    path=info["main"]["songdata"], knn=True, verbose=True,
+    data_index = 3, arousal = 4, valence = 3,
+)
+pointdata.make_knn()
+
 print("N: {}".format(len(songdata)))
 print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
 
@@ -95,31 +103,49 @@ print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
 # 540954    = Rachael Yamagata  - 1963                  (1.070081923,1.018911652)
 # 533164    = Patty Loveless    - How Can I Help U ...  (-1.636899729,-0.45914527)
 
-user_orig       = 533164
-user_dest       = 540954
-n_songs_reqd    = 15
+user_orig       = 5522768
+user_dest       = 3134935
+n_songs_reqd    = 10
 
-songs, points, feats, smooths, steps = prodplay.makePlaylist(
-    songdata, user_orig, user_dest, n_songs_reqd
+testsuite = [
+    {"name": "points only", "dataset": pointdata},
+    {"name": "with songs", "dataset": songdata}
+]
+testpoints = []
+
+for obj in testsuite:
+    name = obj["name"]
+    data = obj["dataset"]
+
+    songs, points, feats, smooths, steps = prodplay.makePlaylist(
+        data, user_orig, user_dest, n_songs_reqd
+    )
+    testpoints.append(np.transpose(points))
+
+    print("N Songs Reqd:", n_songs_reqd)
+    print("orig:", user_orig, 
+            data.full_df.loc[user_orig]['artist_name'], "\t",
+            data.full_df.loc[user_orig]['track_name'], "\t",
+            "({},{})".format(
+                np.around(data.full_df.loc[user_orig]['valence'], decimals=2), 
+                np.around(data.full_df.loc[user_orig]['arousal'], decimals=2)
+            ))
+    print("dest:", user_dest, 
+            data.full_df.loc[user_dest]['artist_name'], "\t",
+            data.full_df.loc[user_dest]['track_name'], "\t",
+            "({},{})".format(
+                np.around(data.full_df.loc[user_dest]['valence'], decimals=2), 
+                np.around(data.full_df.loc[user_dest]['arousal'], decimals=2)
+            ))
+
+    prodplay.printPlaylist(songdata, songs, points, smooths, steps)
+
+helper.graph('valence', 'arousal', testpoints, 
+    data_dim = 2, line_count = 2, marker='.',
+    legend=[obj["name"] for obj in testsuite],
+    file = "newalgo-test/1013-5.png",
+    title = "Playlist from {} to {}".format(user_orig, user_dest)
 )
-
-print("N Songs Reqd:", n_songs_reqd)
-print("orig:", user_orig, 
-        songdata.full_df.loc[user_orig]['artist_name'], "\t",
-        songdata.full_df.loc[user_orig]['track_name'], "\t",
-        "({},{})".format(
-            np.around(songdata.full_df.loc[user_orig]['valence'], decimals=2), 
-            np.around(songdata.full_df.loc[user_orig]['arousal'], decimals=2)
-        ))
-print("dest:", user_dest, 
-        songdata.full_df.loc[user_dest]['artist_name'], "\t",
-        songdata.full_df.loc[user_dest]['track_name'], "\t",
-        "({},{})".format(
-            np.around(songdata.full_df.loc[user_dest]['valence'], decimals=2), 
-            np.around(songdata.full_df.loc[user_dest]['arousal'], decimals=2)
-        ))
-
-prodplay.printPlaylist(songdata, songs, points, smooths, steps)
 
 # scores = [
 #     { "func": algos.cosine_score, "name": "Cosine Similarity"}
