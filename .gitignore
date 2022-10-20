@@ -1,12 +1,10 @@
 #ignore datasets and test folders
 data/
 analysis/
-quadrants/
-ismir-test/
-newalgo-test/
-graph-results/
-deezer-analysis/
-ismir-analysis/
+ismir2022/
+test/
+out/
+
 
 #ignore python files
 __pycache__
