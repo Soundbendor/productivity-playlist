@@ -32,7 +32,7 @@ def makeDir(key):
 
 def makeTestDir(name):
     test_time = str(time.strftime("%y-%m-%d-%H%M"))
-    makeDir("test")
+    makeDir("./test")
     dir_name = "./test/{}-{}".format(test_time, name)
     makeDir(dir_name)
     return dir_name

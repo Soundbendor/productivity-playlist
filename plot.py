@@ -1,9 +1,70 @@
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import numpy as np
 
-def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file = "", marker=',', linestyle='-', title="", unit_size=2, width=6.4, height=4.8, hist=False, point_annotations=None):
+def playlist(data, count, legend=[], file="", title=""):
+    figsize = (12.8, 9.6)
+    plt.figure(figsize=figsize)
+    fig, ax= plt.subplots(dpi=600)
 
-    figsize = (width*unit_size,height*unit_size)
+    # add formatted labels
+    titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
+    axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
+    ax.set_xlabel("valence", fontproperties=axisFont)
+    ax.set_ylabel("arousal", fontproperties=axisFont)
+    ax.set_title(title, fontproperties=titleFont)
+
+    if (count == 1):
+        points = np.transpose(data)
+        ax.plot(points[0], points[1], marker='.', color="#D73F09", linestyle='-')
+    else:
+        for i in range(count):
+            points = np.transpose(data[i])
+            ax.plot(points[0], points[1], marker='.', linestyle='-')
+    
+    if (legend != []):
+        ax.legend(legend, prop=legendFont, fontsize='small')
+
+    if (title != ""):
+        ax.set_title(title, fontproperties=titleFont)
+
+    if (file != ""):
+        plt.savefig(file, dpi=600)
+    else:
+        plt.show(block=False)
+    
+    plt.clf()
+    plt.close()
+
+def hist(label, data, title="", file=""):
+    figsize = (12.8, 9.6)
+    plt.figure(figsize=figsize)
+    fig, ax= plt.subplots(dpi=600)
+
+    # add formatted labels
+    titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
+    axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
+    ax.set_xlabel(label, fontproperties=axisFont)
+    ax.set_ylabel("Count", fontproperties=axisFont)
+
+    n, bins, patches = ax.hist(data, bins=int(1+3.3*np.log10(len(data))), facecolor="#D73F09")    
+
+    if (title != ""):
+        plt.title(ax.set_title(title, fontproperties=titleFont))
+
+    if (file != ""):
+        plt.savefig(file, dpi=600)
+    else:
+        plt.show(block=False)
+    
+    plt.clf()
+    plt.close()
+
+def line(xlabel, ylabel, data, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None):
+
+    figsize = (12.8, 9.6)
     plt.figure(figsize=figsize)
     fig, ax= plt.subplots(dpi=600)
 
@@ -13,21 +74,14 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
     legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
     ax.set_xlabel(xlabel, fontproperties=axisFont)
     ax.set_ylabel(ylabel, fontproperties=axisFont)
-    ax.set_title(title, fontproperties=titleFont)
+    
 
-    if not hist:
-        if (data_dim == 1):
-            for i in range(line_count):
-                ax.plot(data[i], marker=marker, linestyle=linestyle)
-        
-        elif (data_dim == 2):
-            if (line_count == 1):
-                ax.plot(data[0], data[1], marker=marker, color="#D73F09", linestyle=linestyle)
-            else:
-                for i in range(line_count):
-                    ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
+    if count == 1:
+        ax.plot(data, marker=marker, linestyle=linestyle)
     else:
-        n, bins, patches = ax.hist(data, bins=int(1+3.3*np.log10(len(data))), facecolor="#D73F09")
+        for i in range(count):
+            ax.plot(data[i], marker=marker, linestyle=linestyle)
+        
     
     if point_annotations != None:
         for i in range(len(point_annotations)):
@@ -47,7 +101,7 @@ def graph(xlabel, ylabel, data, data_dim = 1, line_count = 1, legend = [], file 
         ax.legend(legend, prop=legendFont, fontsize='small')
 
     if (title != ""):
-        plt.title(title)
+        ax.set_title(title, fontproperties=titleFont)
 
     if (file != ""):
         plt.savefig(file, dpi=600)
