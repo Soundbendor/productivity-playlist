@@ -72,7 +72,7 @@ def test_lengths(dataset):
     newpoints = np.transpose(newpoints)
     pprint.pprint(newpoints)
 
-    test_time = str(time.strftime("%y-%m-%d_%H%M"))
+    test_time = str(time.strftime("%y-%m-%d-%H%M"))
     helper.makeDir('graph-results/{}'.format(test_time))
 
     helper.graph('target playlist length', 'actual playlist length', [n_songs_reqd, listLengths], data_dim = 2, marker='.',

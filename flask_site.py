@@ -1,6 +1,7 @@
 import numpy as np
 import json
 import helper
+import spotify
 import pandas as pd
 from flask import Flask, render_template, url_for, request, redirect
 from sklearn.preprocessing import MinMaxScaler
@@ -25,7 +26,7 @@ dataset = SongDataset(
 dataset.make_knn()
 
 info = helper.loadConfig("./config.json")
-sp, spo = helper.Spotify(
+sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 

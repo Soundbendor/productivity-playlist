@@ -62,14 +62,14 @@ def make_dataset(name, ids):
     with open("{}/stats.json".format(dest), "w") as outfile:
         outfile.write(json_obj)
 
-    helper.plot_AV_data(
+    plot.av_data(
         sample["valence"], sample["arousal"],
         title="Spread of AffWild Sample",
         file="{}/cir.png".format(dest),
         alpha=.05
     )
 
-    helper.plot_AV_box(
+    plot.av_box(
         [sample["valence"], sample["arousal"]], ["valence","arousal"],
         title="Distribution of AffWild Points",
         file="{}/box.png".format(dest),

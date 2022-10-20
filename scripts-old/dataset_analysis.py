@@ -58,12 +58,12 @@ for i in range(len(names)):
     
     scaler = MinMaxScaler(feature_range=(-1,1)) 
     scaled_values = np.transpose(scaler.fit_transform(pd.DataFrame(coords).iloc[:,0:2]))
-    helper.plot_AV_data(
+    plot.av_data(
         scaled_values[0], scaled_values[1],
         title="Spread of {} Dataset".format(names[i]),
         file="analysis/cir_{}.png".format(names[i])
     )
-    helper.plot_AV_box(
+    plot.av_box(
         [valence, arousal], ['Valence','Arousal'],
         title="Distribution of {} Dataset".format(names[i]),
         file="analysis/box_{}.png".format(names[i])

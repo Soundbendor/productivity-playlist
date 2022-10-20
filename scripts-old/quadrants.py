@@ -86,7 +86,7 @@ def make_scale_quadrants(id, scaler):
 
     allsamples = np.transpose(allsamples)
 
-    helper.plot_AV_data(
+    plot.av_data(
         allsamples[0], allsamples[1],
         title="random sample using {}".format(id),
         file="{}/cir.png".format(dirname)

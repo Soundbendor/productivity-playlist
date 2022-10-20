@@ -13,7 +13,7 @@ import os
 #get important personal information from Spotify API
 info = helper.loadConfig()
 
-sp, spo = helper.Spotify(
+sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
@@ -134,7 +134,7 @@ coords = np.array(coords)
 
 scaler = MinMaxScaler(feature_range=(-1,1)) 
 scaled_values = np.transpose(scaler.fit_transform(pd.DataFrame(coords).iloc[:,0:2]))
-helper.plot_AV_data(
+plot.av_data(
     scaled_values[0], scaled_values[1], 
     title='Distribution of {} Dataset'.format(info["infoconvert"]["title"]), 
     file="{}.png".format(info["infoconvert"]["title"])

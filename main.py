@@ -15,6 +15,8 @@ import helper
 import prodplay
 import algos
 import tests
+import spotify
+import plot
 from songdataset import SongDataset
 
 #get important personal information from Spotify API
@@ -71,7 +73,7 @@ cols = {
 }
 
 
-sp, spo = helper.Spotify(
+sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
