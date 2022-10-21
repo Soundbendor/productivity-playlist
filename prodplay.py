@@ -8,7 +8,7 @@ import pprint
 import warnings
 from songdataset import SongDataset
 
-def filterCandidates(coords, pointlist, candidate_indices):
+def filterCandidates(coords, pointlist, candidate_indices, verbose = 0):
     filtered = []
 
     for i in candidate_indices:
@@ -27,12 +27,13 @@ def filterCandidates(coords, pointlist, candidate_indices):
 
         if (unique == True):
             point = coords[i].tolist()
-            print("Point {} is good!".format(point))
+            if (verbose >= 2):
+                print("Point {} is good!".format(point))
             filtered.append(point)
 
     return np.array(filtered)
 
-def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 7, radius = 0.1, mode = "radius"):
+def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 7, radius = 0.1, mode = "radius", verbose = 0):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist) + 1
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
@@ -44,35 +45,38 @@ def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighb
         nearest = dataset.knn_model.kneighbors(target, n_neighbors=neighbors, return_distance=False)
     
     candidate_indices = np.array(nearest)[0]
-    print("Received {} candidates from Neighbor model using mode {}\n".format(len(candidate_indices), mode))
+    if verbose >= 1: print("Received {} candidates from Neighbor model using mode {}".format(len(candidate_indices), mode))
 
     candidates = filterCandidates(dataset.unique_points, pointlist, candidate_indices)
-    print("Filtering yields us {} candidates\n".format(len(candidates)))
+    if verbose >= 1: print("Filtering yields us {} candidates".format(len(candidates)))
     return candidates
 
-def chooseCandidate(candidates, current, origin, destination, nSongsReqd, pointLen, score):
+def chooseCandidate(candidates, current, origin, destination, nSongsReqd, pointLen, score, verbose = 0):
     songsLeft   = nSongsReqd - pointLen + 1
     minScore    = None
     minSong     = None
     minSmooth   = None
 
-    print("\nChoosing candidates!")
+    if verbose >= 2: print("\nChoosing candidates!")
     for song, feats in candidates.iterrows():
         distScore = score(feats.tolist(), current, destination, songsLeft)
         smoothness = algos.smoothness_mse(feats.tolist(), origin, destination, nSongsReqd, songsLeft)
-        print(" - score for {}\t is {} with smoothness {}".format(song, np.around(distScore, decimals=8), np.around(smoothness, decimals=8)))
+        if verbose >= 2: print(" - score for {}\t is {} with smoothness {}".format(song, np.around(distScore, decimals=8), np.around(smoothness, decimals=8)))
 
         if minScore is None or distScore < minScore:
             minScore   = distScore
             minSong    = song
             minSmooth  = smoothness
 
-    print("\nWinner: {}, score: {}, smooth: {}".format(minSong, np.around(minScore, decimals=8), np.around(minSmooth, decimals=8)))
+    if verbose >= 2: print()
+    if verbose >= 1: print("Winner: {}, score: {}, smooth: {}".format(minSong, np.around(minScore, decimals=8), np.around(minSmooth, decimals=8)))
     return minSong, minSmooth
 
-def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, radius = 0.1):
+def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, radius = 0.1, verbose = 0):
 
-    print("\n\n\n\nMAKING PLAYLIST \n")
+    if verbose >= 2: print("\n")
+    if verbose >= 1: print("\n\nMAKING PLAYLIST")
+    if verbose >= 2: print()
 
     if dataset.knn_model is None:
         dataset.make_knn()
@@ -101,11 +105,12 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
 
     while ((len(pointlist) <= n_songs_reqd) and current != destination):
 
-        print("\n\n{}) current song = {} ({},{})\n".format(len(songlist), current, np.around(currPoint[0], decimals=2), np.around(currPoint[1], decimals=2)))
+        if verbose >= 1: print("\n{}) current song = {} ({},{})".format(len(songlist), current, np.around(currPoint[0], decimals=2), np.around(currPoint[1], decimals=2)))
+        if verbose >= 2: print()
 
         # Step 1: Get candidate points from KNN in Valence-Arousal space.
         candPoints = getCandidates(
-            dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors, radius
+            dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors, radius, "radius", verbose
         )
 
         # Step 2: get candidate features.
@@ -114,16 +119,19 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         candIDs = []
         for point in candPoints:
             candIDs.extend(dataset.get_all_songs(point))
-        print("\nFound {} songs from candidate points".format(len(candIDs)))
+        
+        if verbose >= 2: print()
+        if verbose >= 1: print("Found {} songs from candidate points".format(len(candIDs)))
 
         ## - Get features from candidate IDs.
         candFeatsDF = dataset.data_df.loc[candIDs]
-        print("Found features from candidate songs!\n")
+        if verbose >= 2: print("Found features from candidate songs!\n")
+        if verbose >= 2: print()
 
         # Step 3: Use a distance score to evaluate candidate features.
         ## - Return song ID based on distance score from features.
         nextSong, nextSmooth = chooseCandidate(
-            candFeatsDF, currFeats, origFeats, destFeats, n_songs_reqd, len(pointlist), score
+            candFeatsDF, currFeats, origFeats, destFeats, n_songs_reqd, len(pointlist), score, verbose
         )
         nextPoint = dataset.va_df.loc[nextSong].tolist()
         nextFeats = dataset.data_df.loc[nextSong].tolist()
@@ -150,17 +158,29 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
 
 def printPlaylist(dataset, songs, points, smooths, steps):
     length = len(songs)
-    print("#\tID\tArtist\tTitle\tPoint\tSmoothness\tEvenness")
+    ids = []
+    obj = {
+        "id": [],
+        "artist": [],
+        "title": [],
+        "spotify": [],
+        "valence": [],
+        "arousal": [],
+        "smoothness": [],
+        "evenness": [],
+    }
 
     for i in range(length):
-        print(i, int(songs[i]), 
-            dataset.full_df.loc[int(songs[i])]['artist_name'], "\t",
-            dataset.full_df.loc[int(songs[i])]['track_name'], "\t",
-            "({},{})".format(
-                np.around(points[i][0], decimals=2), 
-                np.around(points[i][1], decimals=2)
-            ), "\t",
-            np.around(smooths[i], decimals=8), "\t",
-            np.around(steps[i], decimals=6)
-        )
-        print()
+        obj["id"].append(int(songs[i]))
+        obj["artist"].append(dataset.full_df.loc[int(songs[i])]['artist_name'])
+        obj["title"].append(dataset.full_df.loc[int(songs[i])]['track_name'])
+        obj["spotify"].append(dataset.get_spid(int(songs[i])))
+        obj["valence"].append(np.around(points[i][0], decimals=8))
+        obj["arousal"].append(np.around(points[i][1], decimals=8))
+        obj["smoothness"].append(np.around(smooths[i], decimals=8))
+        obj["evenness"].append(np.around(steps[i], decimals=8))
+
+    df = pd.DataFrame(obj)
+    print()
+    print(df.to_string())
+    return df

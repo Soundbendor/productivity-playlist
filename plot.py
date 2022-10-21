@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import numpy as np
 
-def playlist(data, count, legend=[], file="", title=""):
+def playlist(data, legend=[], file="", title=""):
     figsize = (12.8, 9.6)
     plt.figure(figsize=figsize)
     fig, ax= plt.subplots(dpi=600)
@@ -15,6 +15,7 @@ def playlist(data, count, legend=[], file="", title=""):
     ax.set_ylabel("arousal", fontproperties=axisFont)
     ax.set_title(title, fontproperties=titleFont)
 
+    count = len(data)
     if (count == 1):
         points = np.transpose(data)
         ax.plot(points[0], points[1], marker='.', color="#D73F09", linestyle='-')
@@ -125,7 +126,7 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.show(block=False)
     plt.clf() 
 
-def av_data(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
+def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
     plt.figure(figsize=(plt_size,plt_size))
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
     plt.xlim(-1.25,1.25)

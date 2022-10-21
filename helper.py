@@ -20,6 +20,16 @@ def loadConfig(configFile=None):
         info = json.load(f)
     return info
 
+def statobj(data):
+    obj = {}
+    obj["avg"] = float(np.nanmean(data))
+    obj["std"] = float(np.nanstd(data))
+    obj["var"] = float(np.nanvar(data))
+    obj["min"] = float(np.nanmin(data))
+    obj["max"] = float(np.nanmax(data))
+    obj["med"] = float(np.nanmedian(data))
+    return obj
+
 def sign(num):
     if num > 0:
         return '+'

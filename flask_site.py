@@ -13,25 +13,23 @@ import pprint
 from songdataset import SongDataset
 
 app = Flask("prodplay")
-path = "static/deezer-spotify.csv"
-cols = [0,3,4,5,6,7]
+path = "static/deezer-std-all.csv"
+info = helper.loadConfig("./config.json")
 
 dataset = SongDataset(
-    name="Deezer",
-    path=path,
-    cols=cols, 
-    start_index = 3, 
-    spotify=True
+    name="Deezer+Spotify",
+    cols=info["cols"]["deezer"] + info["cols"]["spotify"],
+    path=path, knn=True, verbose=True,
+    data_index = 5, arousal = 4, valence = 3,
 )
 dataset.make_knn()
 
-info = helper.loadConfig("./config.json")
 sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
     info["auth"]["redirect_uri"], 
     info["auth"]["username"], 
-    info["main"]["scope"],
+    info["auth"]["scope"],
     auto=True
 )
 
@@ -57,7 +55,7 @@ def playlist():
         n_songs = int(request.args['n_songs'])
 
     if song_orig != None and song_dest != None:
-        songs, points, smooth, even = prodplay.makePlaylist(
+        songs, points, feats, smooths, steps = prodplay.makePlaylist(
             dataset, song_orig, song_dest, n_songs
         )
         print("Got the songs")
@@ -65,14 +63,15 @@ def playlist():
         list_arr = [{
             "title": dataset.full_df.loc[i][2],
             "artist": dataset.full_df.loc[i][1],
-            "arousal": np.around(dataset.full_df.loc[i][3], decimals=2),
-            "valence": np.around(dataset.full_df.loc[i][4], decimals=2)
+            "arousal": np.around(dataset.full_df.loc[i][4], decimals=2),
+            "valence": np.around(dataset.full_df.loc[i][3], decimals=2)
         } for i in songs]
         print("Listed the songs")
 
-        track_ids = [dataset.full_df.loc[i][0] for i in songs]
+        track_ids = [dataset.get_spid(i) for i in songs]
         title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
-        sp_link = "https://open.spotify.com/playlist/{}".format(helper.makeSpotifyList(sp, spo, title, track_ids, False))
+        sp_link = "https://open.spotify.com/playlist/{}".format(
+            spotify.makePlaylist(sp, spo, title, track_ids, False))
         print("Created playlist")
 
     orig = dest = None

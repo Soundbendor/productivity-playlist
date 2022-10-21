@@ -111,11 +111,16 @@
 <body>
     <div class="content">
 
-        <img src="{{ url_for('static', filename='soundbendor.png') }}" style="width: 400px;margin-top: 20px;"/>
+        <a href="https://soundbendor.org/">
+            <img src="{{ url_for('static', filename='soundbendor.png') }}" style="width: 400px;margin-top: 20px;">
+        </a>
 
         <h1>Productivity Playlist</h1>
-        <div>Created by Shaurya Gaur</div>
-        <div>Oregon State University / 2021</div>
+        <div>Created by 
+            <strong><a href="https://shaurgaur.github.io/">Shaurya Gaur</a></strong>
+        </div>
+        <div>Oregon State University</div>
+        <div>Last Updated October 20th, 2022</div>
 
         <div class="section-wrapper">
             <div class="section">
@@ -150,11 +155,10 @@
                         {% endfor %}
                     </select>
                     
-                    <div class="label"><label for="n_songs">Number of songs in between: </label></div>
+                    <div class="label"><label for="n_songs">Number of songs: </label></div>
                     <input class="n_songs" type="number" id="n_songs" name="n_songs" value={{n}} min="2" max="16">
                     <br>
                     <input class="submit" type="submit" value="Create your playlist!">
-                    <h5>Disclaimer: It may take a while to load your playlist.</h5>
                 </form>
             </div>
             

@@ -62,7 +62,7 @@ def make_dataset(name, ids):
     with open("{}/stats.json".format(dest), "w") as outfile:
         outfile.write(json_obj)
 
-    plot.av_data(
+    plot.av_circle(
         sample["valence"], sample["arousal"],
         title="Spread of AffWild Sample",
         file="{}/cir.png".format(dest),

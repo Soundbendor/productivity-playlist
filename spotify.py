@@ -3,13 +3,11 @@ import spotipy.util as util
 import spotipy.oauth2 as oauth
 
 def Spotify(client_id, client_secret, redirect_uri, username, scope, auto=False):
-    cache_path='.cache-{}'.format(username)
     spo = oauth.SpotifyOAuth(
         client_id = client_id,
         client_secret = client_secret,
         redirect_uri = redirect_uri,
-        scope = scope,
-        cache_path=cache_path
+        scope = scope
     )
     sp = spotipy.Spotify(auth_manager=spo)
     return sp, spo
@@ -22,7 +20,7 @@ def refresh_token(spo):
     sp = spotipy.Spotify(auth=new_token['access_token'])
     return sp
 
-def makeSpotifyList(sp, spo, title, track_ids, public = False):
+def makePlaylist(sp, spo, title, track_ids, public = False):
     try:
         result_playlist = sp.user_playlist_create(sp.me()["id"], title, public=public)
     except spotipy.client.SpotifyException:

@@ -134,7 +134,7 @@ coords = np.array(coords)
 
 scaler = MinMaxScaler(feature_range=(-1,1)) 
 scaled_values = np.transpose(scaler.fit_transform(pd.DataFrame(coords).iloc[:,0:2]))
-plot.av_data(
+plot.av_circle(
     scaled_values[0], scaled_values[1], 
     title='Distribution of {} Dataset'.format(info["infoconvert"]["title"]), 
     file="{}.png".format(info["infoconvert"]["title"])

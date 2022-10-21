@@ -4,62 +4,52 @@
         "client_secret": "d7e149341be04e608dcb24ea6622dd67",
         "redirect_uri": "http://localhost:8080/",
         "username": "soundbendor",
-        "scope-main": "playlist-modify-public,playlist-modify-private"
+        "scope": "playlist-modify-public,playlist-modify-private"
     },
-    "infoconvert": {
-        "scope": "user-library-read playlist-read-private",
-        "in_csv": "data/deezer/deezer-spotify.csv",
-        "cols": [0, 3, 4, 5, 6, 7],
-        "location": {
-            "valence": 4,
-            "arousal": 5,
-            "artist": 2,
-            "title": 3,
-            "id": 0,
-            "spotify": 1 
-        },
-        "out_csv": "data/deezer/with_spotify.csv",
-        "out_artists": "data/deezer/artist_genres.json",
-        "out_points": "deezer-spot-points.json",
-        "title": "Deezer"
-    },
-    "main": {
-        "scope": "playlist-modify-public,playlist-modify-private",
-        "songdata": "./deezer-std.csv"
-    },
-    "analysis": [
-        {
-            "name": "Emo-Soundscapes",
-            "csv": "data/Emo-Soundscapes/with_spotify.csv",
-            "cols": [1, 2, 3, 4, 5],
-            "coords": "data/Emo-Soundscapes/points.json"
-        },
-        {
-            "name": "Deezer 2018",
-            "csv": "data/deezer/deezer-spotify.csv",
-            "cols": [0, 3, 4, 5, 6],
-            "coords": "data/deezer/deezer-points.json"
-        },
-        {
-            "name": "DEAM 2016",
-            "csv": "data/deam/deam-spotify.csv",
-            "cols": [0, 1, 3, 5, 6],
-            "coords": "data/deam/deam-points.json"
-        }
-    ],
-    "mergeData": {
-        "deezer": {
-            "name": "Deezer 2018",
-            "csv": "data/deezer/deezer-spotify.csv",
-            "cols": [0, 3, 4, 5, 6],
-            "coords": "data/deezer/deezer-points.json"
-        },
-        "deam": {
-            "name": "DEAM 2016",
-            "csv": "data/deam/deam-spotify.csv",
-            "cols": [0, 1, 3, 5, 6],
-            "coords": "data/deam/deam-points.json"
-        },
-        "int": "analysis/int_Deezer 2018_DEAM 2016.json"
+    "cols": {
+        "deezer": [
+            "dzr_sng_id",
+            "sp_track_id",
+            "artist_name",
+            "track_name",
+            "valence",
+            "arousal"
+        ],
+        "spotify": [
+            "sp_acousticness",
+            "sp_danceability",
+            "sp_duration_ms",
+            "sp_energy",
+            "sp_instrumentalness",
+            "sp_key",
+            "sp_liveness",
+            "sp_loudness",
+            "sp_mode",
+            "sp_speechiness",
+            "sp_tempo",
+            "sp_time_sig",
+            "sp_valence",
+            "sp_popularity",
+            "sp_explicit"
+        ],
+        "msd": [
+            "MSD_key","MSD_key_confidence","MSD_loudness",
+            "MSD_mode","MSD_mode_confidence","MSD_tempo",
+            "MSD_time_signature","MSD_time_signature_confidence",
+            "MSD_segments_loudness_max_avg","MSD_segments_loudness_max_std","MSD_segments_loudness_max_var","MSD_segments_loudness_max_min","MSD_segments_loudness_max_max","MSD_segments_loudness_max_med",
+            "MSD_segments_loudness_max_time_avg","MSD_segments_loudness_max_time_std","MSD_segments_loudness_max_time_var","MSD_segments_loudness_max_time_min","MSD_segments_loudness_max_time_max","MSD_segments_loudness_max_time_med",
+            "MSD_segments_timbre_0_avg","MSD_segments_timbre_0_std","MSD_segments_timbre_0_var","MSD_segments_timbre_0_min","MSD_segments_timbre_0_max","MSD_segments_timbre_0_med",
+            "MSD_segments_timbre_1_avg","MSD_segments_timbre_1_std","MSD_segments_timbre_1_var","MSD_segments_timbre_1_min","MSD_segments_timbre_1_max","MSD_segments_timbre_1_med",
+            "MSD_segments_timbre_2_avg","MSD_segments_timbre_2_std","MSD_segments_timbre_2_var","MSD_segments_timbre_2_min","MSD_segments_timbre_2_max","MSD_segments_timbre_2_med",
+            "MSD_segments_timbre_3_avg","MSD_segments_timbre_3_std","MSD_segments_timbre_3_var","MSD_segments_timbre_3_min","MSD_segments_timbre_3_max","MSD_segments_timbre_3_med",
+            "MSD_segments_timbre_4_avg","MSD_segments_timbre_4_std","MSD_segments_timbre_4_var","MSD_segments_timbre_4_min","MSD_segments_timbre_4_max","MSD_segments_timbre_4_med",
+            "MSD_segments_timbre_5_avg","MSD_segments_timbre_5_std","MSD_segments_timbre_5_var","MSD_segments_timbre_5_min","MSD_segments_timbre_5_max","MSD_segments_timbre_5_med",
+            "MSD_segments_timbre_6_avg","MSD_segments_timbre_6_std","MSD_segments_timbre_6_var","MSD_segments_timbre_6_min","MSD_segments_timbre_6_max","MSD_segments_timbre_6_med",
+            "MSD_segments_timbre_7_avg","MSD_segments_timbre_7_std","MSD_segments_timbre_7_var","MSD_segments_timbre_7_min","MSD_segments_timbre_7_max","MSD_segments_timbre_7_med",
+            "MSD_segments_timbre_8_avg","MSD_segments_timbre_8_std","MSD_segments_timbre_8_var","MSD_segments_timbre_8_min","MSD_segments_timbre_8_max","MSD_segments_timbre_8_med",
+            "MSD_segments_timbre_9_avg","MSD_segments_timbre_9_std","MSD_segments_timbre_9_var","MSD_segments_timbre_9_min","MSD_segments_timbre_9_max","MSD_segments_timbre_9_med",
+            "MSD_segments_timbre_10_avg","MSD_segments_timbre_10_std","MSD_segments_timbre_10_var","MSD_segments_timbre_10_min","MSD_segments_timbre_10_max","MSD_segments_timbre_10_med",
+            "MSD_segments_timbre_11_avg","MSD_segments_timbre_11_std","MSD_segments_timbre_11_var","MSD_segments_timbre_11_min","MSD_segments_timbre_11_max","MSD_segments_timbre_11_med"
+        ]
     }
 }
