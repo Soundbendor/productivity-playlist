@@ -9,6 +9,7 @@ import time
 import sys
 import os
 import math
+import warnings
 
 #our modules
 import helper
@@ -45,7 +46,6 @@ songdata = SongDataset(
     path=datasetpath, knn=True, verbose=True,
     data_index = 5, arousal = 4, valence = 3,
 )
-songdata.make_knn()
 
 pointdata = SongDataset(
     name="Deezer",
@@ -53,7 +53,6 @@ pointdata = SongDataset(
     path=datasetpath, knn=True, verbose=True,
     data_index = 3, arousal = 4, valence = 3,
 )
-pointdata.make_knn()
 
 print("N: {}".format(len(songdata)))
 print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
@@ -74,34 +73,36 @@ testsuite = [
 testpoints = []
 testdir = helper.makeTestDir("main")
 
+print("N Songs Reqd:", n_songs_reqd)
+print("orig:", user_orig, 
+        pointdata.full_df.loc[user_orig]['artist_name'], "\t",
+        pointdata.full_df.loc[user_orig]['track_name'], "\t",
+        "({},{})".format(
+            np.around(pointdata.full_df.loc[user_orig]['valence'], decimals=2), 
+            np.around(pointdata.full_df.loc[user_orig]['arousal'], decimals=2)
+        ))
+print("dest:", user_dest, 
+        pointdata.full_df.loc[user_dest]['artist_name'], "\t",
+        pointdata.full_df.loc[user_dest]['track_name'], "\t",
+        "({},{})".format(
+            np.around(pointdata.full_df.loc[user_dest]['valence'], decimals=2), 
+            np.around(pointdata.full_df.loc[user_dest]['arousal'], decimals=2)
+        ))
+
 for obj in testsuite:
     name = obj["name"]
     data = obj["dataset"]
 
     playlistDF = prodplay.makePlaylist(
-        data, user_orig, user_dest, n_songs_reqd, verbose = 1
+        data, user_orig, user_dest, n_songs_reqd, verbose = 0
     )
     testpoints.append(playlistDF[["valence", "arousal"]].to_numpy())
 
-    print("N Songs Reqd:", n_songs_reqd)
-    print("orig:", user_orig, 
-            data.full_df.loc[user_orig]['artist_name'], "\t",
-            data.full_df.loc[user_orig]['track_name'], "\t",
-            "({},{})".format(
-                np.around(data.full_df.loc[user_orig]['valence'], decimals=2), 
-                np.around(data.full_df.loc[user_orig]['arousal'], decimals=2)
-            ))
-    print("dest:", user_dest, 
-            data.full_df.loc[user_dest]['artist_name'], "\t",
-            data.full_df.loc[user_dest]['track_name'], "\t",
-            "({},{})".format(
-                np.around(data.full_df.loc[user_dest]['valence'], decimals=2), 
-                np.around(data.full_df.loc[user_dest]['arousal'], decimals=2)
-            ))
-
     print()
     print(playlistDF.to_string())
-    playlistDF.to_latex("{}/{}.tex".format(testdir, name))
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        playlistDF.to_latex("{}/{}.tex".format(testdir, name))
     
     # track_ids = [songdata.get_spid(s) for s in songs]
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))

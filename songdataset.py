@@ -24,6 +24,8 @@ class SongDataset:
             print("\n{}: dataset created".format(name))
         if knn:
             self.make_knn()
+        if verbose:
+            print()
         return
     
     def get_random_song(self, point):

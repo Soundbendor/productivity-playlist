@@ -183,6 +183,6 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
 
     # smoothness = np.mean(smoothlist)
     # evenness = np.var(steplist)
-    print("\nPLAYLIST DONE\n\n")
+    if (verbose >= 1): print("\nPLAYLIST DONE\n\n")
     playlistDF = makePlaylistDF(dataset, songlist, np.array(pointlist), np.array(featlist), smoothlist, steplist)
     return playlistDF
