@@ -1,5 +1,5 @@
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as fm
+#import matplotlib.pyplot as plt
+#import matplotlib.font_manager as fm
 import os
 import sys
 import json
@@ -100,6 +100,7 @@ def process_bbox(points):
     top, bottom = min(y), max(y)
     return left, top, right, bottom
 
+'''
 def find_nc_PCA(dataset, n_c = 0, file = ""):
     X = dataset.data_df.iloc[:,:].values
     evr = np.cumsum(PCA(None).fit(X).explained_variance_ratio_)
@@ -124,3 +125,4 @@ def find_nc_PCA(dataset, n_c = 0, file = ""):
 
     X_pca = PCA(n_components=n_c).fit_transform(X)
     return n_c, X_pca
+'''
