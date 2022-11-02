@@ -72,6 +72,36 @@ def chooseCandidate(candidates, current, origin, destination, nSongsReqd, pointL
     if verbose >= 1: print("Winner: {}, score: {}, smooth: {}".format(minSong, np.around(minScore, decimals=8), np.around(minSmooth, decimals=8)))
     return minSong, minSmooth
 
+def makePlaylistDF(dataset, songs, points, feats, smooths, steps):
+    length = len(songs)
+    ids = []
+    obj = {
+        "id-deezer": [],
+        "artist": [],
+        "title": [],
+        # "id-spotify": [],
+        "valence": [],
+        "arousal": [],
+        # "smoothness": [],
+        # "evenness": [],
+    }
+
+    
+
+    for i in range(length):
+        obj["id-deezer"].append(int(songs[i]))
+        obj["artist"].append(dataset.full_df.loc[int(songs[i])]['artist_name'])
+        obj["title"].append(dataset.full_df.loc[int(songs[i])]['track_name'])
+        # obj["id-spotify"].append(dataset.get_spid(int(songs[i])))
+        obj["valence"].append(np.around(points[i][0], decimals=8))
+        obj["arousal"].append(np.around(points[i][1], decimals=8))
+        # obj["smoothness"].append(np.around(smooths[i], decimals=8))
+        # obj["evenness"].append(np.around(steps[i], decimals=8))
+
+    df = pd.DataFrame(obj)
+    return df
+
+
 def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, radius = 0.1, verbose = 0):
 
     if verbose >= 2: print("\n")
@@ -154,33 +184,5 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     # smoothness = np.mean(smoothlist)
     # evenness = np.var(steplist)
     print("\nPLAYLIST DONE\n\n")
-    return songlist, np.array(pointlist), np.array(featlist), smoothlist, steplist
-
-def printPlaylist(dataset, songs, points, smooths, steps):
-    length = len(songs)
-    ids = []
-    obj = {
-        "id": [],
-        "artist": [],
-        "title": [],
-        "spotify": [],
-        "valence": [],
-        "arousal": [],
-        "smoothness": [],
-        "evenness": [],
-    }
-
-    for i in range(length):
-        obj["id"].append(int(songs[i]))
-        obj["artist"].append(dataset.full_df.loc[int(songs[i])]['artist_name'])
-        obj["title"].append(dataset.full_df.loc[int(songs[i])]['track_name'])
-        obj["spotify"].append(dataset.get_spid(int(songs[i])))
-        obj["valence"].append(np.around(points[i][0], decimals=8))
-        obj["arousal"].append(np.around(points[i][1], decimals=8))
-        obj["smoothness"].append(np.around(smooths[i], decimals=8))
-        obj["evenness"].append(np.around(steps[i], decimals=8))
-
-    df = pd.DataFrame(obj)
-    print()
-    print(df.to_string())
-    return df
+    playlistDF = makePlaylistDF(dataset, songlist, np.array(pointlist), np.array(featlist), smoothlist, steplist)
+    return playlistDF

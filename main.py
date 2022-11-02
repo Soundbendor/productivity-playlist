@@ -72,15 +72,16 @@ testsuite = [
     {"name": "with songs", "dataset": songdata}
 ]
 testpoints = []
+testdir = helper.makeTestDir("main")
 
 for obj in testsuite:
     name = obj["name"]
     data = obj["dataset"]
 
-    songs, points, feats, smooths, steps = prodplay.makePlaylist(
+    playlistDF = prodplay.makePlaylist(
         data, user_orig, user_dest, n_songs_reqd, verbose = 1
     )
-    testpoints.append(points)
+    testpoints.append(playlistDF[["valence", "arousal"]].to_numpy())
 
     print("N Songs Reqd:", n_songs_reqd)
     print("orig:", user_orig, 
@@ -98,7 +99,9 @@ for obj in testsuite:
                 np.around(data.full_df.loc[user_dest]['arousal'], decimals=2)
             ))
 
-    prodplay.printPlaylist(songdata, songs, points, smooths, steps)
+    print()
+    print(playlistDF.to_string())
+    playlistDF.to_latex("{}/{}.tex".format(testdir, name))
     
     # track_ids = [songdata.get_spid(s) for s in songs]
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
@@ -107,6 +110,6 @@ for obj in testsuite:
 
 plot.playlist(testpoints, 
     legend=[obj["name"] for obj in testsuite],
-    file = "out/new-v-old.png",
+    file = "{}/new-v-old.png".format(testdir),
     title = "Playlist from {} to {}".format(user_orig, user_dest)
 )
