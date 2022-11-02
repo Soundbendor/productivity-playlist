@@ -55,20 +55,20 @@ def playlist():
         n_songs = int(request.args['n_songs'])
 
     if song_orig != None and song_dest != None:
-        songs, points, feats, smooths, steps = prodplay.makePlaylist(
+        playlistDF = prodplay.makePlaylist(
             dataset, song_orig, song_dest, n_songs
         )
         print("Got the songs")
 
         list_arr = [{
-            "title": dataset.full_df.loc[i][2],
-            "artist": dataset.full_df.loc[i][1],
-            "arousal": np.around(dataset.full_df.loc[i][4], decimals=2),
-            "valence": np.around(dataset.full_df.loc[i][3], decimals=2)
-        } for i in songs]
+            "title": playlistDF.iloc[i]["title"],
+            "artist": playlistDF.iloc[i]["artist"],
+            "arousal": np.around(playlistDF.iloc[i]["arousal"], decimals=2),
+            "valence": np.around(playlistDF.iloc[i]["valence"], decimals=2)
+        } for i in range(len(playlistDF))]
         print("Listed the songs")
 
-        track_ids = [dataset.get_spid(i) for i in songs]
+        track_ids = [dataset.get_spid(playlistDF.iloc[i]["id-deezer"]) for i in range(len(playlistDF))]
         title = "Playlist {}".format(str(time.strftime("%Y-%m-%d %H:%M")))
         sp_link = "https://open.spotify.com/playlist/{}".format(
             spotify.makePlaylist(sp, spo, title, track_ids, False))
