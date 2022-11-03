@@ -21,7 +21,7 @@ from songdataset import SongDataset
 
 #get important personal information from Spotify API
 datasetpath = "data/deezer/deezer-std-all.csv"
-info = helper.loadConfig()
+info = helper.loadConfig("config.json")
 
 scores = [
     { "func": algos.cosine_score, "name": "Cosine Similarity"}

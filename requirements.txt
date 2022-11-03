@@ -1,8 +1,6 @@
-Flask
-gunicorn
 numpy
 pandas
 spotipy
-matplotlib
 scikit-learn
-tensorflow
+streamlit
+altair

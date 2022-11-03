@@ -79,11 +79,11 @@ def makePlaylistDF(dataset, songs, points, feats, smooths, steps):
         "id-deezer": [],
         "artist": [],
         "title": [],
-        # "id-spotify": [],
+        "id-spotify": [],
         "valence": [],
         "arousal": [],
-        # "smoothness": [],
-        # "evenness": [],
+        "smoothness": [],
+        "evenness": [],
     }
 
     
@@ -92,11 +92,11 @@ def makePlaylistDF(dataset, songs, points, feats, smooths, steps):
         obj["id-deezer"].append(int(songs[i]))
         obj["artist"].append(dataset.full_df.loc[int(songs[i])]['artist_name'])
         obj["title"].append(dataset.full_df.loc[int(songs[i])]['track_name'])
-        # obj["id-spotify"].append(dataset.get_spid(int(songs[i])))
+        obj["id-spotify"].append(dataset.get_spid(int(songs[i])))
         obj["valence"].append(np.around(points[i][0], decimals=8))
         obj["arousal"].append(np.around(points[i][1], decimals=8))
-        # obj["smoothness"].append(np.around(smooths[i], decimals=8))
-        # obj["evenness"].append(np.around(steps[i], decimals=8))
+        obj["smoothness"].append(np.around(smooths[i], decimals=8))
+        obj["evenness"].append(np.around(steps[i], decimals=8))
 
     df = pd.DataFrame(obj)
     return df
