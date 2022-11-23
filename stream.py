@@ -24,7 +24,7 @@ st.write("For [Soundbendor Lab](https://soundbendor.org/), Oregon State Universi
 st.write("Last updated November 2nd, 2022")
 
 #get important personal information from Spotify API
-datasetpath = "data/deezer/deezer-std-all.csv"
+datasetpath = "static/deezer-std-all.csv"
 info = helper.loadConfig("config.json")
 dataset = SongDataset(
     name="Deezer+Spotify",
