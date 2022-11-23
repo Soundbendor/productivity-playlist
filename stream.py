@@ -3,7 +3,6 @@ import altair as alt
 import numpy as np
 import random
 import pandas as pd
-import matplotlib.pyplot as plt
 import json
 import pprint
 import time
@@ -16,7 +15,6 @@ import warnings
 import helper
 import prodplay
 import spotify
-import plot
 import algos
 from songdataset import SongDataset
 
