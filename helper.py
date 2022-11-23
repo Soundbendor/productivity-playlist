@@ -30,6 +30,12 @@ def statobj(data):
     obj["med"] = float(np.nanmedian(data))
     return obj
 
+def jsonout(obj, file):
+    json_obj = json.dumps(obj, indent=4)
+    with open(file, "w") as outfile:
+        outfile.write(json_obj)
+
+
 def sign(num):
     if num > 0:
         return '+'
