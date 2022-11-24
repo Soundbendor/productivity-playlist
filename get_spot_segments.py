@@ -24,8 +24,9 @@ songdata = SongDataset(
 )
 
 testlen = 100
+segavgc = 10
+
 spids = songdata.full_df["sp_track_id"][0:testlen].tolist()
-print(len(spids))
 slens = []
 
 pstds = []
@@ -39,6 +40,12 @@ tmins = []
 tmaxs = []
 tavgs = []
 tmeds = []
+
+dstds = []
+dmins = []
+dmaxs = []
+davgs = []
+dmeds = []
 
 
 for i in range(testlen): 
@@ -56,8 +63,10 @@ for i in range(testlen):
     ## spread of lengths of pitches and timbres (should be 0)
     lps = []
     lts = []
+    lds = []
     
     for s in segments:
+        lds.append(s["duration"])
         lps.append(len(s["pitches"]))
         lts.append(len(s["timbre"]))
 
@@ -79,6 +88,13 @@ for i in range(testlen):
 
     # print("Timbres stats: ", pstats)
 
+    dstats = helper.statobj(lds)
+    dstds.append(dstats["std"])
+    dmins.append(dstats["min"])
+    dmaxs.append(dstats["max"])
+    davgs.append(dstats["avg"])
+    dmeds.append(dstats["med"])
+
 outobj = {}
 outobj["slens"] = helper.statobj(slens)
 
@@ -94,22 +110,29 @@ outobj["tmaxs"] = helper.statobj(tmaxs)
 outobj["tavgs"] = helper.statobj(tavgs)
 outobj["tmeds"] = helper.statobj(tmeds)
 
-outdf = songdata.full_df["sp_track_id"][0:testlen].copy()
-
-#### FIGURE OUT WHY THIS DOESN'T WORK !!!
-outdf["slens"] = pd.Series(slens)
-
-outdf["pstds"] = pd.Series(pstds)
-outdf["pmins"] = pd.Series(pmins)
-outdf["pmaxs"] = pd.Series(pmaxs)
-outdf["pavgs"] = pd.Series(pavgs)
-outdf["pmeds"] = pd.Series(pmeds)
-
-outdf["tstds"] = pd.Series(tstds)
-outdf["tmins"] = pd.Series(tmins)
-outdf["tmaxs"] = pd.Series(tmaxs)
-outdf["tavgs"] = pd.Series(tavgs)
-outdf["tmeds"] = pd.Series(tmeds)
+outobj["dstds"] = helper.statobj(dstds)
+outobj["dmins"] = helper.statobj(dmins)
+outobj["dmaxs"] = helper.statobj(dmaxs)
+outobj["davgs"] = helper.statobj(davgs)
+outobj["dmeds"] = helper.statobj(dmeds)
 
 helper.jsonout(outobj, "out/seg-len-stats.json")
-outdf.to_csv("out/deezer-spot-segment-stats.csv")
+
+# outdf = songdata.full_df["sp_track_id"][0:testlen].copy()
+
+# #### FIGURE OUT WHY THIS DOESN'T WORK !!!
+# outdf["slens"] = pd.Series(slens)
+
+# outdf["pstds"] = pd.Series(pstds)
+# outdf["pmins"] = pd.Series(pmins)
+# outdf["pmaxs"] = pd.Series(pmaxs)
+# outdf["pavgs"] = pd.Series(pavgs)
+# outdf["pmeds"] = pd.Series(pmeds)
+
+# outdf["tstds"] = pd.Series(tstds)
+# outdf["tmins"] = pd.Series(tmins)
+# outdf["tmaxs"] = pd.Series(tmaxs)
+# outdf["tavgs"] = pd.Series(tavgs)
+# outdf["tmeds"] = pd.Series(tmeds)
+
+# outdf.to_csv("out/deezer-spot-segment-stats.csv")
