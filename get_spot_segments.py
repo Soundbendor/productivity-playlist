@@ -4,8 +4,9 @@ from songdataset import SongDataset
 from pprint import pprint
 import json
 import pandas as pd
+import numpy as np
 
-info = helper.loadConfig("config.json")
+info        = helper.loadConfig("config.json")
 datasetpath = "data/deezer/deezer-std-all.csv"
 
 sp, spo = spotify.Spotify(
@@ -16,123 +17,98 @@ sp, spo = spotify.Spotify(
     info["auth"]["scope"]
 )
 
-songdata = SongDataset(
-    name="Deezer+Spotify",
-    cols=info["cols"]["deezer"] + info["cols"]["spotify"],
-    path=datasetpath, knn=True, verbose=True,
-    data_index = 5, arousal = 4, valence = 3,
-)
+feats_ind = ["loudness_max", "loudness_start"]
+feats_arr = [("pitches", 12), ("timbre", 12)]
 
-testlen = 100
-segavgc = 10
+def fillcols(s, outcols):
+    for feat in feats_ind: outcols["{}_{}".format(s, feat)] = []
+    for feat, n in feats_arr: 
+        for i in range(n):
+            formatstr = "{}_{}_{}".format(s, feat, i)
+            outcols[formatstr] = []
+    return outcols
 
-spids = songdata.full_df["sp_track_id"][0:testlen].tolist()
-slens = []
-
-pstds = []
-pmins = []
-pmaxs = []
-pavgs = []
-pmeds = []
-
-tstds = []
-tmins = []
-tmaxs = []
-tavgs = []
-tmeds = []
-
-dstds = []
-dmins = []
-dmaxs = []
-davgs = []
-dmeds = []
-
-
-for i in range(testlen): 
-    spid = spids[i]
-    analysis = sp.audio_analysis(spid)
-    segments = analysis["segments"]
-
-    print(i, end="\r")
+'''
+    We want to take the segments arrays and do a weighted average.
+    - weight by order of segments inversely.
+        - We can weigh this as [N, N-1, ..., 2, 1] / n(n+1)/2.
+    - weight by duration of segments. 
+        - We can weigh by duration of segments / total duration.
+'''
+def weighted_avg(arr, dur, sum, len):
+    tot = 0.0
+    den = (len * (len + 1)) // 2
     
-    # For each song, we want:
-    ## number of segments
-    slens.append(len(segments))
-    # print("Num segments: ", len(segments))
+    for i in range(len):
+        ord = len - i
+        tot += (arr[i] * dur[i] * ord)
 
-    ## spread of lengths of pitches and timbres (should be 0)
-    lps = []
-    lts = []
-    lds = []
-    
-    for s in segments:
-        lds.append(s["duration"])
-        lps.append(len(s["pitches"]))
-        lts.append(len(s["timbre"]))
+    return (tot / (den * sum))
 
-    pstats = helper.statobj(lps)
-    pstds.append(pstats["std"])
-    pmins.append(pstats["min"])
-    pmaxs.append(pstats["max"])
-    pavgs.append(pstats["avg"])
-    pmeds.append(pstats["med"])
+def grab_segment_data(segments, mode = "cnt", num = 10):
+    outvals = {}
 
-    # print("Pitches stats: ", pstats)
+    ## Weighted averages!
+    segs = {"head": segments[0:num], 
+            "tail": segments[(-1*num):]}
+    durs = {"head": [seg["duration"] for seg in segs["head"]], 
+            "tail": [seg["duration"] for seg in segs["tail"]]}
+    sums = {"head": sum(durs["head"]), 
+            "tail": sum(durs["tail"])}
+    lens = {"head": len(durs["head"]), 
+            "tail": len(durs["tail"])}
 
-    tstats = helper.statobj(lts)
-    tstds.append(tstats["std"])
-    tmins.append(tstats["min"])
-    tmaxs.append(tstats["max"])
-    tavgs.append(tstats["avg"])
-    tmeds.append(tstats["med"])
+    for s in ["head", "tail"]:
+        for feat in feats_ind: 
+            coln = "{}_{}".format(s, feat)
+            data = [seg[feat] for seg in segs[s]]
+            wavg = weighted_avg(data, durs[s], sums[s], lens[s])
+            outvals[coln] = np.around(wavg, decimals=6)
+            
+        for feat, n in feats_arr: 
+            for i in range(n):
+                coln = "{}_{}_{}".format(s, feat, i)
+                data = [seg[feat][i] for seg in segs[s]]
+                wavg = weighted_avg(data, durs[s], sums[s], lens[s])
+                outvals[coln] = np.around(wavg, decimals=6)
 
-    # print("Timbres stats: ", pstats)
+    return outvals
 
-    dstats = helper.statobj(lds)
-    dstds.append(dstats["std"])
-    dmins.append(dstats["min"])
-    dmaxs.append(dstats["max"])
-    davgs.append(dstats["avg"])
-    dmeds.append(dstats["med"])
+def grab_dataset(outpath):
+    testlength  = 1
+    songdata = SongDataset(
+        name="Deezer",
+        cols=info["cols"]["deezer"],
+        path=datasetpath, knn=True, verbose=True,
+        data_index = 5, arousal = 4, valence = 3,
+    )
 
-outobj = {}
-outobj["slens"] = helper.statobj(slens)
+    df = songdata.full_df[0:testlength].copy()
+    outcols = {}
+    fillcols("head", outcols)
+    fillcols("tail", outcols)
 
-outobj["pstds"] = helper.statobj(pstds)
-outobj["pmins"] = helper.statobj(pmins)
-outobj["pmaxs"] = helper.statobj(pmaxs)
-outobj["pavgs"] = helper.statobj(pavgs)
-outobj["pmeds"] = helper.statobj(pmeds)
+    for i in range(testlength): 
+        spid = df.iloc[i]["sp_track_id"]
+        analysis = sp.audio_analysis(spid)
+        segments = analysis["segments"]
+        print(i, end="\r")
 
-outobj["tstds"] = helper.statobj(tstds)
-outobj["tmins"] = helper.statobj(tmins)
-outobj["tmaxs"] = helper.statobj(tmaxs)
-outobj["tavgs"] = helper.statobj(tavgs)
-outobj["tmeds"] = helper.statobj(tmeds)
+        vals = grab_segment_data(spid, mode = "cnt", num = 10)
+        for key in vals: outcols[key].append(vals[key])
 
-outobj["dstds"] = helper.statobj(dstds)
-outobj["dmins"] = helper.statobj(dmins)
-outobj["dmaxs"] = helper.statobj(dmaxs)
-outobj["davgs"] = helper.statobj(davgs)
-outobj["dmeds"] = helper.statobj(dmeds)
+    # EXPORT DATA TO CSV!!!
+    for col in outcols: df[col] = outcols[col]
+    df.to_csv(outpath)
 
-helper.jsonout(outobj, "out/seg-len-stats.json")
 
-# outdf = songdata.full_df["sp_track_id"][0:testlen].copy()
 
-# #### FIGURE OUT WHY THIS DOESN'T WORK !!!
-# outdf["slens"] = pd.Series(slens)
 
-# outdf["pstds"] = pd.Series(pstds)
-# outdf["pmins"] = pd.Series(pmins)
-# outdf["pmaxs"] = pd.Series(pmaxs)
-# outdf["pavgs"] = pd.Series(pavgs)
-# outdf["pmeds"] = pd.Series(pmeds)
 
-# outdf["tstds"] = pd.Series(tstds)
-# outdf["tmins"] = pd.Series(tmins)
-# outdf["tmaxs"] = pd.Series(tmaxs)
-# outdf["tavgs"] = pd.Series(tavgs)
-# outdf["tmeds"] = pd.Series(tmeds)
 
-# outdf.to_csv("out/deezer-spot-segment-stats.csv")
+
+
+
+
+
+
