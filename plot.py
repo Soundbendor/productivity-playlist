@@ -63,7 +63,7 @@ def hist(label, data, title="", file=""):
     plt.clf()
     plt.close()
 
-def line(xlabel, ylabel, data, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None):
+def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None):
 
     figsize = (12.8, 9.6)
     plt.figure(figsize=figsize)
@@ -77,11 +77,18 @@ def line(xlabel, ylabel, data, count = 1, marker=',', linestyle='-', legend = []
     ax.set_ylabel(ylabel, fontproperties=axisFont)
     
 
-    if count == 1:
-        ax.plot(data, marker=marker, linestyle=linestyle)
-    else:
-        for i in range(count):
-            ax.plot(data[i], marker=marker, linestyle=linestyle)
+    if dim == 1:
+        if count == 1:
+            ax.plot(data, marker=marker, linestyle=linestyle)
+        else:
+            for i in range(count):
+                ax.plot(data[i], marker=marker, linestyle=linestyle)
+    if dim == 2:
+        if count == 1:
+            ax.plot(data[0], data[1], marker=marker, linestyle=linestyle)
+        else:
+            for i in range(count):
+                ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
         
     
     if point_annotations != None:

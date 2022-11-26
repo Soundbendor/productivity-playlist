@@ -2,7 +2,7 @@ import spotify
 import helper
 from songdataset import SongDataset
 from pprint import pprint
-import json
+import plot
 import pandas as pd
 import numpy as np
 
@@ -15,6 +15,13 @@ sp, spo = spotify.Spotify(
     info["auth"]["redirect_uri"], 
     info["auth"]["username"], 
     info["auth"]["scope"]
+)
+
+songdata = SongDataset(
+    name="Deezer",
+    cols=info["cols"]["deezer"],
+    path=datasetpath, knn=True, verbose=True,
+    data_index = 5, arousal = 4, valence = 3,
 )
 
 feats_ind = ["loudness_max", "loudness_start"]
@@ -44,6 +51,7 @@ def weighted_avg(arr, dur, sum, len):
         tot += (arr[i] * dur[i] * ord)
 
     return (tot / (den * sum))
+    # return (tot / (den * sum))
 
 def grab_segment_data(segments, mode = "cnt", num = 10):
     outvals = {}
@@ -76,12 +84,6 @@ def grab_segment_data(segments, mode = "cnt", num = 10):
 
 def grab_dataset(outpath):
     testlength  = 1
-    songdata = SongDataset(
-        name="Deezer",
-        cols=info["cols"]["deezer"],
-        path=datasetpath, knn=True, verbose=True,
-        data_index = 5, arousal = 4, valence = 3,
-    )
 
     df = songdata.full_df[0:testlength].copy()
     outcols = {}
@@ -94,13 +96,36 @@ def grab_dataset(outpath):
         segments = analysis["segments"]
         print(i, end="\r")
 
-        vals = grab_segment_data(spid, mode = "cnt", num = 10)
+        vals = grab_segment_data(segments, mode = "cnt", num = 10)
         for key in vals: outcols[key].append(vals[key])
 
     # EXPORT DATA TO CSV!!!
     for col in outcols: df[col] = outcols[col]
     df.to_csv(outpath)
 
+def test_segcounts(spid):
+    test_range = [x+1 for x in range(50)]
+    segments = sp.audio_analysis(spid)["segments"]
+    dirname = helper.makeTestDir("segcounts")
+
+    testcols = {}
+    fillcols("head", testcols)
+    fillcols("tail", testcols)  
+      
+    for r in test_range:
+        vals = grab_segment_data(segments, mode = "cnt", num = r)
+        for key in vals: testcols[key].append(vals[key])
+    
+    for col in testcols:
+        plot.line("# of segments", col, [test_range, testcols[col]], 
+                    count = 1, dim = 2,
+                    title = "Spread of {}".format(col),
+                    file="{}/{}.png".format(dirname, col))
+        
+randidx = np.random.randint(0, len(songdata))
+randsong = songdata.full_df.iloc[randidx]
+print(randsong)
+test_segcounts(randsong["sp_track_id"])
 
 
 
