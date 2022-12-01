@@ -62,7 +62,7 @@ st.write("## Let's make a playlist!")
 form = st.form("playlist_form")
 origstr = form.selectbox("Choose a song to start with:", optiondf, index=52)
 deststr = form.selectbox("Choose a song to end with:", optiondf, index=8)
-nsongs = form.number_input("Number of songs:", 3, 13, step=1)
+nsongs = form.number_input("Number of songs:", 3, 13, value=7, step=1)
 spotyn = form.checkbox("Make the playlist on Spotify.")
 submitted = form.form_submit_button("Make my playlist!")
 
