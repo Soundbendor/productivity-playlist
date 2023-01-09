@@ -42,15 +42,15 @@ def fillcols(s, outcols):
     - weight by duration of segments. 
         - We can weigh by duration of segments / total duration.
 '''
-def weighted_avg(arr, dur, sum, len):
+def weighted_avg(arr, dur, time, n):
     tot = 0.0
-    den = (len * (len + 1)) // 2
+    den = (n * (n + 1)) // 2
     
-    for i in range(len):
-        ord = len - i
-        tot += (arr[i] * dur[i] * ord)
+    for i in range(n):
+        idx = n - i
+        tot += (arr[i] * dur[i] * idx)
 
-    return (tot / (den * sum))
+    return (tot / (den * time))
     # return (tot / (den * sum))
 
 def grab_segment_data(segments, mode = "cnt", num = 10.0):
@@ -145,12 +145,12 @@ def test_segcounts(spid):
                     title = "Spread of {}".format(col),
                     file="{}/{}.png".format(dirname, col))
         
-# randidx = np.random.randint(0, len(songdata))
-# randsong = songdata.full_df.iloc[randidx]
-# print(randsong)
-# test_segcounts(randsong["sp_track_id"])
+randidx = np.random.randint(0, len(songdata))
+randsong = songdata.full_df.iloc[randidx]
+print(randsong)
+test_segcounts(randsong["sp_track_id"])
 
-grab_dataset("out/deezer-segments.csv", len(songdata))
+# grab_dataset("out/deezer-segments.csv", 100)
 
 
 

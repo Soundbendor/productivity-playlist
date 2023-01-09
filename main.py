@@ -104,10 +104,10 @@ for obj in testsuite:
         warnings.simplefilter("ignore")
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
     
-    # track_ids = [songdata.get_spid(s) for s in songs]
-    # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
-    # spotify_id = spotify.makePlaylist(sp, spo, title, track_ids, True)
-    # print("\nSpotify Playlist ID: {}".format(spotify_id))
+    track_ids = playlistDF["id-spotify"].tolist()
+    title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
+    spotify_id = spotify.makePlaylist(sp, spo, title, track_ids, True)
+    print("\nSpotify Playlist ID: {}".format(spotify_id))
 
 plot.playlist(testpoints, 
     legend=[obj["name"] for obj in testsuite],
