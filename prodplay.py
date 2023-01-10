@@ -86,8 +86,6 @@ def makePlaylistDF(dataset, songs, points, feats, smooths, steps):
         "evenness": [],
     }
 
-    
-
     for i in range(length):
         obj["id-deezer"].append(int(songs[i]))
         obj["artist"].append(dataset.full_df.loc[int(songs[i])]['artist_name'])
@@ -118,10 +116,10 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     featlist = []
     pointlist = []
 
-    origPoint = dataset.va_df.loc[origin].tolist()
-    destPoint = dataset.va_df.loc[destination].tolist()
-    origFeats = dataset.data_df.loc[origin].tolist()
-    destFeats = dataset.data_df.loc[destination].tolist()
+    origPoint = dataset.get_point(origin).tolist()
+    destPoint = dataset.get_point(destination).tolist()
+    origFeats = dataset.get_feats(origin).tolist()
+    destFeats = dataset.get_feats(destination).tolist()
 
     songlist = np.append(songlist, origin)
     smoothlist = np.append(smoothlist, 0)
@@ -154,7 +152,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         if verbose >= 1: print("Found {} songs from candidate points".format(len(candIDs)))
 
         ## - Get features from candidate IDs.
-        candFeatsDF = dataset.data_df.loc[candIDs]
+        candFeatsDF = dataset.get_feats(candIDs)
         if verbose >= 2: print("Found features from candidate songs!\n")
         if verbose >= 2: print()
 
@@ -163,8 +161,8 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         nextSong, nextSmooth = chooseCandidate(
             candFeatsDF, currFeats, origFeats, destFeats, n_songs_reqd, len(pointlist), score, verbose
         )
-        nextPoint = dataset.va_df.loc[nextSong].tolist()
-        nextFeats = dataset.data_df.loc[nextSong].tolist()
+        nextPoint = dataset.get_point(nextSong).tolist()
+        nextFeats = dataset.get_feats(nextSong).tolist()
 
         smoothlist = np.append(smoothlist, nextSmooth)
         steplist = np.append(steplist, np.linalg.norm(

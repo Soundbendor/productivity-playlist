@@ -21,7 +21,7 @@ songdata = SongDataset(
     name="Deezer",
     cols=info["cols"]["deezer"],
     path=datasetpath, knn=True, verbose=True,
-    data_index = 5, arousal = 4, valence = 3,
+    feat_index = 5, arousal = 4, valence = 3,
 )
 
 feats_ind = ["loudness_max", "loudness_start"]

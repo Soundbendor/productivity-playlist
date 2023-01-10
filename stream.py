@@ -30,7 +30,7 @@ dataset = SongDataset(
     name="Deezer+Spotify",
     cols=info["cols"]["deezer"] + info["cols"]["spotify"],
     path=datasetpath, knn=True, verbose=True,
-    data_index = 5, arousal = 4, valence = 3,
+    feat_index = 5, arousal = 4, valence = 3,
 )
 
 sp, spo = spotify.Spotify(

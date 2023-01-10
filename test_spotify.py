@@ -35,7 +35,7 @@ songdata = SongDataset(
     name="Deezer+Spotify",
     cols=info["cols"]["deezer"] + info["cols"]["spotify"],
     path="data/deezer/deezer-std-all.csv", knn=True, verbose=True,
-    data_index = 5, arousal = 4, valence = 3,
+    feat_index = 5, arousal = 4, valence = 3,
 )
 
 user_orig       = 5522768

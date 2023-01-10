@@ -6,11 +6,11 @@ from sklearn.neighbors import NearestNeighbors
 import helper
 
 class SongDataset:
-    def __init__(self, name, path, cols = None, data_index = 2, arousal = 1, valence = 0, knn = False, verbose = False):
+    def __init__(self, name, path, cols = None, feat_index = 2, arousal = 1, valence = 0, knn = False, verbose = False):
         self.name = name
-        self.data_index = data_index
+        self.feat_index = feat_index
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
-        self.data_df = self.full_df.iloc[:, data_index:].copy()
+        self.data_df = self.full_df.iloc[:, feat_index:].copy()
         self.va_df = self.full_df.iloc[:, [valence, arousal]].copy()
         self.size = len(self.data_df)
         self.verbose = verbose
@@ -41,6 +41,9 @@ class SongDataset:
     
     def get_point(self, song):
         return self.va_df.loc[song]
+
+    def get_feats(self, song):
+        return self.data_df.loc[song]
     
     def get_spid(self, song):
         return self.full_df.loc[song]['sp_track_id']
@@ -84,8 +87,6 @@ class SongDataset:
     
     def __len__(self):
         return self.size
-
-
 
 
 
