@@ -43,15 +43,16 @@ def fillcols(s, outcols):
         - We can weigh by duration of segments / total duration.
 '''
 def weighted_avg(arr, dur, time, n):
-    tot = 0.0
-    den = (n * (n + 1)) // 2
+    total = 0.0
+    denom = 0.0
     
     for i in range(n):
-        idx = n - i
-        tot += (arr[i] * dur[i] * idx)
+        index = n - i
+        coeff = dur[i] * index
+        denom += coeff
+        total += (arr[i] * coeff)
 
-    return (tot / (den * time))
-    # return (tot / (den * sum))
+    return (total / denom)
 
 def grab_segment_data(segments, mode = "cnt", num = 10.0):
     outvals = {}
@@ -61,7 +62,7 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
             "tail": []}
     if mode == "cnt":
         segs["head"] = segments[0:num] 
-        segs["tail"] = segments[(-1*num):]
+        segs["tail"] = segments[-1:(-1*num-1):-1]
     
     elif mode == "dur":
         head_dur, tail_dur = 0.0, 0.0
@@ -123,7 +124,7 @@ def grab_dataset(outpath, length):
             segments = analysis["segments"]
             print("{} / {}".format(i, length), end="\r")
 
-            _, vals = grab_segment_data(segments, mode = "dur", num = 5.0)
+            _, vals = grab_segment_data(segments, mode = "dur", num = 30.0)
             for key in vals: outcols[key].append(vals[key])
         
         except:
@@ -134,11 +135,12 @@ def grab_dataset(outpath, length):
     df.to_csv(outpath)
 
 def test_segcounts(spid):
-    maxrange = 10
+    maxrange = 100
+    mode = "cnt"
+
     test_range = [x+1 for x in range(maxrange)]
     segments = sp.audio_analysis(spid)["segments"]
     dirname = helper.makeTestDir("segcounts")
-    mode = "cnt"
 
     testcols = {}
     fillcols("head", testcols)
@@ -149,27 +151,33 @@ def test_segcounts(spid):
         _, vals = grab_segment_data(segments, mode = mode, num = r)
         for key in vals: testcols[key].append(vals[key])
 
-    datacols, _ = grab_segment_data(segments, mode = mode, num = maxrange)
-    # pprint(testcols)
-    # pprint(datacols)
-
-    testdf = pd.DataFrame(testcols, index=test_range)
-    datadf = pd.DataFrame(datacols, index=test_range)
+    testdf = pd.DataFrame(testcols)
     testdf.to_csv("{}/test.csv".format(dirname))
-    datadf.to_csv("{}/data.csv".format(dirname))
+
+    if mode == "cnt":
+        datacols, _ = grab_segment_data(segments, mode = mode, num = maxrange)
+        datadf = pd.DataFrame(datacols)
+        datadf.to_csv("{}/data.csv".format(dirname))
     
     for col in testcols:
-        plot.line("# of segments/seconds", col, [test_range, testcols[col]], 
-                    count = 1, dim = 2,
-                    title = "Spread of {}".format(col),
+        data = []
+        if mode == "cnt":
+            data = [[test_range, testcols[col]], [test_range, datacols[col]]]
+        else:
+            data = [test_range, testcols[col]]
+        count = 2 if mode == "cnt" else 1
+        
+        plot.line("# of segments/seconds", col, data, 
+                    count = count, dim = 2,
+                    title = "Averages of {}".format(col),
                     file="{}/{}.png".format(dirname, col))
         
-randidx = np.random.randint(0, len(songdata))
-randsong = songdata.full_df.iloc[randidx]
-print(randsong)
-test_segcounts(randsong["sp_track_id"])
+# randidx = np.random.randint(0, len(songdata))
+# randsong = songdata.full_df.iloc[randidx]
+# print(randsong)
+# test_segcounts(randsong["sp_track_id"])
 
-# grab_dataset("out/deezer-segments.csv", 100)
+grab_dataset("out/deezer-segments.csv", len(songdata))
 
 
 
