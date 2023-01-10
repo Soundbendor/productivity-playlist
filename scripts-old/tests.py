@@ -37,8 +37,8 @@ def test_lengths(dataset):
     avgDists        = []
     listLengths     = []
 
-    origPoint = dataset.data_df.loc[user_orig]
-    destPoint = dataset.data_df.loc[user_dest]
+    origPoint = dataset.feat_df.loc[user_orig]
+    destPoint = dataset.feat_df.loc[user_dest]
     print(origPoint)
     print(destPoint)
 
@@ -111,10 +111,10 @@ def test_neighbors(dataset):
     for c in range(num_tests):
         smoothnesses = []
         helper.makeDir('graph-results/{}/{}'.format(test_time, c))
-        user_orig, user_dest = get_points(dataset.data_df, used_points, the_dist)
+        user_orig, user_dest = get_points(dataset.feat_df, used_points, the_dist)
         
-        origPoint = dataset.data_df.loc[user_orig]
-        destPoint = dataset.data_df.loc[user_dest]
+        origPoint = dataset.feat_df.loc[user_orig]
+        destPoint = dataset.feat_df.loc[user_dest]
         print(origPoint)
         print(destPoint)
 
@@ -206,11 +206,11 @@ def test_dists(dataset):
     helper.makeDir('graph-results/{}'.format(test_time))
     total_smoothnesses = [[],[]]
     used_points = []
-    # user_orig, user_dest = get_points(dataset.data_df, used_points, the_dist)
+    # user_orig, user_dest = get_points(dataset.feat_df, used_points, the_dist)
     user_orig, user_dest = 3135555, 3135561
     
-    origPoint = dataset.data_df.loc[user_orig]
-    destPoint = dataset.data_df.loc[user_dest]
+    origPoint = dataset.feat_df.loc[user_orig]
+    destPoint = dataset.feat_df.loc[user_dest]
     print(origPoint)
     print(destPoint)
 

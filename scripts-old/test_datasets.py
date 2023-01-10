@@ -197,8 +197,8 @@ for dataset in datasets:
             cos_points = np.transpose(cos_points)
             euc_points = np.transpose(euc_points)
             points = [cos_points, euc_points]
-            origPoint = dataset.data_df.loc[orig]
-            destPoint = dataset.data_df.loc[dest]
+            origPoint = dataset.feat_df.loc[orig]
+            destPoint = dataset.feat_df.loc[dest]
 
             helper.graph('valence', 'arousal', points, 
                 data_dim = 2, line_count = 2, marker='.',

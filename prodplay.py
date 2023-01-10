@@ -118,8 +118,8 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
 
     origPoint = dataset.get_point(origin).tolist()
     destPoint = dataset.get_point(destination).tolist()
-    origFeats = dataset.get_feats(origin).tolist()
-    destFeats = dataset.get_feats(destination).tolist()
+    origFeats = dataset.get_feats(origin, "tail").tolist()
+    destFeats = dataset.get_feats(destination, "head").tolist()
 
     songlist = np.append(songlist, origin)
     smoothlist = np.append(smoothlist, 0)
@@ -152,7 +152,8 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
         if verbose >= 1: print("Found {} songs from candidate points".format(len(candIDs)))
 
         ## - Get features from candidate IDs.
-        candFeatsDF = dataset.get_feats(candIDs)
+        ## - We want to get the heads of the next song choices to transition right for them.
+        candFeatsDF = dataset.get_feats(candIDs, "head")
         if verbose >= 2: print("Found features from candidate songs!\n")
         if verbose >= 2: print()
 
@@ -162,7 +163,7 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
             candFeatsDF, currFeats, origFeats, destFeats, n_songs_reqd, len(pointlist), score, verbose
         )
         nextPoint = dataset.get_point(nextSong).tolist()
-        nextFeats = dataset.get_feats(nextSong).tolist()
+        nextFeats = dataset.get_feats(nextSong, "tail").tolist()
 
         smoothlist = np.append(smoothlist, nextSmooth)
         steplist = np.append(steplist, np.linalg.norm(

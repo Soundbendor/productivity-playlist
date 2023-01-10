@@ -108,7 +108,7 @@ def process_bbox(points):
 
 '''
 def find_nc_PCA(dataset, n_c = 0, file = ""):
-    X = dataset.data_df.iloc[:,:].values
+    X = dataset.feat_df.iloc[:,:].values
     evr = np.cumsum(PCA(None).fit(X).explained_variance_ratio_)
     
     if n_c == 0:

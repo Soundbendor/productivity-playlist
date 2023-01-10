@@ -86,10 +86,10 @@ fulldata = SongDataset(
 summary = {}
 std = StandardScaler()
 
-for (name, data) in fulldata.data_df.iteritems():
+for (name, data) in fulldata.feat_df.iteritems():
     print(name)
-    std_data = std.fit_transform(fulldata.data_df[[name]])
-    fulldata.data_df[name] = std_data
+    std_data = std.fit_transform(fulldata.feat_df[[name]])
+    fulldata.feat_df[name] = std_data
     fulldata.full_df[name] = std_data
 
     summary[name] = {}

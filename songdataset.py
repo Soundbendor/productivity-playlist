@@ -10,9 +10,9 @@ class SongDataset:
         self.name = name
         self.feat_index = feat_index
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
-        self.data_df = self.full_df.iloc[:, feat_index:].copy()
+        self.feat_df = self.full_df.iloc[:, feat_index:].copy()
         self.va_df = self.full_df.iloc[:, [valence, arousal]].copy()
-        self.size = len(self.data_df)
+        self.size = len(self.feat_df)
         self.verbose = verbose
 
         self.unique_points = None
@@ -42,8 +42,11 @@ class SongDataset:
     def get_point(self, song):
         return self.va_df.loc[song]
 
-    def get_feats(self, song):
-        return self.data_df.loc[song]
+    def get_feats(self, song, subset = ""):
+        if subset == "" or subset == "head" or subset == "tail":
+            return self.feat_df.loc[song]
+        else:
+            return self.feat_df[subset].loc[song]
     
     def get_spid(self, song):
         return self.full_df.loc[song]['sp_track_id']
