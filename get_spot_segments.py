@@ -55,6 +55,7 @@ def weighted_avg(arr, dur, time, n):
 
 def grab_segment_data(segments, mode = "cnt", num = 10.0):
     outvals = {}
+    segvals = {}
 
     segs = {"head": [], 
             "tail": []}
@@ -84,14 +85,17 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
     lens = {"head": len(durs["head"]), 
             "tail": len(durs["tail"])}
 
-    # print("sums:", sums, "\nlens:", lens)
-
     for s in ["head", "tail"]:
+        # print("---- {}: len = {}, dur = {} ----".format(s, lens[s], sums[s]))
+        # pprint(segs[s])
+        segvals["{}_duration".format(s)] = durs[s]
+        
         for feat in feats_ind: 
             coln = "{}_{}".format(s, feat)
             data = [seg[feat] for seg in segs[s]]
             wavg = weighted_avg(data, durs[s], sums[s], lens[s])
             outvals[coln] = np.around(wavg, decimals=6)
+            segvals[coln] = data
             
         for feat, n in feats_arr: 
             for i in range(n):
@@ -99,8 +103,11 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
                 data = [seg[feat][i] for seg in segs[s]]
                 wavg = weighted_avg(data, durs[s], sums[s], lens[s])
                 outvals[coln] = np.around(wavg, decimals=6)
+                segvals[coln] = data
 
-    return outvals
+    # print("---- Output values ----")
+    # pprint(outvals)
+    return segvals, outvals
 
 def grab_dataset(outpath, length):
     df = songdata.full_df[0:length].copy()
@@ -116,7 +123,7 @@ def grab_dataset(outpath, length):
             segments = analysis["segments"]
             print("{} / {}".format(i, length), end="\r")
 
-            vals = grab_segment_data(segments, mode = "dur", num = 5.0)
+            _, vals = grab_segment_data(segments, mode = "dur", num = 5.0)
             for key in vals: outcols[key].append(vals[key])
         
         except:
@@ -127,17 +134,29 @@ def grab_dataset(outpath, length):
     df.to_csv(outpath)
 
 def test_segcounts(spid):
-    test_range = [x+1 for x in range(30)]
+    maxrange = 10
+    test_range = [x+1 for x in range(maxrange)]
     segments = sp.audio_analysis(spid)["segments"]
     dirname = helper.makeTestDir("segcounts")
+    mode = "cnt"
 
     testcols = {}
     fillcols("head", testcols)
     fillcols("tail", testcols)  
-      
+
     for r in test_range:
-        vals = grab_segment_data(segments, mode = "dur", num = r)
+        # print("\n\n---- {}: {} ----\n".format(mode, r))
+        _, vals = grab_segment_data(segments, mode = mode, num = r)
         for key in vals: testcols[key].append(vals[key])
+
+    datacols, _ = grab_segment_data(segments, mode = mode, num = maxrange)
+    # pprint(testcols)
+    # pprint(datacols)
+
+    testdf = pd.DataFrame(testcols, index=test_range)
+    datadf = pd.DataFrame(datacols, index=test_range)
+    testdf.to_csv("{}/test.csv".format(dirname))
+    datadf.to_csv("{}/data.csv".format(dirname))
     
     for col in testcols:
         plot.line("# of segments/seconds", col, [test_range, testcols[col]], 
