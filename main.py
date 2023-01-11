@@ -18,9 +18,11 @@ import spotify
 import plot
 import algos
 from songdataset import SongDataset
+from segmentdataset import SegmentDataset
 
 #get important personal information from Spotify API
 datasetpath = "data/deezer/deezer-std-all.csv"
+segmentpath = "data/deezer/deezer-segments-dur030.csv"
 info = helper.loadConfig("config.json")
 
 scores = [
@@ -54,8 +56,15 @@ pointdata = SongDataset(
     feat_index = 3, arousal = 4, valence = 3,
 )
 
-print("N: {}".format(len(songdata)))
-print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
+segmentdata = SegmentDataset(
+    name="Deezer+Segments",
+    cols=info["cols"]["deezer"] + info["cols"]["segments"],
+    path=segmentpath, knn=True, verbose=True,
+    feat_index = 5, arousal = 4, valence = 3,
+)
+
+print("N: {}".format(len(segmentdata)))
+print("Sqrt(N): {}".format(np.sqrt(len(segmentdata))))
 
 # 3135555   = Daft Punk         - Digital Love          (0.950468991,0.572575336)
 # 3135561   = Daft Punk         - Something About Us    (-0.317973857,-0.399224044)
@@ -68,7 +77,8 @@ n_songs_reqd    = 10
 
 testsuite = [
     {"name": "points only", "dataset": pointdata},
-    {"name": "with songs", "dataset": songdata}
+    {"name": "with features", "dataset": songdata},
+    {"name": "with segments", "dataset": segmentdata},
 ]
 testpoints = []
 testdir = helper.makeTestDir("main")
@@ -104,13 +114,14 @@ for obj in testsuite:
         warnings.simplefilter("ignore")
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
     
-    track_ids = playlistDF["id-spotify"].tolist()
-    title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
-    spotify_id = spotify.makePlaylist(sp, spo, title, track_ids, True)
-    print("\nSpotify Playlist ID: {}".format(spotify_id))
+    # # Generate Spotify Playlist.
+    # track_ids = playlistDF["id-spotify"].tolist()
+    # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
+    # spotify_id = spotify.makePlaylist(sp, spo, title, track_ids, True)
+    # print("\nSpotify Playlist ID: {}".format(spotify_id))
 
 plot.playlist(testpoints, 
     legend=[obj["name"] for obj in testsuite],
-    file = "{}/new-v-old.png".format(testdir),
+    file = "{}/compare-graph.png".format(testdir),
     title = "Playlist from {} to {}".format(user_orig, user_dest)
 )

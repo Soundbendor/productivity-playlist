@@ -9,7 +9,7 @@ import segments
 
 class SegmentDataset(SongDataset):
     def __init__(self, name, path, cols = None, feat_index = 2, arousal = 1, valence = 0, knn = False, verbose = False):
-        super().__init__(self, name, path, cols, feat_index, arousal, valence, knn, verbose)
+        super().__init__(name, path, cols, feat_index, arousal, valence, knn, verbose)
 
         headkeys = segments.fillcols("head", {}).keys()
         self.head_df = self.feat_df[headkeys]

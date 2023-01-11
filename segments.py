@@ -6,30 +6,12 @@ import plot
 import pandas as pd
 import numpy as np
 
-info        = helper.loadConfig("config.json")
-datasetpath = "data/deezer/deezer-std-all.csv"
-
-sp, spo = spotify.Spotify(
-    info["auth"]["client_id"], 
-    info["auth"]["client_secret"], 
-    info["auth"]["redirect_uri"], 
-    info["auth"]["username"], 
-    info["auth"]["scope"]
-)
-
-songdata = SongDataset(
-    name="Deezer",
-    cols=info["cols"]["deezer"],
-    path=datasetpath, knn=True, verbose=True,
-    feat_index = 5, arousal = 4, valence = 3,
-)
-
-feats_ind = ["loudness_max", "loudness_start"]
-feats_arr = [("pitches", 12), ("timbre", 12)]
+FEATS_IND = ["loudness_max", "loudness_start"]
+FEATS_ARR = [("pitches", 12), ("timbre", 12)]
 
 def fillcols(s, outcols):
-    for feat in feats_ind: outcols["{}_{}".format(s, feat)] = []
-    for feat, n in feats_arr: 
+    for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = []
+    for feat, n in FEATS_ARR: 
         for i in range(n):
             formatstr = "{}_{}_{}".format(s, feat, i)
             outcols[formatstr] = []
@@ -91,14 +73,14 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
         # pprint(segs[s])
         segvals["{}_duration".format(s)] = durs[s]
         
-        for feat in feats_ind: 
+        for feat in FEATS_IND: 
             coln = "{}_{}".format(s, feat)
             data = [seg[feat] for seg in segs[s]]
             wavg = weighted_avg(data, durs[s], sums[s], lens[s])
             outvals[coln] = np.around(wavg, decimals=6)
             segvals[coln] = data
             
-        for feat, n in feats_arr: 
+        for feat, n in FEATS_ARR: 
             for i in range(n):
                 coln = "{}_{}_{}".format(s, feat, i)
                 data = [seg[feat][i] for seg in segs[s]]
@@ -110,7 +92,7 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
     # pprint(outvals)
     return segvals, outvals
 
-def grab_dataset(outpath, length):
+def grab_dataset(outpath, length, mode, num):
     df = songdata.full_df[0:length].copy()
     outcols = {}
     fillcols("head", outcols)
@@ -124,7 +106,7 @@ def grab_dataset(outpath, length):
             segments = analysis["segments"]
             print("{} / {}".format(i, length), end="\r")
 
-            _, vals = grab_segment_data(segments, mode = "dur", num = 30.0)
+            _, vals = grab_segment_data(segments, mode, num)
             for key in vals: outcols[key].append(vals[key])
         
         except:
@@ -134,13 +116,11 @@ def grab_dataset(outpath, length):
     for col in outcols: df[col] = outcols[col]
     df.to_csv(outpath)
 
-def test_segcounts(spid):
-    maxrange = 100
-    mode = "cnt"
+def test_segcounts(spid, mode, num):
 
-    test_range = [x+1 for x in range(maxrange)]
+    test_range = [x+1 for x in range(num)]
     segments = sp.audio_analysis(spid)["segments"]
-    dirname = helper.makeTestDir("segcounts")
+    dirname = helper.makeTestDir("seg{}{:03}".format(mode, num))
 
     testcols = {}
     fillcols("head", testcols)
@@ -148,14 +128,14 @@ def test_segcounts(spid):
 
     for r in test_range:
         # print("\n\n---- {}: {} ----\n".format(mode, r))
-        _, vals = grab_segment_data(segments, mode = mode, num = r)
+        _, vals = grab_segment_data(segments, mode, num = r)
         for key in vals: testcols[key].append(vals[key])
 
     testdf = pd.DataFrame(testcols)
     testdf.to_csv("{}/test.csv".format(dirname))
 
     if mode == "cnt":
-        datacols, _ = grab_segment_data(segments, mode = mode, num = maxrange)
+        datacols, _ = grab_segment_data(segments, mode, num)
         datadf = pd.DataFrame(datacols)
         datadf.to_csv("{}/data.csv".format(dirname))
     
@@ -171,13 +151,35 @@ def test_segcounts(spid):
                     count = count, dim = 2,
                     title = "Averages of {}".format(col),
                     file="{}/{}.png".format(dirname, col))
-        
-# randidx = np.random.randint(0, len(songdata))
-# randsong = songdata.full_df.iloc[randidx]
-# print(randsong)
-# test_segcounts(randsong["sp_track_id"])
 
-grab_dataset("out/deezer-segments.csv", len(songdata))
+
+if __name__ == "__main__":     
+    info        = helper.loadConfig("config.json")
+    datasetpath = "data/deezer/deezer-std-all.csv"
+    generate    = [("dur", 30), ("cnt", 100)]
+
+    sp, spo = spotify.Spotify(
+        info["auth"]["client_id"], 
+        info["auth"]["client_secret"], 
+        info["auth"]["redirect_uri"], 
+        info["auth"]["username"], 
+        info["auth"]["scope"]
+    )
+
+    songdata = SongDataset(
+        name="deezer",
+        cols=info["cols"]["deezer"],
+        path=datasetpath, knn=True, verbose=True,
+        feat_index = 5, arousal = 4, valence = 3,
+    )
+
+    randidx = np.random.randint(0, len(songdata))
+    randsong = songdata.full_df.iloc[randidx]
+    print(randsong)
+
+    for mode, num in generate:
+        test_segcounts(randsong["sp_track_id"], mode, num)
+        # grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata))
 
 
 
