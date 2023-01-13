@@ -179,7 +179,7 @@ if __name__ == "__main__":
 
     for mode, num in generate:
         test_segcounts(randsong["sp_track_id"], mode, num)
-        # grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata))
+        grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata), mode, num)
 
 
 
