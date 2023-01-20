@@ -21,7 +21,7 @@ from songdataset import SongDataset
 st.title("Mood-Dynamic Playlist")
 st.write("By [Shaurya Gaur](https://shaurgaur.github.io/)")
 st.write("For [Soundbendor Lab](https://soundbendor.org/), Oregon State University")
-st.write("Last updated November 2nd, 2022")
+# st.write("Last updated November 2nd, 2022")
 
 #get important personal information from Spotify API
 datasetpath = "static/deezer-std-all.csv"

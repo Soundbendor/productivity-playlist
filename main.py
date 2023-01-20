@@ -115,10 +115,10 @@ for obj in testsuite:
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
     
     # # Generate Spotify Playlist.
-    # track_ids = playlistDF["id-spotify"].tolist()
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
-    # spotify_id = spotify.makePlaylist(sp, spo, title, track_ids, True)
-    # print("\nSpotify Playlist ID: {}".format(spotify_id))
+    # spid = spotify.makePlaylist(sp, spo, title, playlistDF["id-spotify"], True)
+    # splink = "https://open.spotify.com/playlist/{}".format(spid)
+    # print("\nSpotify Playlist: {}".format(splink))
 
 plot.playlist(testpoints, 
     legend=[obj["name"] for obj in testsuite],
