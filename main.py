@@ -17,6 +17,7 @@ import prodplay
 import spotify
 import plot
 import algos
+import testing
 from songdataset import SongDataset
 from segmentdataset import SegmentDataset
 
@@ -113,6 +114,10 @@ for obj in testsuite:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
+        print()
+    
+    print("Pearson:", testing.pearson(playlistDF))
+    print("StepVar:", testing.stepvar(playlistDF))
     
     # # Generate Spotify Playlist.
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
