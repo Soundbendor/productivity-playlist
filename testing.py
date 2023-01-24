@@ -32,10 +32,18 @@ def stepvar(playlistDF):
 
 def meansquare(playlistDF):
     points = playlistDF[["valence", "arousal"]].to_numpy()
-    target = points.copy()
 
-    # Generate ideal playlist array using orig, dest, n.
     orig, dest = points[0], points[-1]
     stepcount = len(points) - 1
+    
+    diff = dest - orig
+    step = diff / stepcount
+    target = np.array([(orig + (i * step)) for i in range(1, stepcount)])
 
-    return None
+    total_mse = 0
+    for i in range(1, stepcount):
+        mse_av = (points[i] - target[i-1])**2
+        mse_unit = np.sqrt(sum(mse_av))
+        total_mse = total_mse + mse_unit
+    
+    return total_mse / stepcount

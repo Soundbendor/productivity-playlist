@@ -118,6 +118,7 @@ for obj in testsuite:
     
     print("Pearson:", testing.pearson(playlistDF))
     print("StepVar:", testing.stepvar(playlistDF))
+    print("MeanSqE:", testing.meansquare(playlistDF))
     
     # # Generate Spotify Playlist.
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
