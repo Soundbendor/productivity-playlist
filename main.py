@@ -26,15 +26,7 @@ datasetpath = "data/deezer/deezer-std-all.csv"
 segmentpath = "data/deezer/deezer-segments-dur030.csv"
 info = helper.loadConfig("config.json")
 
-scores = [
-    { "func": algos.cosine_score, "name": "Cosine Similarity"}
-    ,{ "func": algos.euclidean_score, "name": "Euclidean Distance"}
-    ,{ "func": algos.manhattan_score, "name": "Manhattan Distance"}
-    ,{ "func": algos.minkowski3_score, "name": "Minkowski Distance (order 3)"}
-    ,{ "func": algos.jaccard_score, "name": "Jaccard Distance"}
-    ,{ "func": algos.mult_score, "name": "Multiplied Ratios"}
-]
-
+scores = testing.ARG_DISTANCES
 sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
     info["auth"]["client_secret"], 
@@ -81,6 +73,12 @@ testsuite = [
     {"name": "with features", "dataset": songdata},
     {"name": "with segments", "dataset": segmentdata},
 ]
+metrics = [
+    {"name": "Pearson correlation", "func": testing.pearson},
+    {"name": "Spearman correlation", "func": testing.spearman},
+    {"name": "Step size variance", "func": testing.stepvar},
+    {"name": "Mean Square Error", "func": testing.meansquare},
+]
 testpoints = []
 testdir = helper.makeTestDir("main")
 
@@ -100,6 +98,7 @@ print("dest:", user_dest,
             np.around(pointdata.full_df.loc[user_dest]['arousal'], decimals=2)
         ))
 
+evals = {}
 for obj in testsuite:
     name = obj["name"]
     data = obj["dataset"]
@@ -116,9 +115,11 @@ for obj in testsuite:
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
         print()
     
-    print("Pearson:", testing.pearson(playlistDF))
-    print("StepVar:", testing.stepvar(playlistDF))
-    print("MeanSqE:", testing.meansquare(playlistDF))
+    evals[name] = {}
+    for m in metrics:
+        val = m["func"](playlistDF)
+        print(m["name"], "\t", val)
+        evals[name][m["name"]] = val
     
     # # Generate Spotify Playlist.
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
@@ -131,3 +132,5 @@ plot.playlist(testpoints,
     file = "{}/compare-graph.png".format(testdir),
     title = "Playlist from {} to {}".format(user_orig, user_dest)
 )
+
+helper.jsonout(evals, "{}/evals.json".format(testdir))

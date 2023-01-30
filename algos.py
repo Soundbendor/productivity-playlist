@@ -80,13 +80,9 @@ def jaccard_score(cand, current, destination, songs_left):
     score = 1 - jaccard
     return score
 
-# -------------------------------------------------------------------------------
-# Commented because out of date.
-# -------------------------------------------------------------------------------
-# def neighbors_rand(candidates, origin, destination):
-#     cand = candidates[random.randrange(0, len(candidates))].tolist()
-#     smooth = smoothness_mse(cand, origin, destination)
-#     return cand, smooth
+def neighbors_rand(cand, current, destination, songs_left):
+    score = random.random()
+    return score
 
 # -------------------------------------------------------------------------------
 # Commented because out of date.
