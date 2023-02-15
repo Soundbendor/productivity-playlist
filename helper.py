@@ -4,11 +4,16 @@ import os
 import sys
 import json
 import numpy as np
+import pandas as pd
 import pprint
 import re
 import time
 from sklearn.decomposition import PCA
 from songdataset import SongDataset
+
+def csvToLatex(csvPath, latexPath):
+    df = pd.read_csv(csvPath, header=0, index_col=0)
+    df.style.to_latex(latexPath)
 
 def loadConfig(configFile=None):
     info = {}

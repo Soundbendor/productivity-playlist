@@ -22,7 +22,7 @@ import algos
 from songdataset import SongDataset
 from segmentdataset import SegmentDataset
 
-QUADRANT_JSON   = "./quadrants/std-22-05-03_1229/songs.json"
+QUADRANT_JSON   = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
 QUADRANT_CODES  = ["BL", "BR", "TL", "TR"]
 QUADRANT_COMBOS = list(itertools.permutations(QUADRANT_CODES, 2))
 
@@ -33,9 +33,10 @@ DEEZER_PCA_MSD  = "./data/deezer/deezer-pca-msd.csv"
 DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100.csv"
 DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030.csv"
 
-ARG_NEIGHBORS_K = list(range(5, 30, 2))
-ARG_NEIGHBORS_R = list(range(0.05, 0.55, 0.05))
-ARG_SEGMENTS_CT = list(range(1, 100, 3))
+ARG_NEIGHBORS_K = list(range(1, 30, 2))
+ARG_NEIGHBORS_R = list(np.arange(0.05, 0.55, 0.05))
+ARG_SEGMENTS_CT = list(range(1, 200, 9))
+ARG_SEGMENTS_DR = list(range(5, 60, 5))
 ARG_LENGTHS     = list(range(3, 20))
 ARG_DISTANCES   = [
      { "func": algos.cosine_score,      "name": "Cosine Similarity"}
@@ -46,6 +47,13 @@ ARG_DISTANCES   = [
     ,{ "func": algos.mult_score,        "name": "Multiplied Ratios"}
     ,{ "func": algos.neighbors_rand,    "name": "Random Neighbors"}
 ]
+
+DEF_NEIGHBORS_K = 7
+DEF_NEIGHBORS_R = 0.1
+DEF_SEGMENTS_CT = 100
+DEF_SEGMENTS_DR = 30
+DEF_LENGTHS     = 12
+DEF_DISTANCES   = algos.cosine_score
 
 def LOAD_DATASETS(cols):
     arg_datasets = [
@@ -108,9 +116,9 @@ def LOAD_DATASETS(cols):
 
 def load_samples(file = QUADRANT_JSON, count = 100):
     samples = {}
-    while not os.path.exists(samplejson) or not samplejson.endswith(".json"):
-        samplejson = input("Sample JSON not found! Please enter a valid path: ")
-    with open(samplejson) as f:
+    while not os.path.exists(file) or not file.endswith(".json"):
+        file = input("Sample JSON not found! Please enter a valid path: ")
+    with open(file) as f:
         samples = json.load(f)
         print("Sample file loaded!")    
 
@@ -128,12 +136,12 @@ def load_samples(file = QUADRANT_JSON, count = 100):
         
         print("Loaded!")
 
-    return samples
+    return point_combos
 
 def pearson(playlistDF):
     points = playlistDF[["valence", "arousal"]].to_numpy()
     pr = np.corrcoef(points, rowvar=False)
-    return pr[1][0]
+    return abs(pr[1][0])
 
 def spearman(playlistDF):
     points = playlistDF[["valence", "arousal"]].to_numpy()
@@ -141,11 +149,11 @@ def spearman(playlistDF):
     return sr.correlation
 
 def stepvar(playlistDF):
-    steps = playlistDF["evenness"].to_numpy()[1:]
+    steps = playlistDF["step"].to_numpy()[1:]
     sv = np.var(steps)
     return sv
 
-def meansquare(playlistDF):
+def meansqr(playlistDF):
     points = playlistDF[["valence", "arousal"]].to_numpy()
 
     orig, dest = points[0], points[-1]

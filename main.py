@@ -23,7 +23,7 @@ from segmentdataset import SegmentDataset
 
 #get important personal information from Spotify API
 datasetpath = "data/deezer/deezer-std-all.csv"
-segmentpath = "data/deezer/deezer-segments-dur030.csv"
+segmentpath = "data/deezer/deezer-segments-cnt100.csv"
 info = helper.loadConfig("config.json")
 
 scores = testing.ARG_DISTANCES
@@ -64,9 +64,26 @@ print("Sqrt(N): {}".format(np.sqrt(len(segmentdata))))
 # 540954    = Rachael Yamagata  - 1963                  (1.070081923,1.018911652)
 # 533164    = Patty Loveless    - How Can I Help U ...  (-1.636899729,-0.45914527)
 
-user_orig       = 5522768
-user_dest       = 3134935
-n_songs_reqd    = 10
+user_orig       = 68925551
+user_dest       = 9919148
+n_songs_reqd    = 12
+
+orig_point = np.array([
+    pointdata.full_df.loc[user_orig]['valence'], 
+    pointdata.full_df.loc[user_orig]['arousal']
+])
+dest_point = np.array([
+    pointdata.full_df.loc[user_dest]['valence'], 
+    pointdata.full_df.loc[user_dest]['arousal']
+])
+point_diff = dest_point - orig_point
+point_step = point_diff / (n_songs_reqd - 1)
+
+target = [orig_point]
+for i in range(1, (n_songs_reqd - 1)):
+    target.append(orig_point + (i * point_step))
+target.append(dest_point)
+target = np.array(target)
 
 testsuite = [
     {"name": "points only", "dataset": pointdata},
@@ -75,11 +92,11 @@ testsuite = [
 ]
 metrics = [
     {"name": "Pearson correlation", "func": testing.pearson},
-    {"name": "Spearman correlation", "func": testing.spearman},
+    # {"name": "Spearman correlation", "func": testing.spearman},
     {"name": "Step size variance", "func": testing.stepvar},
-    {"name": "Mean Square Error", "func": testing.meansquare},
+    {"name": "Mean Square Error", "func": testing.meansqr},
 ]
-testpoints = []
+testpoints = [target]
 testdir = helper.makeTestDir("main")
 
 print("N Songs Reqd:", n_songs_reqd)
@@ -87,15 +104,15 @@ print("orig:", user_orig,
         pointdata.full_df.loc[user_orig]['artist_name'], "\t",
         pointdata.full_df.loc[user_orig]['track_name'], "\t",
         "({},{})".format(
-            np.around(pointdata.full_df.loc[user_orig]['valence'], decimals=2), 
-            np.around(pointdata.full_df.loc[user_orig]['arousal'], decimals=2)
+            np.around(orig_point[0], decimals=2), 
+            np.around(orig_point[1], decimals=2)
         ))
 print("dest:", user_dest, 
         pointdata.full_df.loc[user_dest]['artist_name'], "\t",
         pointdata.full_df.loc[user_dest]['track_name'], "\t",
         "({},{})".format(
-            np.around(pointdata.full_df.loc[user_dest]['valence'], decimals=2), 
-            np.around(pointdata.full_df.loc[user_dest]['arousal'], decimals=2)
+            np.around(dest_point[0], decimals=2), 
+            np.around(dest_point[1], decimals=2)
         ))
 
 evals = {}
@@ -104,7 +121,7 @@ for obj in testsuite:
     data = obj["dataset"]
 
     playlistDF = prodplay.makePlaylist(
-        data, user_orig, user_dest, n_songs_reqd, verbose = 0
+        data, user_orig, user_dest, n_songs_reqd, verbose = 2
     )
     testpoints.append(playlistDF[["valence", "arousal"]].to_numpy())
 
@@ -128,7 +145,7 @@ for obj in testsuite:
     # print("\nSpotify Playlist: {}".format(splink))
 
 plot.playlist(testpoints, 
-    legend=[obj["name"] for obj in testsuite],
+    legend=["ideal", "points only", "with features", "segments"],
     file = "{}/compare-graph.png".format(testdir),
     title = "Playlist from {} to {}".format(user_orig, user_dest)
 )
