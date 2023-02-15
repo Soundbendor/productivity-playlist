@@ -33,13 +33,15 @@ dirname = helper.makeTestDir("datasets")
 point_combos = testing.load_samples(samplejson, samplecount)
 
 # Let's create an array of the song datasets.
+# TODO: for other tests, only load default dataset.
 print("\nLoading datasets.")
 datasets = testing.LOAD_DATASETS(info["cols"])
 
-# TODO: Columns for our result sheets
+# Columns for our result sheets
 resultcols = ["oq", "dq", "orig", "dest", "pearson", "stepvar", "meansqr"]
 
 # For each dataset and point combination:
+# TODO: change what gets iterated thru for each test.
 for dataset in datasets:
     print("Testing {}".format(dataset.name))
     helper.makeDir("{}/{}".format(dirname, dataset.name))
@@ -59,7 +61,8 @@ for dataset in datasets:
 
         for orig, dest in pairs:
 
-            # Generate playlists with each distance
+            # Generate playlist with this dataset and default other arguments.
+            # TODO: update default / variable arguments for each test.
             playlistDF = prodplay.makePlaylist(
                 dataset, orig, dest, testing.DEF_LENGTHS,
                 score = testing.DEF_DISTANCES,
