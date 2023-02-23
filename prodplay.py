@@ -39,21 +39,17 @@ def filterCandidates(coords, pointlist, candidate_indices, candidate_dists, verb
     filtered = [o["point"] for o in dicts]
     return np.array(filtered)
 
-def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 7, radius = 0.1, mode = "k", verbose = 0):
+def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighbors = 7, verbose = 0):
     distance = [destination[i] - current[i] + .0000001 for i in range(len(current))]
     remaining = n_songs_reqd - len(pointlist)
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
     dists, nearest = dataset.knn_model.kneighbors(target, n_neighbors=3*neighbors, return_distance=True)
-    # if mode == "radius":
-    #     dists, nearest = dataset.knn_model.radius_neighbors(target, radius=radius, return_distance=True)
-    # else:
-    #     dists, nearest = dataset.knn_model.kneighbors(target, n_neighbors=3*neighbors, return_distance=True)
-    
+
     candidate_indices = np.array(nearest)[0]
     candidate_dists = np.array(dists)[0]
 
-    if verbose >= 1: print("Received {} candidates from KNN model using mode {}".format(len(candidate_indices), mode))
+    if verbose >= 1: print("Received {} candidates from KNN model".format(len(candidate_indices)))
     if verbose >= 2:
         print("Index \t Dist (for candidates)")
         for i in range(len(candidate_indices)):
@@ -119,7 +115,7 @@ def makePlaylistDF(dataset, songs, points, feats, steps):
     return df
 
 
-def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, radius = 0.1, mode = "k", verbose = 0):
+def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosine_score, neighbors = 7, verbose = 0):
 
     if verbose >= 2: print("\n")
     if verbose >= 1: print("\n\nMAKING PLAYLIST")
@@ -151,14 +147,14 @@ def makePlaylist(dataset, origin, destination, n_songs_reqd, score = algos.cosin
     currFeats = origFeats
 
     # Get middle points in the playlist.
-    while ((len(pointlist) < n_songs_reqd - 1)):
+    while ((len(songlist) < n_songs_reqd - 1)):
 
         if verbose >= 1: print("\n{}) current song = {} ({},{})".format(len(songlist), current, np.around(currPoint[0], decimals=2), np.around(currPoint[1], decimals=2)))
         if verbose >= 2: print()
 
         # Step 1: Get candidate points from KNN in Valence-Arousal space.
         candPoints = getCandidates(
-            dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors, radius, mode, verbose
+            dataset, pointlist, currPoint, destPoint, n_songs_reqd, neighbors, verbose
         )
 
         # Step 2: get candidate features.

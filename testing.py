@@ -156,17 +156,15 @@ def stepvar(playlistDF):
 def meansqr(playlistDF):
     points = playlistDF[["valence", "arousal"]].to_numpy()
 
-    orig, dest = points[0], points[-1]
-    stepcount = len(points) - 1
-    
-    diff = dest - orig
-    step = diff / stepcount
-    target = np.array([(orig + (i * step)) for i in range(1, stepcount)])
+    # For testing purposes: valence = x, arousal = y
+    x, y = np.transpose(points)
 
-    total_mse = 0
-    for i in range(1, stepcount):
-        mse_av = (points[i] - target[i-1])**2
-        mse_unit = np.sqrt(sum(mse_av))
-        total_mse = total_mse + mse_unit
-    
-    return total_mse / stepcount
+    m = (y[-1] - y[0]) / (x[-1] - x[0])
+    b = y[0] - m * x[0]
+
+    y_pred = [-1 for i in range(len(x))]
+    for i in range(len(points)):
+        y_pred[i] = x[i] * m + b
+
+    mse = ((y - y_pred)**2).mean()
+    return mse

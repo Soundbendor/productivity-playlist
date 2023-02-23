@@ -121,7 +121,7 @@ for obj in testsuite:
     data = obj["dataset"]
 
     playlistDF = prodplay.makePlaylist(
-        data, user_orig, user_dest, n_songs_reqd, verbose = 2
+        data, user_orig, user_dest, n_songs_reqd, verbose = 0
     )
     testpoints.append(playlistDF[["valence", "arousal"]].to_numpy())
 
