@@ -168,3 +168,61 @@ def meansqr(playlistDF):
 
     mse = ((y - y_pred)**2).mean()
     return mse
+
+def feat_pearson(playlistDF, dataset):
+    song_ids = playlistDF["id-deezer"].tolist()
+    features = dataset.get_feats(song_ids).to_numpy()
+
+    # Grab pairwise PCC of all features. NxN symmetric matrix.
+    R = abs(np.corrcoef(features, rowvar=False))
+    N = R.shape[0]
+
+    # Get average of the sum of the triangle.
+    trisum = (R.sum() - np.trace(R))
+    triavg = trisum / (N * (N-1))
+    return triavg
+
+def feat_stepvar(playlistDF, dataset):
+    song_ids = playlistDF["id-deezer"].tolist()
+    features = dataset.get_feats(song_ids).to_numpy()
+
+    # Calculate step sizes.
+    steplist = np.empty(0)
+    for i in range(1, features.shape[0]):
+        a, b = features[i], features[i-1]
+        norm = np.linalg.norm(a - b)
+        steplist = np.append(steplist, norm / features.shape[1])
+    
+    sv = np.var(steplist)
+    return sv
+
+POINT_METRICS = [
+    {"name": "Pearson correlation", "func": pearson},
+    # {"name": "Spearman correlation", "func": spearman},
+    {"name": "Step size variance", "func": stepvar},
+    {"name": "Mean Square Error", "func": meansqr},
+]
+
+FEAT_METRICS = [
+    {"name": "Pearson correlation", "func": feat_pearson},
+    # {"name": "Spearman correlation", "func": spearman},
+    {"name": "Step size variance", "func": feat_stepvar},
+    # {"name": "Mean Square Error", "func": meansqr},
+]
+
+def evaluate(playlistDF, dataset, verbose=0):
+    evals = { "points": {}, "feats": {} }
+    
+    if verbose >= 1: print("\nEvaluating points ...")
+    for m in POINT_METRICS:
+        val = m["func"](playlistDF)
+        if verbose >= 1: print(m["name"], "\t", val)
+        evals["points"][m["name"]] = val
+
+    if verbose >= 1: print("\nEvaluating features ...")
+    for m in FEAT_METRICS:
+        val = m["func"](playlistDF, dataset)
+        if verbose >= 1: print(m["name"], "\t", val)
+        evals["feats"][m["name"]] = val    
+
+    return evals

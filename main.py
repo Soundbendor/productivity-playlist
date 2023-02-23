@@ -64,8 +64,8 @@ print("Sqrt(N): {}".format(np.sqrt(len(segmentdata))))
 # 540954    = Rachael Yamagata  - 1963                  (1.070081923,1.018911652)
 # 533164    = Patty Loveless    - How Can I Help U ...  (-1.636899729,-0.45914527)
 
-user_orig       = 68925551
-user_dest       = 9919148
+user_orig       = 3135561
+user_dest       = 3135555
 n_songs_reqd    = 12
 
 orig_point = np.array([
@@ -89,12 +89,6 @@ testsuite = [
     {"name": "points only", "dataset": pointdata},
     {"name": "with features", "dataset": songdata},
     {"name": "with segments", "dataset": segmentdata},
-]
-metrics = [
-    {"name": "Pearson correlation", "func": testing.pearson},
-    # {"name": "Spearman correlation", "func": testing.spearman},
-    {"name": "Step size variance", "func": testing.stepvar},
-    {"name": "Mean Square Error", "func": testing.meansqr},
 ]
 testpoints = [target]
 testdir = helper.makeTestDir("main")
@@ -130,14 +124,9 @@ for obj in testsuite:
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         playlistDF.to_latex("{}/{}.tex".format(testdir, name))
-        print()
     
-    evals[name] = {}
-    for m in metrics:
-        val = m["func"](playlistDF)
-        print(m["name"], "\t", val)
-        evals[name][m["name"]] = val
-    
+    evals[name] = testing.evaluate(playlistDF, segmentdata, verbose=1)
+
     # # Generate Spotify Playlist.
     # title = "Playlist {} {}".format(name, str(time.strftime("%Y-%m-%d-%H:%M")))
     # spid = spotify.makePlaylist(sp, spo, title, playlistDF["id-spotify"], True)
