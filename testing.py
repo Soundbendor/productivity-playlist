@@ -33,10 +33,6 @@ DEEZER_PCA_MSD  = "./data/deezer/deezer-pca-msd.csv"
 DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100.csv"
 DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030.csv"
 
-ARG_NEIGHBORS_K = list(range(1, 30, 2))
-ARG_NEIGHBORS_R = list(np.arange(0.05, 0.55, 0.05))
-ARG_SEGMENTS_CT = list(range(1, 200, 9))
-ARG_SEGMENTS_DR = list(range(5, 60, 5))
 ARG_LENGTHS     = list(range(3, 20))
 ARG_DISTANCES   = [
      { "func": algos.cosine_score,      "name": "Cosine Similarity"}
@@ -47,13 +43,15 @@ ARG_DISTANCES   = [
     ,{ "func": algos.mult_score,        "name": "Multiplied Ratios"}
     ,{ "func": algos.neighbors_rand,    "name": "Random Neighbors"}
 ]
+ARG_NEIGHBORS_K = list(range(3, 30, 2))
+ARG_SEGMENTS_CT = list(range(1, 200, 9))
+ARG_SEGMENTS_DR = list(range(5, 60, 5))
 
-DEF_NEIGHBORS_K = 7
-DEF_NEIGHBORS_R = 0.1
-DEF_SEGMENTS_CT = 100
-DEF_SEGMENTS_DR = 30
 DEF_LENGTHS     = 12
 DEF_DISTANCES   = algos.cosine_score
+DEF_NEIGHBORS_K = 7
+DEF_SEGMENTS_CT = 100
+DEF_SEGMENTS_DR = 30
 
 def LOAD_DATASETS(cols):
     arg_datasets = [
@@ -171,10 +169,10 @@ def meansqr(playlistDF):
 
 def feat_pearson(playlistDF, dataset):
     song_ids = playlistDF["id-deezer"].tolist()
-    features = dataset.get_feats(song_ids).to_numpy()
+    features = dataset.get_feats(song_ids)
 
     # Grab pairwise PCC of all features. NxN symmetric matrix.
-    R = abs(np.corrcoef(features, rowvar=False))
+    R = abs(features.corr('pearson').to_numpy())
     N = R.shape[0]
 
     # Get average of the sum of the triangle.
@@ -211,18 +209,21 @@ FEAT_METRICS = [
 ]
 
 def evaluate(playlistDF, dataset, verbose=0):
-    evals = { "points": {}, "feats": {} }
+    # evals = { "points": {}, "feats": {} }
+    evals = {}
     
     if verbose >= 1: print("\nEvaluating points ...")
     for m in POINT_METRICS:
         val = m["func"](playlistDF)
         if verbose >= 1: print(m["name"], "\t", val)
-        evals["points"][m["name"]] = val
+        # evals["points"][m["name"]] = val
+        evals[m["func"].__name__] = val
 
     if verbose >= 1: print("\nEvaluating features ...")
     for m in FEAT_METRICS:
         val = m["func"](playlistDF, dataset)
         if verbose >= 1: print(m["name"], "\t", val)
-        evals["feats"][m["name"]] = val    
+        # evals["feats"][m["name"]] = val    
+        evals[m["func"].__name__] = val
 
     return evals

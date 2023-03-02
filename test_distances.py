@@ -20,6 +20,7 @@ import algos
 import plot
 import testing
 from songdataset import SongDataset
+from segmentdataset import SegmentDataset
 
 # Some constants good to figure out now
 samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
@@ -27,7 +28,7 @@ samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
 info = helper.loadConfig("config.json")
 
 # set up output directories
-dirname = helper.makeTestDir("datasets")
+dirname = helper.makeTestDir("distances")
 
 # Points for testing.
 point_combos = testing.load_samples(samplejson, samplecount)
@@ -35,7 +36,12 @@ point_combos = testing.load_samples(samplejson, samplecount)
 # Let's create an array of the song datasets.
 # TODO: for other tests, only load default dataset.
 print("\nLoading datasets.")
-datasets = testing.LOAD_DATASETS(info["cols"])
+dataset = SegmentDataset(
+    name="Deezer+Segments-100cnt",
+    cols=info["cols"]["deezer"] + info["cols"]["segments"],
+    path=testing.DEEZER_SEG_100, knn=True, verbose=True,
+    feat_index = 5, arousal = 4, valence = 3,
+)
 
 # Columns for our result sheets
 resultcols = ["oq", "dq", "orig", "dest"]
@@ -44,11 +50,11 @@ for pm in testing.POINT_METRICS:
 for fm in testing.FEAT_METRICS:
     resultcols.append(fm["func"].__name__)
 
-# For each dataset and point combination:
+# For each distance and point combination:
 # TODO: change what gets iterated thru for each test.
-for dataset in datasets:
-    print("\nTesting{}".format(dataset.name))
-    helper.makeDir("{}/{}".format(dirname, dataset.name))
+for distance in testing.ARG_DISTANCES:
+    print("\nTesting{}".format(distance["name"]))
+    helper.makeDir("{}/{}".format(dirname, distance["name"]))
 
     # collect table of results
     results = {}
@@ -60,16 +66,16 @@ for dataset in datasets:
         pairs = point_combos[qc]
         print(" - {}".format(qc))
 
-        curdirname = "{}/{}/{}".format(dirname, dataset.name, qc)
+        curdirname = "{}/{}/{}".format(dirname, distance["name"], qc)
         helper.makeDir(curdirname)
 
         for orig, dest in pairs:
 
-            # Generate playlist with this dataset and default other arguments.
+            # Generate playlist with this distance and default other arguments.
             # TODO: update default / variable arguments for each test.
             playlistDF = prodplay.makePlaylist(
                 dataset, orig, dest, testing.DEF_LENGTHS,
-                score = testing.DEF_DISTANCES,
+                score = distance["func"],
                 neighbors = testing.DEF_NEIGHBORS_K,
                 verbose = 0
             )
@@ -87,6 +93,6 @@ for dataset in datasets:
             evals = testing.evaluate(playlistDF, dataset)
             for key in evals:
                 results[key].append(evals[key])
-                
+
     resultDF = pd.DataFrame(results)
-    resultDF.to_csv("{}/{}/results.csv".format(dirname, dataset.name))
+    resultDF.to_csv("{}/{}/results.csv".format(dirname, distance["name"]))
