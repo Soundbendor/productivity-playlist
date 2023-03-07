@@ -3,6 +3,7 @@ import numpy as np
 import scipy as sp
 import random
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
 import json
 import pprint
@@ -227,3 +228,11 @@ def evaluate(playlistDF, dataset, verbose=0):
         evals[m["func"].__name__] = val
 
     return evals
+
+def plot_scores(df, dirname):
+    for pm in POINT_METRICS:
+        m = pm["func"].__name__
+        plot.boxplots(df, m, "dataset", file="{}/{}.png".format(dirname, m))
+    for fm in FEAT_METRICS:
+        m = fm["func"].__name__
+        plot.boxplots(df, m, "dataset", file="{}/{}.png".format(dirname, m))

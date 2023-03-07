@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import numpy as np
+import seaborn as sns
 
 def playlist(data, legend=[], file="", title=""):
     figsize = (12.8, 9.6)
@@ -54,6 +55,33 @@ def hist(label, data, title="", file=""):
 
     if (title != ""):
         plt.title(ax.set_title(title, fontproperties=titleFont))
+
+    if (file != ""):
+        plt.savefig(file, dpi=600)
+    else:
+        plt.show(block=False)
+    
+    plt.clf()
+    plt.close()
+
+def boxplots(df, x, y, legend=[], file="", title=""):
+    fig, ax= plt.subplots(dpi=600)
+
+    # add formatted labels
+    titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
+    axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
+    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
+    # ax.set_xlabel(xlabel, fontproperties=axisFont)
+    # ax.set_ylabel(ylabel, fontproperties=axisFont)
+
+    sns.boxenplot(ax=ax, data=df, x=x, y=y)
+    fig.tight_layout()
+
+    if (legend != []):
+        ax.legend(legend, prop=legendFont, fontsize='small')
+
+    if (title != ""):
+        ax.set_title(title, fontproperties=titleFont)
 
     if (file != ""):
         plt.savefig(file, dpi=600)

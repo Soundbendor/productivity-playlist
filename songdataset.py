@@ -6,9 +6,14 @@ from sklearn.neighbors import NearestNeighbors
 import helper
 
 class SongDataset:
-    def __init__(self, name, path, cols = None, feat_index = 2, arousal = 1, valence = 0, knn = False, verbose = False):
+    def __init__(self, name, path, cols = None, feat_index = 5, arousal = 4, valence = 3, knn = False, verbose = False):
         self.name = name
+        self.path = path
+        self.cols = cols
         self.feat_index = feat_index
+        self.arousal_index = arousal
+        self.valence_index = valence
+
         self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
         self.feat_df = self.full_df.iloc[:, feat_index:].copy()
         self.va_df = self.full_df.iloc[:, [valence, arousal]].copy()

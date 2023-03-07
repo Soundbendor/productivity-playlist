@@ -8,14 +8,16 @@ from songdataset import SongDataset
 import segments
 
 class SegmentDataset(SongDataset):
-    def __init__(self, name, path, cols = None, feat_index = 2, arousal = 1, valence = 0, knn = False, verbose = False):
+    def __init__(self, name, path, cols = None, feat_index = 5, arousal = 4, valence = 3, knn = False, verbose = False):
         super().__init__(name, path, cols, feat_index, arousal, valence, knn, verbose)
 
         headkeys = segments.fillcols("head", {}).keys()
-        self.head_df = self.feat_df[headkeys]
+        if set(headkeys).issubset(self.feat_df.columns):
+            self.head_df = self.feat_df[headkeys]
 
         tailkeys = segments.fillcols("tail", {}).keys()
-        self.tail_df = self.feat_df[tailkeys]
+        if set(tailkeys).issubset(self.feat_df.columns):
+            self.head_df = self.feat_df[tailkeys]
 
         return
     
