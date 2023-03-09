@@ -34,17 +34,17 @@ DEEZER_PCA_MSD  = "./data/deezer/deezer-pca-msd.csv"
 DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100.csv"
 DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030.csv"
 
-ARG_LENGTHS     = list(range(3, 20))
+ARG_LENGTHS     = list(range(3, 20, 4))
 ARG_DISTANCES   = [
      { "func": algos.cosine_score,      "name": "Cosine Similarity"}
     ,{ "func": algos.euclidean_score,   "name": "Euclidean Distance"}
     ,{ "func": algos.manhattan_score,   "name": "Manhattan Distance"}
-    ,{ "func": algos.minkowski3_score,  "name": "Minkowski Distance (order 3)"}
+    # ,{ "func": algos.minkowski3_score,  "name": "Minkowski Distance (order 3)"}
     ,{ "func": algos.jaccard_score,     "name": "Jaccard Distance"}
     ,{ "func": algos.mult_score,        "name": "Multiplied Ratios"}
     ,{ "func": algos.neighbors_rand,    "name": "Random Neighbors"}
 ]
-ARG_NEIGHBORS_K = list(range(3, 30, 2))
+ARG_NEIGHBORS_K = list(range(3, 32, 4))
 ARG_SEGMENTS_CT = list(range(1, 200, 9))
 ARG_SEGMENTS_DR = list(range(5, 60, 5))
 
@@ -229,10 +229,10 @@ def evaluate(playlistDF, dataset, verbose=0):
 
     return evals
 
-def plot_scores(df, dirname):
+def plot_scores(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
-        plot.boxplots(df, m, "dataset", file="{}/{}.png".format(dirname, m))
+        plot.boxplots(df, m, variable, file="{}/{}.png".format(dirname, m))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
-        plot.boxplots(df, m, "dataset", file="{}/{}.png".format(dirname, m))
+        plot.boxplots(df, m, variable, file="{}/{}.png".format(dirname, m))

@@ -26,7 +26,7 @@ import testing
 from songdataset import SongDataset
 from segmentdataset import SegmentDataset
 
-helper.makeDir("analysis")
+helper.makeDir("data/_analysis")
 info = helper.loadConfig("config.json")
 datasets = [
     # SongDataset(
@@ -137,7 +137,7 @@ def analyze_dataset(dataset, dirname):
 
 for dataset in datasets:
     ## Grab features and point data and analyze.
-    dirname = "analysis/{}".format(dataset.name)
+    dirname = "data/_analysis/{}".format(dataset.name)
     df = analyze_dataset(dataset, dirname)
 
     for scaler in scalers:
@@ -155,7 +155,7 @@ for dataset in datasets:
         helper.makeDir(dirscaled)
         df_scale.to_csv(f'{dirscaled}/data.csv')
 
-        scaled_dataset = SegmentDataset(
+        scaled_dataset = SongDataset(
             name=f'{scaler["name"]}-{dataset.name}',
             cols=dataset.cols,
             path=f'{dirscaled}/data.csv',

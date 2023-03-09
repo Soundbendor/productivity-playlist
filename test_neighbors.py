@@ -28,7 +28,8 @@ samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
 info = helper.loadConfig("config.json")
 
 # set up output directories
-dirname = helper.makeTestDir("neighbors")
+variable = "kval"
+dirname = helper.makeTestDir(f"{variable}s")
 
 # Points for testing.
 point_combos = testing.load_samples(samplejson, samplecount)
@@ -44,7 +45,8 @@ dataset = SegmentDataset(
 )
 
 # Columns for our result sheets
-resultcols = ["oq", "dq", "orig", "dest"]
+dfs = []
+resultcols = [variable, "oq", "dq", "orig", "dest"]
 for pm in testing.POINT_METRICS:
     resultcols.append(pm["func"].__name__)
 for fm in testing.FEAT_METRICS:
@@ -52,24 +54,25 @@ for fm in testing.FEAT_METRICS:
 
 # For each K and point combination:
 # TODO: change what gets iterated thru for each test.
-for k in testing.ARG_NEIGHBORS_K:
-    print("\nTesting{}".format(k))
-    helper.makeDir("{}/{}".format(dirname, k))
+for oq, dq in testing.QUADRANT_COMBOS:
+    qc = "{}{}".format(oq, dq)
+    pairs = point_combos[qc]
+    print()
+    helper.makeDir("{}/{}".format(dirname, qc))
 
     # collect table of results
     results = {}
     for col in resultcols: results[col] = []
 
     # For each point combination:
-    for oq, dq in testing.QUADRANT_COMBOS:
-        qc = "{}{}".format(oq, dq)
-        pairs = point_combos[qc]
-        print(" - {}".format(qc))
-
-        curdirname = "{}/{}/{}".format(dirname, k, qc)
+    for idx, (orig, dest) in enumerate(pairs):
+        print(f"{qc} ... {idx + 1} / {len(pairs)}\t", end="\r")
+        curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
         helper.makeDir(curdirname)
 
-        for orig, dest in pairs:
+        for k in testing.ARG_NEIGHBORS_K:
+            # Name of metric in string form. TODO: update for each test type.
+            name = str(k)
 
             # Generate playlist with this K and default other arguments.
             # TODO: update default / variable arguments for each test.
@@ -81,9 +84,10 @@ for k in testing.ARG_NEIGHBORS_K:
             )
 
             # Save playlist DataFrame to LaTeX.
-            playlistDF.to_csv("{}/{}-{}.csv".format(curdirname, orig, dest))
+            playlistDF.to_csv("{}/{}.csv".format(curdirname, name))
 
             # Add results to our collection
+            results[variable].append(name)
             results["oq"].append(oq)
             results["dq"].append(dq)
             results["orig"].append(orig)
@@ -93,6 +97,10 @@ for k in testing.ARG_NEIGHBORS_K:
             evals = testing.evaluate(playlistDF, dataset)
             for key in evals:
                 results[key].append(evals[key])
-
+                
     resultDF = pd.DataFrame(results)
-    resultDF.to_csv("{}/{}/results.csv".format(dirname, k))
+    resultDF.to_csv("{}/{}/results-{}.csv".format(dirname, qc, samplecount))
+    dfs.append(resultDF)
+
+allDF = pd.concat(dfs)
+allDF.to_csv("{}/all-{}.csv".format(dirname, samplecount))

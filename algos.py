@@ -20,7 +20,7 @@ def minkowski_score(cand, current, destination, songs_left, order):
 
     s = 0
     for i in range(len(destination)):
-        s = s + np.power(cand[i] - (current[i] + step[i]), order) 
+        s = s + np.power(abs(cand[i] - (current[i] + step[i])), order) 
     
     score = np.power(s, 1/order)
     return score

@@ -74,7 +74,7 @@ def boxplots(df, x, y, legend=[], file="", title=""):
     # ax.set_xlabel(xlabel, fontproperties=axisFont)
     # ax.set_ylabel(ylabel, fontproperties=axisFont)
 
-    sns.boxenplot(ax=ax, data=df, x=x, y=y)
+    df.boxplot(column=x, by=y, figsize = (len(df.columns) * 1.5,10), ax=ax)
     fig.tight_layout()
 
     if (legend != []):

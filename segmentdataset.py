@@ -12,12 +12,12 @@ class SegmentDataset(SongDataset):
         super().__init__(name, path, cols, feat_index, arousal, valence, knn, verbose)
 
         headkeys = segments.fillcols("head", {}).keys()
-        if set(headkeys).issubset(self.feat_df.columns):
+        if set(headkeys).issubset(set(self.feat_df.columns)):
             self.head_df = self.feat_df[headkeys]
 
         tailkeys = segments.fillcols("tail", {}).keys()
-        if set(tailkeys).issubset(self.feat_df.columns):
-            self.head_df = self.feat_df[tailkeys]
+        if set(tailkeys).issubset(set(self.feat_df.columns)):
+            self.tail_df = self.feat_df[tailkeys]
 
         return
     
