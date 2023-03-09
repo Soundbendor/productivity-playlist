@@ -38,7 +38,8 @@ print("\nLoading datasets.")
 datasets = testing.LOAD_DATASETS(info["cols"])
 
 # Columns for our result sheets
-resultcols = ["oq", "dq", "orig", "dest"]
+dfs = []
+resultcols = ["dataset", "oq", "dq", "orig", "dest"]
 for pm in testing.POINT_METRICS:
     resultcols.append(pm["func"].__name__)
 for fm in testing.FEAT_METRICS:
@@ -47,7 +48,7 @@ for fm in testing.FEAT_METRICS:
 # For each dataset and point combination:
 # TODO: change what gets iterated thru for each test.
 for dataset in datasets:
-    print("\nTesting{}".format(dataset.name))
+    print("\nTesting {}".format(dataset.name))
     helper.makeDir("{}/{}".format(dirname, dataset.name))
 
     # collect table of results
@@ -78,6 +79,7 @@ for dataset in datasets:
             playlistDF.to_csv("{}/{}-{}.csv".format(curdirname, orig, dest))
 
             # Add results to our collection
+            results["dataset"].append(dataset.name)
             results["oq"].append(oq)
             results["dq"].append(dq)
             results["orig"].append(orig)
@@ -90,3 +92,12 @@ for dataset in datasets:
                 
     resultDF = pd.DataFrame(results)
     resultDF.to_csv("{}/{}/results.csv".format(dirname, dataset.name))
+    dfs.append(resultDF)
+
+allDF = pd.concat(dfs)
+allDF.to_csv("{}/all.csv".format(dirname))
+
+analysisdir = "{}/_analysis".format(dirname)
+helper.makeDir(analysisdir)
+
+testing.plot_scores(allDF, analysisdir)

@@ -13,7 +13,7 @@ import os
 import math
 import warnings
 import itertools
-from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, QuantileTransformer
+from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, QuantileTransformer, PowerTransformer
 
 
 #our modules
@@ -35,16 +35,16 @@ datasets = [
     #     path=testing.DEEZER_STD_ALL,
     #     feat_index = 3
     # ),
-    # SongDataset(
-    #     name="Deezer+Spotify",
-    #     cols=info["cols"]["deezer"] + info["cols"]["spotify"],
-    #     path=testing.DEEZER_STD_ALL,
-    # ),
     SongDataset(
-        name="Deezer+MSD",
-        cols=info["cols"]["deezer"] + info["cols"]["msd"],
+        name="Deezer+Spotify",
+        cols=info["cols"]["deezer"] + info["cols"]["spotify"],
         path=testing.DEEZER_STD_ALL,
     ),
+    # SongDataset(
+    #     name="Deezer+MSD",
+    #     cols=info["cols"]["deezer"] + info["cols"]["msd"],
+    #     path=testing.DEEZER_STD_ALL,
+    # ),
     # SongDataset(
     #     name="PCA-Deezer+Spotify",
     #     path=testing.DEEZER_PCA_SPO, 
@@ -68,13 +68,13 @@ datasets = [
     #     path=testing.DEEZER_SEG_100,
     # )
 ]
-# scaler = MinMaxScaler(feature_range=(-1,1)) 
 scalers = [
     {"name": "stdscl", "func": StandardScaler()},
     {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
     {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
     {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
-    {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')}
+    {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
+    {"name": "powert", "func": PowerTransformer(method='yeo-johnson', standardize=False)}
 ]
 
 def analyze_dataset(dataset, dirname):
@@ -111,7 +111,7 @@ def analyze_dataset(dataset, dirname):
         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 4.8))
         print("... {}".format(col))        
 
-        sns.boxplot(data=df[[col]], ax=ax1)
+        sns.boxenplot(data=df[[col]], ax=ax1)
         ax1.set_title(f"Boxplot for {col}")
         sns.histplot(data=df[[col]], ax=ax2)
         ax2.set_title(f"Histogram for {col}")
