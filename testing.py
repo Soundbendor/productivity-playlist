@@ -229,10 +229,20 @@ def evaluate(playlistDF, dataset, verbose=0):
 
     return evals
 
+def metric_sheets(df, variable, dirname):
+    for pm in POINT_METRICS:
+        m = pm["func"].__name__
+        desc = df.groupby(variable)[m].describe().round(6)
+        desc.to_csv("{}/{}-{}.csv".format(dirname, m, variable))
+    for fm in FEAT_METRICS:
+        m = fm["func"].__name__
+        desc = df.groupby(variable)[m].describe().round(6)
+        desc.to_csv("{}/{}-{}.csv".format(dirname, m, variable))
+
 def plot_scores(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}.png".format(dirname, m))
+        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, m, variable))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}.png".format(dirname, m))
+        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, m, variable))

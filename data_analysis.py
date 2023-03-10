@@ -40,33 +40,33 @@ datasets = [
         cols=info["cols"]["deezer"] + info["cols"]["spotify"],
         path=testing.DEEZER_STD_ALL,
     ),
-    # SongDataset(
-    #     name="Deezer+MSD",
-    #     cols=info["cols"]["deezer"] + info["cols"]["msd"],
-    #     path=testing.DEEZER_STD_ALL,
-    # ),
-    # SongDataset(
-    #     name="PCA-Deezer+Spotify",
-    #     path=testing.DEEZER_PCA_SPO, 
-    # ),
-    # SongDataset(
-    #     name="PCA-Deezer+MSD",
-    #     path=testing.DEEZER_PCA_MSD, 
-    # ),
-    # SongDataset(
-    #     name="PCA-Deezer+Spotify+MSD",
-    #     path=testing.DEEZER_PCA_ALL, 
-    # ),
-    # SegmentDataset(
-    #     name="Deezer+Segments-100cnt",
-    #     cols=info["cols"]["deezer"] + info["cols"]["segments"],
-    #     path=testing.DEEZER_SEG_100,
-    # ),
-    # SegmentDataset(
-    #     name="Deezer+Segments-030sec",
-    #     cols=info["cols"]["deezer"] + info["cols"]["segments"],
-    #     path=testing.DEEZER_SEG_100,
-    # )
+    SongDataset(
+        name="Deezer+MSD",
+        cols=info["cols"]["deezer"] + info["cols"]["msd"],
+        path=testing.DEEZER_STD_ALL,
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify",
+        path=testing.DEEZER_PCA_SPO, 
+    ),
+    SongDataset(
+        name="PCA-Deezer+MSD",
+        path=testing.DEEZER_PCA_MSD, 
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify+MSD",
+        path=testing.DEEZER_PCA_ALL, 
+    ),
+    SegmentDataset(
+        name="Deezer+Segments-100cnt",
+        cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        path=testing.DEEZER_SEG_100,
+    ),
+    SegmentDataset(
+        name="Deezer+Segments-030sec",
+        cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        path=testing.DEEZER_SEG_100,
+    )
 ]
 scalers = [
     {"name": "stdscl", "func": StandardScaler()},
@@ -132,6 +132,16 @@ def analyze_dataset(dataset, dirname):
     plt.tight_layout()
     plt.savefig("{}/heatmap.png".format(dirname))
     plt.close()
+
+    # Arousal-Valence circle plot.
+    mms = MinMaxScaler(feature_range=(-1,1))
+    valence = mms.fit_transform(df[["valence"]])
+    arousal = mms.fit_transform(df[["arousal"]])
+    plot.av_circle(
+        valence, arousal, 
+        title=f"Spread of {dataset.name}",
+        file="{}/circle.png".format(dirname)
+    )
 
     return df
 

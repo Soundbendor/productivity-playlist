@@ -32,7 +32,14 @@ helper.makeDir(analysisdir)
 
 print(f"Analyzing {variable}s from {testtime}")
 allresults = pd.read_csv(f"{testdir}/all-{samplecount}.csv", header=0, index_col=0)
+allresults["qc"] = allresults["oq"] + allresults["dq"]
+
+# allresults = allresults[(allresults["qc"] != "TRBR") & (allresults["qc"] != "BRTR")]
+
 testing.plot_scores(allresults, variable, analysisdir)
+testing.metric_sheets(allresults, variable, analysisdir)
+testing.plot_scores(allresults, "qc", analysisdir)
+testing.metric_sheets(allresults, "qc", analysisdir)
 
 for oq, dq, in testing.QUADRANT_COMBOS:
     qc = f"{oq}{dq}"
@@ -42,4 +49,27 @@ for oq, dq, in testing.QUADRANT_COMBOS:
     helper.makeDir(quaddir)
 
     quadresults = pd.read_csv(f"{testdir}/{qc}/results-{samplecount}.csv", header=0, index_col=0)
+    quadresults["qc"] = quadresults["oq"] + quadresults["dq"]
+    
     testing.plot_scores(quadresults, variable, quaddir)
+    testing.metric_sheets(quadresults, variable, quaddir)
+
+    pointcombos = os.listdir(f"{testdir}/{qc}")
+    pointcombos.remove(f"results-{samplecount}.csv")
+
+    helper.makeDir(f"{analysisdir}/{qc}/playlists")
+    for pc in pointcombos:
+        playlistsDir = f"{testdir}/{qc}/{pc}"
+        orig, dest = pc.split("-")
+        
+        legend = [name.split(".csv")[0] for name in os.listdir(playlistsDir)]
+        playlistDFs = [pd.read_csv(f"{playlistsDir}/{name}.csv") for name in legend]
+        testpoints = [df[["valence", "arousal"]].to_numpy() for df in playlistDFs]
+        
+        plot.playlist(testpoints, legend=legend,
+            file = f"{analysisdir}/{qc}/playlists/{pc}.png",
+            title = "Playlist from {} to {} based on {}".format(orig, dest, variable)
+        )
+
+
+

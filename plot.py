@@ -4,9 +4,9 @@ import numpy as np
 import seaborn as sns
 
 def playlist(data, legend=[], file="", title=""):
-    figsize = (12.8, 9.6)
-    plt.figure(figsize=figsize)
     fig, ax= plt.subplots(dpi=600)
+    fig.set_figheight(4.8)
+    fig.set_figwidth(6.4)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
@@ -93,9 +93,9 @@ def boxplots(df, x, y, legend=[], file="", title=""):
 
 def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None):
 
-    figsize = (12.8, 9.6)
-    plt.figure(figsize=figsize)
     fig, ax= plt.subplots(dpi=600)
+    fig.set_figheight(4.8)
+    fig.set_figwidth(6.4)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
@@ -148,8 +148,10 @@ def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', le
     plt.close()
 
 def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=True, showfliers=True):
-    plt.figure(figsize=(plt_size, plt_size))
     fig, ax= plt.subplots(dpi=600)
+    fig.set_figheight(plt_size)
+    fig.set_figwidth(plt_size)
+
     
     titleFont = fm.FontProperties(fname="./static/fonts/Stratum2-Bold.otf")
     ax.set_title(title, fontproperties=titleFont)    
@@ -164,8 +166,8 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
 def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
     plt.figure(figsize=(plt_size,plt_size))
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
-    plt.xlim(-1.25,1.25)
-    plt.ylim(-1.25,1.25)  
+    # plt.xlim(-1.25,1.25)
+    # plt.ylim(-1.25,1.25)  
 
     # draw the unit circle
     fig = plt.gcf()
