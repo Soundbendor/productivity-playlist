@@ -35,7 +35,8 @@ def perVariable(dataset, orig, dest, l, score, k, outfile):
 def perQuadCombo(orig, dest, datasets, dirname):
     curdirname = "{}/{}-{}".format(dirname, orig, dest)
     helper.makeDir(curdirname)
-    # print(f" ... {orig} -> {dest}")
+    # qc = dirname.split("-")[-1]
+    # print(f"{qc} ... {orig} -> {dest}")
 
     # argVariable = [(
     #     d, orig, dest, testing.DEF_LENGTHS, 
@@ -65,6 +66,23 @@ def perQuadCombo(orig, dest, datasets, dirname):
 
     return
 
+def perQuadrant(oq, dq):
+    qc = "{}{}".format(oq, dq)
+    pairs = point_combos[qc]
+    # print(qc)
+    helper.makeDir("{}/{}".format(dirname, qc))
+
+    # argQuadCombo = [(
+    #     orig, dest, datasets, "{}/{}".format(dirname, qc)
+    # ) for (orig, dest) in pairs]
+
+    # pQuadCombo = multiprocessing.Pool(len(pairs))
+    # pQuadCombo.starmap(perQuadCombo, argQuadCombo)    
+
+    for idx, (orig, dest) in enumerate(pairs):
+        print(f"{qc} ... {idx + 1} / {len(pairs)}\t")
+        perQuadCombo(orig, dest, datasets, "{}/{}".format(dirname, qc))
+
 if __name__ == "__main__":
     # Some constants good to figure out now
     # samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
@@ -84,23 +102,23 @@ if __name__ == "__main__":
     print("\nLoading datasets.")
     datasets = testing.LOAD_DATASETS(info["cols"])
 
-    # print(testing.QUADRANT_COMBOS)
-    # pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
-    # pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)
+    print(testing.QUADRANT_COMBOS)
+    pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
+    pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)
 
-    # For each quadrant:
-    for oq, dq in testing.QUADRANT_COMBOS:
-        qc = "{}{}".format(oq, dq)
-        pairs = point_combos[qc]
-        print(qc)
-        helper.makeDir("{}/{}".format(dirname, qc))
+    # # For each quadrant:
+    # for oq, dq in testing.QUADRANT_COMBOS:
+    #     qc = "{}{}".format(oq, dq)
+    #     pairs = point_combos[qc]
+    #     print(qc)
+    #     helper.makeDir("{}/{}".format(dirname, qc))
 
-        argQuadCombo = [(
-            orig, dest, datasets, "{}/{}".format(dirname, qc)
-        ) for (orig, dest) in pairs]
+    #     argQuadCombo = [(
+    #         orig, dest, datasets, "{}/{}".format(dirname, qc)
+    #     ) for (orig, dest) in pairs]
 
-        pQuadCombo = multiprocessing.Pool(len(pairs))
-        pQuadCombo.starmap(perQuadCombo, argQuadCombo)
+    #     pQuadCombo = multiprocessing.Pool(len(pairs))
+    #     pQuadCombo.starmap(perQuadCombo, argQuadCombo)
 
         # # For each point combination:
         # for idx, (orig, dest) in enumerate(pairs):
