@@ -22,18 +22,13 @@ import plot
 import testing
 from songdataset import SongDataset
 
-def perQuadCombo(orig, dest, variables, dirname):
-
-
-    return
-
 def perQuadrant(oq, dq):
     qc = "{}{}".format(oq, dq)
     pairs = point_combos[qc]
     helper.makeDir("{}/{}".format(dirname, qc))
 
-    for orig, dest in enumerate(pairs):
-        curdirname = "{}/{}-{}".format(dirname, orig, dest)
+    for orig, dest in pairs:
+        curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
         helper.makeDir(curdirname)
 
         for variable in variables:
