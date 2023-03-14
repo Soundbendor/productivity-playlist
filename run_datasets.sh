@@ -3,9 +3,9 @@
 #SBATCH -J playlist      #job name
 #SBATCH -p cascades
 #SBATCH -A cascades
-#SBATCH -c 5
-#SBATCH -o ./out/test_datasets-2.out
-#SBATCH -e ./out/test_datasets-2.err
+#SBATCH -c 6
+#SBATCH -o ./log/test_datasets.out
+#SBATCH -e ./log/test_datasets.err
 #SBATCH -t 4-00:00:00      #set max job time to 4 days, 0h (default is around 36-48h)
 #SBATCH --mail-type=BEGIN,END,FAIL
 #SBATCH --mail-user=gaurs@oregonstate.edu
