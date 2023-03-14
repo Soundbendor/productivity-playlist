@@ -3,4 +3,5 @@ pandas
 spotipy
 scikit-learn
 streamlit
+seaborn
 altair
