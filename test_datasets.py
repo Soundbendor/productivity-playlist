@@ -11,6 +11,7 @@ import time
 import sys
 import os
 import math
+import multiprocessing
 import itertools
 
 #our modules
@@ -21,82 +22,113 @@ import plot
 import testing
 from songdataset import SongDataset
 
-# Some constants good to figure out now
-samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
-samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-info = helper.loadConfig("config.json")
+def perVariable(dataset, orig, dest, l, score, k, outfile):
+    playlistDF = prodplay.makePlaylist(
+        dataset, orig, dest, l,
+        score = score,
+        neighbors = k,
+        verbose = 0
+    )
+    playlistDF.to_csv(outfile)
+    return
 
-# set up output directories
-variable = "dataset"
-dirname = helper.makeTestDir(f"{variable}s")
+def perQuadCombo(orig, dest, datasets, dirname):
+    curdirname = "{}/{}-{}".format(dirname, orig, dest)
+    helper.makeDir(curdirname)
+    # print(f" ... {orig} -> {dest}")
 
-# Points for testing.
-point_combos = testing.load_samples(samplejson, samplecount)
+    # argVariable = [(
+    #     d, orig, dest, testing.DEF_LENGTHS, 
+    #     testing.DEF_DISTANCES, testing.DEF_NEIGHBORS_K,
+    #     "{}/{}.csv".format(curdirname, d.name)
+    # ) for d in datasets]
 
-# Let's create an array of the song datasets.
-# TODO: for other tests, only load default dataset.
-print("\nLoading datasets.")
-datasets = testing.LOAD_DATASETS(info["cols"])
+    # p = multiprocessing.Pool(len(datasets))
+    # p.starmap(perVariable, argVariable)
 
-# Columns for our result sheets
-dfs = []
-resultcols = [variable, "oq", "dq", "orig", "dest"]
-for pm in testing.POINT_METRICS:
-    resultcols.append(pm["func"].__name__)
-for fm in testing.FEAT_METRICS:
-    resultcols.append(fm["func"].__name__)
+    # for orig, dest in pairs:
+    for dataset in datasets:
+        # Name of metric in string form. TODO: update for each test type.
+        name = dataset.name
+        
+        # Generate playlist with this dataset and default other arguments.
+        # TODO: update default / variable arguments for each test.
+        playlistDF = prodplay.makePlaylist(
+            dataset, orig, dest, testing.DEF_LENGTHS,
+            score = testing.DEF_DISTANCES,
+            neighbors = testing.DEF_NEIGHBORS_K,
+            verbose = 0
+        )
 
-# For each dataset and point combination:
-# TODO: change what gets iterated thru for each test.
-# for dataset in datasets:
-for oq, dq in testing.QUADRANT_COMBOS:
-    qc = "{}{}".format(oq, dq)
-    pairs = point_combos[qc]
-    print()
-    helper.makeDir("{}/{}".format(dirname, qc))
+        # Save playlist DataFrame to LaTeX.
+        playlistDF.to_csv("{}/{}.csv".format(curdirname, name))
 
-    # collect table of results
-    results = {}
-    for col in resultcols: results[col] = []
+    return
 
-    # For each point combination:
-    for idx, (orig, dest) in enumerate(pairs):
-        print(f"{qc} ... {idx + 1} / {len(pairs)}\t", end="\r")
-        curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
-        helper.makeDir(curdirname)
+if __name__ == "__main__":
+    # Some constants good to figure out now
+    samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
+    samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
+    info = helper.loadConfig("config.json")
 
-        # for orig, dest in pairs:
-        for dataset in datasets:
-            # Name of metric in string form. TODO: update for each test type.
-            name = dataset.name
-            
-            # Generate playlist with this dataset and default other arguments.
-            # TODO: update default / variable arguments for each test.
-            playlistDF = prodplay.makePlaylist(
-                dataset, orig, dest, testing.DEF_LENGTHS,
-                score = testing.DEF_DISTANCES,
-                neighbors = testing.DEF_NEIGHBORS_K,
-                verbose = 0
-            )
+    # set up output directories
+    variable = "dataset"
+    dirname = helper.makeTestDir(f"{variable}s")
 
-            # Save playlist DataFrame to LaTeX.
-            playlistDF.to_csv("{}/{}.csv".format(curdirname, name))
+    # Points for testing.
+    point_combos = testing.load_samples(samplejson, samplecount)
 
-            # Add results to our collection
-            results[variable].append(name)
-            results["oq"].append(oq)
-            results["dq"].append(dq)
-            results["orig"].append(orig)
-            results["dest"].append(dest)
+    # Let's create an array of the song datasets.
+    # TODO: for other tests, only load default dataset.
+    print("\nLoading datasets.")
+    datasets = testing.LOAD_DATASETS(info["cols"])
 
-            # Evaluate playlist with each metric
-            evals = testing.evaluate(playlistDF, dataset)
-            for key in evals:
-                results[key].append(evals[key])
+    # print(testing.QUADRANT_COMBOS)
+    # pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
+    # pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)
+
+    # For each quadrant:
+    for oq, dq in testing.QUADRANT_COMBOS:
+        qc = "{}{}".format(oq, dq)
+        pairs = point_combos[qc]
+        print(qc)
+        helper.makeDir("{}/{}".format(dirname, qc))
+
+        argQuadCombo = [(
+            orig, dest, datasets, "{}/{}".format(dirname, qc)
+        ) for (orig, dest) in pairs]
+
+        pQuadCombo = multiprocessing.Pool(len(pairs))
+        pQuadCombo.starmap(perQuadCombo, argQuadCombo)
+
+        # # For each point combination:
+        # for idx, (orig, dest) in enumerate(pairs):
+        #     curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
+        #     helper.makeDir(curdirname)
+
+        #     argVariable = [(
+        #         d, orig, dest, testing.DEF_LENGTHS, 
+        #         testing.DEF_DISTANCES, testing.DEF_NEIGHBORS_K,
+        #         "{}/{}.csv".format(curdirname, d.name)
+        #     ) for d in datasets]
+
+        #     pVariable = multiprocessing.Pool(len(datasets))
+        #     pVariable.starmap(perVariable, argVariable)
+        #     print(f"{qc} ... {idx + 1} / {len(pairs)}\t", end="\r")
+
+            # for orig, dest in pairs:
+            # for dataset in datasets:
+            #     # Name of metric in string form. TODO: update for each test type.
+            #     name = dataset.name
                 
-    resultDF = pd.DataFrame(results)
-    resultDF.to_csv("{}/{}/results-{}.csv".format(dirname, qc, samplecount))
-    dfs.append(resultDF)
+            #     # Generate playlist with this dataset and default other arguments.
+            #     # TODO: update default / variable arguments for each test.
+            #     playlistDF = prodplay.makePlaylist(
+            #         dataset, orig, dest, testing.DEF_LENGTHS,
+            #         score = testing.DEF_DISTANCES,
+            #         neighbors = testing.DEF_NEIGHBORS_K,
+            #         verbose = 0
+            #     )
 
-allDF = pd.concat(dfs)
-allDF.to_csv("{}/all-{}.csv".format(dirname, samplecount))
+            #     # Save playlist DataFrame to LaTeX.
+            #     playlistDF.to_csv("{}/{}.csv".format(curdirname, name))
