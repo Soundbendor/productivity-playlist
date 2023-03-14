@@ -11,6 +11,7 @@ import time
 import sys
 import os
 import math
+import multiprocessing
 import itertools
 
 #our modules
@@ -21,85 +22,46 @@ import plot
 import testing
 from songdataset import SongDataset, SegmentDataset
 
-# Some constants good to figure out now
-samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
-samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-info = helper.loadConfig("config.json")
-
-# set up output directories
-variable = "kval"
-dirname = helper.makeTestDir(f"{variable}s")
-
-# Points for testing.
-point_combos = testing.load_samples(samplejson, samplecount)
-
-# Let's create an array of the song datasets.
-# TODO: for other tests, only load default dataset.
-print("\nLoading datasets.")
-dataset = SegmentDataset(
-    name="Deezer+Segments-100cnt",
-    cols=info["cols"]["deezer"] + info["cols"]["segments"],
-    path=testing.DEEZER_SEG_100, knn=True, verbose=True,
-    feat_index = 5, arousal = 4, valence = 3,
-)
-
-# Columns for our result sheets
-dfs = []
-resultcols = [variable, "oq", "dq", "orig", "dest"]
-for pm in testing.POINT_METRICS:
-    resultcols.append(pm["func"].__name__)
-for fm in testing.FEAT_METRICS:
-    resultcols.append(fm["func"].__name__)
-
-# For each K and point combination:
-# TODO: change what gets iterated thru for each test.
-for oq, dq in testing.QUADRANT_COMBOS:
+def perQuadrant(oq, dq):
     qc = "{}{}".format(oq, dq)
     pairs = point_combos[qc]
-    print()
     helper.makeDir("{}/{}".format(dirname, qc))
 
-    # collect table of results
-    results = {}
-    for col in resultcols: results[col] = []
-
-    # For each point combination:
-    for idx, (orig, dest) in enumerate(pairs):
-        print(f"{qc} ... {idx + 1} / {len(pairs)}\t", end="\r")
+    for orig, dest in pairs:
         curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
         helper.makeDir(curdirname)
 
-        for k in testing.ARG_NEIGHBORS_K:
-            # Name of metric in string form. TODO: update for each test type.
-            name = str(k)
-
-            # Generate playlist with this K and default other arguments.
+        for variable in variables:
             # TODO: update default / variable arguments for each test.
             playlistDF = prodplay.makePlaylist(
                 dataset, orig, dest, testing.DEF_LENGTHS,
                 score = testing.DEF_DISTANCES,
-                neighbors = k,
+                neighbors = variable,
                 verbose = 0
             )
 
-            # Save playlist DataFrame to LaTeX.
-            playlistDF.to_csv("{}/{}.csv".format(curdirname, name))
+            # Save playlist DataFrame to CSV. TODO: update name.
+            playlistDF.to_csv("{}/{}.csv".format(curdirname, str(variable)))
 
-            # Add results to our collection
-            results[variable].append(name)
-            results["oq"].append(oq)
-            results["dq"].append(dq)
-            results["orig"].append(orig)
-            results["dest"].append(dest)
+if __name__ == "__main__":
+    samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
+    info = helper.loadConfig("config.json")
 
-            # Evaluate playlist with each metric
-            evals = testing.evaluate(playlistDF, dataset)
-            for key in evals:
-                results[key].append(evals[key])
-                
-    resultDF = pd.DataFrame(results)
-    resultDF.to_csv("{}/{}/results-{}.csv".format(dirname, qc, samplecount))
-    dfs.append(resultDF)
+    # set up output directory. TODO: update for each test.
+    dirname = helper.makeTestDir("kvals")
 
-allDF = pd.concat(dfs)
-allDF.to_csv("{}/all-{}.csv".format(dirname, samplecount))
+    # Points for testing.
+    point_combos = testing.load_samples(testing.QUADRANT_JSON, samplecount)
+
+    # Load datasets and variables. TODO: update for each test.
+    dataset = SegmentDataset(
+        name="Deezer+Segments-100cnt",
+        cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        path=testing.DEEZER_SEG_100, knn=True, verbose=True,
+        feat_index = 5, arousal = 4, valence = 3,
+    )
+    variables = testing.ARG_NEIGHBORS_K
+
+    # Run a process for each quadrant combo (12 in total).
+    pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
+    pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)

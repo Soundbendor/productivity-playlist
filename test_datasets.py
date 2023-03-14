@@ -45,7 +45,7 @@ def perQuadrant(oq, dq):
 
 if __name__ == "__main__":
     samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-    info = helper.loadConfig(f"{os.getcwd()}/config.json")
+    info = helper.loadConfig("config.json")
 
     # set up output directory. TODO: update for each test.
     dirname = helper.makeTestDir("datasets")
