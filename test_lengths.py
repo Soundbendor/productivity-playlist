@@ -19,8 +19,7 @@ import prodplay
 import algos
 import plot
 import testing
-from songdataset import SongDataset
-from segmentdataset import SegmentDataset
+from songdataset import SongDataset, SegmentDataset
 
 # Some constants good to figure out now
 samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"

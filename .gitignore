@@ -1,6 +1,6 @@
 #ignore datasets and test folders
 data/
-analysis/
+analysis*/
 ismir2022/
 test/
 out/

@@ -16,6 +16,7 @@ import math
 import helper
 import prodplay
 import algos
+import plot
 import tests
 from songdataset import SongDataset
 

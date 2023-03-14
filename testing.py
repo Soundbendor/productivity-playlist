@@ -20,8 +20,7 @@ import prodplay
 import spotify
 import plot
 import algos
-from songdataset import SongDataset
-from segmentdataset import SegmentDataset
+from songdataset import SongDataset, SegmentDataset
 
 QUADRANT_JSON   = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
 QUADRANT_CODES  = ["BL", "BR", "TL", "TR"]
@@ -107,7 +106,7 @@ def LOAD_DATASETS(cols):
         SegmentDataset(
             name="Deezer+Segments-030sec",
             cols=cols["deezer"] + cols["segments"],
-            path=DEEZER_SEG_100, knn=True, verbose=True,
+            path=DEEZER_SEG_D30, knn=True, verbose=True,
             feat_index = 5, arousal = 4, valence = 3,
         )
     ]
@@ -233,16 +232,16 @@ def metric_sheets(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
         desc = df.groupby(variable)[m].describe().round(6)
-        desc.to_csv("{}/{}-{}.csv".format(dirname, m, variable))
+        desc.to_csv("{}/{}-{}.csv".format(dirname, variable, m))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
         desc = df.groupby(variable)[m].describe().round(6)
-        desc.to_csv("{}/{}-{}.csv".format(dirname, m, variable))
+        desc.to_csv("{}/{}-{}.csv".format(dirname, variable, m))
 
 def plot_scores(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, m, variable))
+        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, m, variable))
+        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))

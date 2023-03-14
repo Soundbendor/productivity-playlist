@@ -18,8 +18,7 @@ import spotify
 import plot
 import algos
 import testing
-from songdataset import SongDataset
-from segmentdataset import SegmentDataset
+from songdataset import SongDataset, SegmentDataset
 
 #get important personal information from Spotify API
 datasetpath = "data/deezer/deezer-std-all.csv"

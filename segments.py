@@ -1,6 +1,5 @@
 import spotify
 import helper
-from songdataset import SongDataset
 from pprint import pprint
 import plot
 import pandas as pd
@@ -92,8 +91,8 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
     # pprint(outvals)
     return segvals, outvals
 
-def grab_dataset(outpath, length, mode, num):
-    df = songdata.full_df[0:length].copy()
+def grab_dataset(outpath, length, mode, num, df_in):
+    df = df_in[0:length].copy()
     outcols = {}
     fillcols("head", outcols)
     fillcols("tail", outcols)
@@ -115,6 +114,25 @@ def grab_dataset(outpath, length, mode, num):
     # EXPORT DATA TO CSV!!!
     for col in outcols: df[col] = outcols[col]
     df.to_csv(outpath)
+
+def fill_segment_datasets(df, path, mode, num):    
+    for index in df.index.values.tolist():
+        spid = df.loc[index]["sp_track_id"]
+        hlmx = df.loc[index]["head_loudness_max"]
+
+        if pd.isnull(hlmx):
+            print(f"Looking for {spid} ... ", end="")
+            try:
+                analysis = sp.audio_analysis(spid)
+                segments = analysis["segments"]
+                _, vals = grab_segment_data(segments, mode, num)
+                for key in vals: df.at[index, key] = vals[key]
+                print("Success!")
+            except:
+                print("Failed :(")
+    
+    df.to_csv(path)
+    return df
 
 def test_segcounts(spid, mode, num):
 
@@ -166,20 +184,44 @@ if __name__ == "__main__":
         info["auth"]["scope"]
     )
 
-    songdata = SongDataset(
-        name="deezer",
-        cols=info["cols"]["deezer"],
-        path=datasetpath, knn=True, verbose=True,
-        feat_index = 5, arousal = 4, valence = 3,
-    )
+    songdata = pd.read_csv(datasetpath, cols=info["cols"]["deezer"])
 
-    randidx = np.random.randint(0, len(songdata))
-    randsong = songdata.full_df.iloc[randidx]
-    print(randsong)
+    # randidx = np.random.randint(0, len(songdata))
+    # randsong = songdata.full_df.iloc[randidx]
+    # print(randsong)
 
-    for mode, num in generate:
-        test_segcounts(randsong["sp_track_id"], mode, num)
-        grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata), mode, num)
+    # for mode, num in generate:
+    #     test_segcounts(randsong["sp_track_id"], mode, num)
+    #     grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata), mode, num)
+
+    DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100.csv"
+    DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030.csv"    
+
+    OLD_DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100-old.csv"
+    OLD_DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030-old.csv"    
+
+    fix = [
+        ("dur", 30, OLD_DEEZER_SEG_D30, DEEZER_SEG_D30), 
+        ("cnt", 100, OLD_DEEZER_SEG_100, DEEZER_SEG_100)
+    ]
+
+    for mode, num, old, new in fix:
+        df = pd.read_csv(old, header=0, index_col=0)
+        desc_stats = pd.DataFrame({
+            'Missing Values': df.isnull().sum(),
+            'Mean': df.mean(),
+            'Median': df.median(),
+            'Mode': df.mode().iloc[0]
+        })
+        print(desc_stats)
+        fill_segment_datasets(df, new, mode, num)
+        desc_stats = pd.DataFrame({
+            'Missing Values': df.isnull().sum(),
+            'Mean': df.mean(),
+            'Median': df.median(),
+            'Mode': df.mode().iloc[0]
+        })
+        print(desc_stats)
 
 
 
