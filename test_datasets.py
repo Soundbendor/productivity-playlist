@@ -67,16 +67,17 @@ def perQuadCombo(orig, dest, datasets, dirname):
 
 if __name__ == "__main__":
     # Some constants good to figure out now
-    samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
+    # samplejson  = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
     samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
-    info = helper.loadConfig("config.json")
+    print(os.getcwd())
+    info = helper.loadConfig(f"{os.getcwd()}/config.json")
 
     # set up output directories
     variable = "dataset"
     dirname = helper.makeTestDir(f"{variable}s")
 
     # Points for testing.
-    point_combos = testing.load_samples(samplejson, samplecount)
+    point_combos = testing.load_samples(testing.QUADRANT_JSON, samplecount)
 
     # Let's create an array of the song datasets.
     # TODO: for other tests, only load default dataset.

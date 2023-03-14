@@ -22,7 +22,7 @@ import plot
 import algos
 from songdataset import SongDataset, SegmentDataset
 
-QUADRANT_JSON   = "./ismir2022/quadrants/std-22-05-03_1229/songs.json"
+QUADRANT_JSON   = "quadrants.json"
 QUADRANT_CODES  = ["BL", "BR", "TL", "TR"]
 QUADRANT_COMBOS = list(itertools.permutations(QUADRANT_CODES, 2))
 
