@@ -31,48 +31,43 @@ def analyze_dataset(dataset, dirname, verbose=1):
     df = pd.merge(va, feats, left_index=True, right_index=True)
     if verbose >= 2: print(df.info())
 
-    # ## Basic descriptive stats.
-    # desc_stats = pd.DataFrame({
-    #     'Missing Values': df.isnull().sum(),
-    #     'Mean': df.mean(),
-    #     'Median': df.median(),
-    #     'Mode': df.mode().iloc[0]
-    # })
-    # if verbose >= 2: print(desc_stats)
-    # desc_stats.to_csv("{}/mmm.csv".format(dirname), float_format="%.6f")
+    ## Basic descriptive stats.
+    desc_stats = pd.DataFrame({
+        'Missing Values': df.isnull().sum(),
+        'Mean': df.mean(),
+        'Median': df.median(),
+        'Mode': df.mode().iloc[0]
+    })
+    if verbose >= 2: print(desc_stats)
+    desc_stats.to_csv("{}/mmm.csv".format(dirname), float_format="%.6f")
     
-    # ## Full descriptive stats.
-    # description = df.describe([0.01, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99]).T
-    # if verbose >= 2: print(description)
-    # description.to_csv("{}/description.csv".format(dirname), float_format="%.6f")
+    ## Full descriptive stats.
+    description = df.describe([0.01, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99]).T
+    if verbose >= 2: print(description)
+    description.to_csv("{}/description.csv".format(dirname), float_format="%.6f")
 
-    # ## Full boxplot.
-    # df.boxplot(figsize = (len(df.columns) * 1.5,10))
-    # plt.tight_layout()
-    # plt.savefig("{}/all-boxes.png".format(dirname))
-    # plt.close()
+    ## Full boxplot.
+    df.boxplot(figsize = (len(df.columns) * 1.5,10))
+    plt.tight_layout()
+    plt.savefig("{}/all-boxes.png".format(dirname))
+    plt.close()
 
-    ## Plot bounding boxes of each feature.
-    # helper.makeDir(f"{dirname}/feats")
-    # if verbose >= 1: print("\nMaking individual plots for")
-    # for col in df.columns:
-    #     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 4.8))
-    #     if verbose >= 1: print("... {}".format(col))        
+    # Plot bounding boxes of each feature.
+    helper.makeDir(f"{dirname}/feats")
+    if verbose >= 1: print("\nMaking individual plots for")
+    for col in df.columns:
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 4.8))
+        if verbose >= 1: print("... {}".format(col))        
 
-    #     sns.boxenplot(data=df[[col]], ax=ax1)
-    #     ax1.set_title(f"Boxplot for {col}")
-    #     sns.histplot(data=df[[col]], ax=ax2)
-    #     ax2.set_title(f"Histogram for {col}")
+        sns.boxenplot(data=df[[col]], ax=ax1)
+        ax1.set_title(f"Boxplot for {col}")
+        sns.histplot(data=df[[col]], ax=ax2)
+        ax2.set_title(f"Histogram for {col}")
 
-    #     plt.savefig(f"{dirname}/feats/{col}.png")
-    #     plt.close()
-
-    # plt.figure(figsize=(len(df.columns), len(df.columns)))
-    # sns.pairplot(df)
-    # plt.savefig("{}/pairplot.png".format(dirname))
-    # plt.close()
-
-    # ## Correlation matrix and heatmap.
+        plt.savefig(f"{dirname}/feats/{col}.png")
+        plt.close()
+    
+    # # Correlation matrix and heatmap.
     # correlation = df.corr().round(2)
     # correlation.to_csv("{}/correlation.csv".format(dirname), float_format="%.6f")
     # plt.figure(figsize=(len(df.columns) * 0.5, len(df.columns) * 0.4))
@@ -81,45 +76,50 @@ def analyze_dataset(dataset, dirname, verbose=1):
     # plt.savefig("{}/heatmap.png".format(dirname))
     # plt.close()
 
-    # Arousal-Valence circle plot.
-    mms = MinMaxScaler(feature_range=(-1,1))
-    valence = mms.fit_transform(df[["valence"]])
-    arousal = mms.fit_transform(df[["arousal"]])
-    plot.av_circle(
-        valence, arousal, 
-        title=f"Spread of {dataset.name}",
-        file="{}/circle.png".format(dirname)
-    )
+    # # Arousal-Valence circle plot.
+    # mms = MinMaxScaler(feature_range=(-1,1))
+    # valence = mms.fit_transform(df[["valence"]])
+    # arousal = mms.fit_transform(df[["arousal"]])
+    # plot.av_circle(
+    #     valence, arousal, 
+    #     title=f"Spread of {dataset.name}",
+    #     file="{}/circle.png".format(dirname)
+    # )
 
     return df
 
-def discretize(df, columns, verbose=1):
+def discretize(df, columns, maxcoef=5.5, verbose=1):
     badfeats = []
+    catfeats = [
+        "sp_time_sig", "sp_explicit", "sp_mode",
+        "MSD_key", "MSD_mode", "MSD_time_signature"
+    ]
     if verbose >= 2: print("Analyzing...")
     
     for col in columns: 
-        if col in info["catfeats"]: continue
+        if col in catfeats: continue
         iqr = df[col].quantile(0.75) - df[col].quantile(0.25)
         
         if verbose >= 2: 
             print(col)
-            print(df[col].describe([.01, .05, .1, .2, .25, .5, .75, .8, .9, .95, .99]))
+            # print(df[col].describe([.01, .05, .1, .2, .25, .5, .75, .8, .9, .95, .99]))
             print(" - iqr:", iqr)
 
-        goodmin = df[col].quantile(0.25) - (2 * iqr)
-        goodmax = df[col].quantile(0.75) + (2 * iqr)
+        goodmin = df[col].quantile(0.25) - (maxcoef * iqr)
+        goodmax = df[col].quantile(0.75) + (maxcoef * iqr)
         realmin = df[col].quantile(0)
         realmax = df[col].quantile(1)
-
-        if verbose >= 2:
-            print(" - Min: good -", goodmin, ", actual -", realmin)
-            print(" - Max: good -", goodmax, ", actual -", realmax)
+        iqrfmin = abs((df[col].quantile(.25) - realmin) / iqr)
+        iqrfmax = abs((df[col].quantile(.75) - realmax) / iqr)
 
         if realmax > goodmax or realmin < goodmin:
-            if verbose >= 2: print(" - Time to discretize!")
+            if verbose >= 2:
+                print(" - Min: good -", goodmin, ", actual -", realmin, ', distcoef -', iqrfmin)
+                print(" - Max: good -", goodmax, ", actual -", realmax, ', distcoef -', iqrfmax)
+                print(" - Time to discretize!")
             badfeats.append(col)
-        elif verbose >= 2:
-            print(" - All good here :)")
+        # elif verbose >= 2:
+        #     print(" - All good here :)")
 
     kbd = KBinsDiscretizer(n_bins = 20, encode='ordinal', strategy='quantile')
     if verbose >= 1: print("\n\nDiscretizing:")
@@ -128,7 +128,8 @@ def discretize(df, columns, verbose=1):
         if verbose >= 1: print(f"... {col}")
         df[[col]] = kbd.fit_transform(df[[col]])
     
-    if verbose >= 1: print("\n")    
+    if verbose >= 1: print("\n")
+    return badfeats    
 
 if __name__ == "__main__":
 
@@ -138,18 +139,18 @@ if __name__ == "__main__":
         # SongDataset(
         #     name="Deezer",
         #     cols=info["cols"]["deezer"],
-        #     path=testing.DEEZER_STD_ALL,
+        #     path=testing.DEEZER_SPO_MSD,
         #     feat_index = 3
         # ),
         SongDataset(
             name="Deezer+Spotify",
             cols=info["cols"]["deezer"] + info["cols"]["spotify"],
-            path=testing.DEEZER_STD_ALL,
+            path=testing.DEEZER_SPO_MSD,
         ),
         SongDataset(
             name="Deezer+MSD",
             cols=info["cols"]["deezer"] + info["cols"]["msd"],
-            path=testing.DEEZER_STD_ALL,
+            path=testing.DEEZER_SPO_MSD,
         ),
         SongDataset(
             name="PCA-Deezer+Spotify",
@@ -177,11 +178,11 @@ if __name__ == "__main__":
 
     mms = MinMaxScaler(feature_range=(-1,1))
     scalers = [
-        {"name": "stdscl", "func": StandardScaler()},
+        # {"name": "stdscl", "func": StandardScaler()},
         # {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
-        {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
-        {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
-        {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
+        # {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
+        # {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
+        # {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
         {"name": "powert", "func": PowerTransformer(method='yeo-johnson', standardize=True)}
     ]
 
@@ -190,6 +191,7 @@ if __name__ == "__main__":
         dirname = "data/_analysis/{}".format(dataset.name)
         df = analyze_dataset(dataset, dirname)
 
+        discretes = {}
         for scaler in scalers:
             print(f'\n\nUsing {scaler["name"]} scaler')
             df_scale = dataset.full_df.copy()
@@ -201,7 +203,7 @@ if __name__ == "__main__":
                 df_scale[[col]] = scaler["func"].fit_transform(df[[col]])
 
             # Discretize outlier columns.
-            discretize(df_scale, df.columns)
+            discretes[scaler["name"]] = discretize(df_scale, df.columns)
             
             print("\nMin Max Scaling to (-1,1)")
             for col in df.columns:
@@ -219,4 +221,6 @@ if __name__ == "__main__":
                 feat_index = dataset.feat_index,
             )
 
-            analyze_dataset(scaled_dataset, dirscaled)
+            # analyze_dataset(scaled_dataset, dirscaled)
+        
+        helper.jsonout(discretes, f"data/_analysis/{dataset.name}/discretes.json")

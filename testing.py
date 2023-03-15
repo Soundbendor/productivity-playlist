@@ -26,12 +26,14 @@ QUADRANT_JSON   = "quadrants.json"
 QUADRANT_CODES  = ["BL", "BR", "TL", "TR"]
 QUADRANT_COMBOS = list(itertools.permutations(QUADRANT_CODES, 2))
 
-DEEZER_STD_ALL  = "./data/deezer/deezer-std-all.csv"
-DEEZER_PCA_ALL  = "./data/deezer/deezer-pca-all.csv"
-DEEZER_PCA_SPO  = "./data/deezer/deezer-pca-spotify.csv"
-DEEZER_PCA_MSD  = "./data/deezer/deezer-pca-msd.csv"
-DEEZER_SEG_100  = "./data/deezer/deezer-segments-cnt100.csv"
-DEEZER_SEG_D30  = "./data/deezer/deezer-segments-dur030.csv"
+DEEZER_DIR = "./data/deezer/powert" 
+
+DEEZER_SPO_MSD  = f"{DEEZER_DIR}/Deezer+Spotify+MSD.csv"
+DEEZER_PCA_ALL  = f"{DEEZER_DIR}/PCA-Deezer+Spotify+MSD.csv"
+DEEZER_PCA_SPO  = f"{DEEZER_DIR}/PCA-Deezer+Spotify.csv"
+DEEZER_PCA_MSD  = f"{DEEZER_DIR}/PCA-Deezer+MSD.csv"
+DEEZER_SEG_100  = f"{DEEZER_DIR}/Deezer+Segments-100cnt.csv"
+DEEZER_SEG_D30  = f"{DEEZER_DIR}/Deezer+Segments-030sec.csv"
 
 ARG_LENGTHS     = list(range(3, 20, 4))
 ARG_DISTANCES   = [
@@ -58,56 +60,48 @@ def LOAD_DATASETS(cols):
         SongDataset(
             name="Deezer",
             cols=cols["deezer"],
-            path=DEEZER_STD_ALL, knn=True, verbose=True,
+            path=DEEZER_SPO_MSD, knn=True, verbose=True,
             feat_index = 3, arousal = 4, valence = 3,
         ),
         SongDataset(
             name="Deezer+Spotify",
             cols=cols["deezer"] + cols["spotify"],
-            path=DEEZER_STD_ALL, knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
+            path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
             name="Deezer+MSD",
             cols=cols["deezer"] + cols["msd"],
-            path=DEEZER_STD_ALL, knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
+            path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
             name="Deezer+Spotify+MSD",
             cols=cols["deezer"] + cols["spotify"] + cols["msd"],
-            path=DEEZER_STD_ALL, knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
+            path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
             name="PCA-Deezer+Spotify",
             path=DEEZER_PCA_SPO, 
             knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
         ),
         SongDataset(
             name="PCA-Deezer+MSD",
             path=DEEZER_PCA_MSD, 
             knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
         ),
         SongDataset(
             name="PCA-Deezer+Spotify+MSD",
             path=DEEZER_PCA_ALL, 
             knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
         ),
         SegmentDataset(
             name="Deezer+Segments-100cnt",
             cols=cols["deezer"] + cols["segments"],
             path=DEEZER_SEG_100, knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
         ),
         SegmentDataset(
             name="Deezer+Segments-030sec",
             cols=cols["deezer"] + cols["segments"],
             path=DEEZER_SEG_D30, knn=True, verbose=True,
-            feat_index = 5, arousal = 4, valence = 3,
         )
     ]
     return arg_datasets

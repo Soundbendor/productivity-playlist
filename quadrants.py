@@ -17,14 +17,16 @@ import helper
 import prodplay
 import algos
 import plot
-import tests
+import testing
 from songdataset import SongDataset
 
+
+info = helper.loadConfig("config.json")
 songdata = SongDataset(
     name="Deezer",
-    path="data/deezer/deezer-spotify.csv",
-    cols=[0,3,6,7], 
-    start_index = 1
+    cols=info["cols"]["deezer"],
+    path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
+    feat_index = 3, arousal = 4, valence = 3,
 )
 songdata.make_knn()
 
@@ -99,7 +101,7 @@ def make_scale_quadrants(id, scaler):
         for p in samples[name]:
             pstring = helper.arr2stringPoint(p)
             origpoint = scaled_to_og[pstring]
-            songid = songdata.get_song(origpoint)
+            songid = songdata.get_random_song(origpoint)
             samplesongs[name].append(str(songid))
 
     # Print the points into a JSON file.
