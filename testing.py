@@ -225,11 +225,11 @@ def evaluate(playlistDF, dataset, verbose=0):
 def metric_sheets(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
-        desc = df.groupby(variable)[m].describe().round(6)
+        desc = df.groupby(variable)[m].describe(percentiles=[0.01, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99]).round(6)
         desc.to_csv("{}/{}-{}.csv".format(dirname, variable, m))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
-        desc = df.groupby(variable)[m].describe().round(6)
+        desc = df.groupby(variable)[m].describe(percentiles=[0.01, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99]).round(6)
         desc.to_csv("{}/{}-{}.csv".format(dirname, variable, m))
 
 def plot_scores(df, variable, dirname):

@@ -13,6 +13,6 @@
 #my commands
 source ./venv/bin/activate      #activate tensorflow environment
 #source activate tf_gpu
-python3 test_datasets.py 25
+python3 test_datasets.py 100
 deactivate
 
