@@ -34,7 +34,7 @@ def perQuadrant(oq, dq):
     pointcombos = os.listdir(f"{testdir}/{qc}")
     if f"results-{samplecount}.csv" in pointcombos:
         pointcombos.remove(f"results-{samplecount}.csv")
-    helper.makeDir(f"{analysisdir}/{qc}/playlists")
+    # helper.makeDir(f"{analysisdir}/{qc}/playlists")
 
     for idx, pc in enumerate(pointcombos):
         print(f"{qc} ... {idx + 1} / {len(pointcombos)}\t")
@@ -61,12 +61,12 @@ def perQuadrant(oq, dq):
             for key in evals:
                 results[key].append(evals[key])
 
-        testpoints = [df[["valence", "arousal"]].to_numpy() for df in playlistDFs]
+        # testpoints = [df[["valence", "arousal"]].to_numpy() for df in playlistDFs]
         
-        plot.playlist(testpoints, legend=legend,
-            file = f"{analysisdir}/{qc}/playlists/{pc}.png",
-            title = "Playlist from {} to {} based on {}".format(orig, dest, variable)
-        )
+        # plot.playlist(testpoints, legend=legend,
+        #     file = f"{analysisdir}/{qc}/playlists/{pc}.png",
+        #     title = "Playlist from {} to {} based on {}".format(orig, dest, variable)
+        # )
 
     # quadresults = pd.read_csv(f"{testdir}/{qc}/results-{samplecount}.csv", header=0, index_col=0)
     quadresults = pd.DataFrame(results)
@@ -78,9 +78,9 @@ def perQuadrant(oq, dq):
     return quadresults 
 
 def getMostRecentTest(variable):
-    testnames = os.listdir("./test")
+    testnames = list(reversed(sorted(os.listdir("./test"))))
     print(testnames)
-    for name in reversed(testnames):
+    for name in testnames:
         if variable in name:
             date = name.split(f'-{variable}')[0]
             return date
@@ -90,7 +90,7 @@ if __name__ == '__main__':
 
     variable = sys.argv[1] if len(sys.argv) > 1 else "dataset"
     testtime = sys.argv[2] if len(sys.argv) > 2 else getMostRecentTest(variable)
-    samplecount = sys.argv[3] if len(sys.argv) > 3 else 5
+    samplecount = sys.argv[3] if len(sys.argv) > 3 else 100
     testdir = f"test/{testtime}-{variable}s"
 
     helper.makeDir("analysis")

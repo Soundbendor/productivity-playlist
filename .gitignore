@@ -5,6 +5,7 @@ ismir2022/
 test/
 out/
 quadrants/
+log/
 
 
 #ignore python files
@@ -18,6 +19,6 @@ sb/
 
 #ignore misc
 fonts/
-.cache-*
+.cache*
 core.*
 *.code-workspace
