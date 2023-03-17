@@ -37,7 +37,7 @@ def perQuadrant(oq, dq):
     # helper.makeDir(f"{analysisdir}/{qc}/playlists")
 
     for idx, pc in enumerate(pointcombos):
-        print(f"{qc} ... {idx + 1} / {len(pointcombos)}\t")
+        # print(f"{qc} ... {idx + 1} / {len(pointcombos)}\t")
         playlistsDir = f"{testdir}/{qc}/{pc}"
         orig, dest = pc.split("-")
         orig, dest = int(orig), int(dest)
