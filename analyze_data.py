@@ -67,14 +67,14 @@ def analyze_dataset(dataset, dirname, verbose=1):
         plt.savefig(f"{dirname}/feats/{col}.png")
         plt.close()
     
-    # # Correlation matrix and heatmap.
-    # correlation = df.corr().round(2)
-    # correlation.to_csv("{}/correlation.csv".format(dirname), float_format="%.6f")
-    # plt.figure(figsize=(len(df.columns) * 0.5, len(df.columns) * 0.4))
-    # sns.heatmap(correlation, annot=True, center=0)
-    # plt.tight_layout()
-    # plt.savefig("{}/heatmap.png".format(dirname))
-    # plt.close()
+    # Correlation matrix and heatmap.
+    correlation = df.corr().round(2)
+    correlation.to_csv("{}/correlation.csv".format(dirname), float_format="%.6f")
+    plt.figure(figsize=(len(df.columns) * 0.5, len(df.columns) * 0.4))
+    sns.heatmap(correlation, annot=True, center=0)
+    plt.tight_layout()
+    plt.savefig("{}/heatmap.png".format(dirname))
+    plt.close()
 
     # # Arousal-Valence circle plot.
     # mms = MinMaxScaler(feature_range=(-1,1))
@@ -178,11 +178,11 @@ if __name__ == "__main__":
 
     mms = MinMaxScaler(feature_range=(-1,1))
     scalers = [
-        # {"name": "stdscl", "func": StandardScaler()},
-        # {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
-        # {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
-        # {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
-        # {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
+        {"name": "stdscl", "func": StandardScaler()},
+        {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
+        {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
+        {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
+        {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
         {"name": "powert", "func": PowerTransformer(method='yeo-johnson', standardize=True)}
     ]
 
@@ -221,6 +221,6 @@ if __name__ == "__main__":
                 feat_index = dataset.feat_index,
             )
 
-            # analyze_dataset(scaled_dataset, dirscaled)
+            analyze_dataset(scaled_dataset, dirscaled)
         
         helper.jsonout(discretes, f"data/_analysis/{dataset.name}/discretes.json")

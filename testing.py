@@ -55,6 +55,17 @@ DEF_NEIGHBORS_K = 7
 DEF_SEGMENTS_CT = 100
 DEF_SEGMENTS_DR = 30
 
+ARG_SEGMENTS = [
+    ("dur", 60), ("cnt", 200),
+    ("dur", 50), ("cnt", 150),
+    ("dur", 40), ("cnt", 100), ("dur", 30),
+    ("dur", 20), ("cnt", 50),
+    ("dur", 10), ("cnt", 20),
+    ("dur", 5), ("cnt", 10),
+    ("dur", 2), ("cnt", 5),
+    ("dur", 1), ("cnt", 1),
+]
+
 def LOAD_DATASETS(cols):
     arg_datasets = [
         SongDataset(
@@ -105,6 +116,21 @@ def LOAD_DATASETS(cols):
         )
     ]
     return arg_datasets
+
+def LOAD_SEGMENT_DATASETS(cols, deezer_dir = DEEZER_DIR, knn = True):
+    datasets = []
+
+    for mode, num in ARG_SEGMENTS:
+        path = "{}/deezer-segments-{}".format(deezer_dir, mode, num)
+        d = SegmentDataset(
+            name="Deezer+Segments-{:03}{}".format(num, mode if mode == "cnt" else "sec"),
+            cols=cols["deezer"] + cols["segments"],
+            path=path, knn=knn, verbose=True,
+        )
+        datasets.append(d)
+    
+    return datasets
+
 
 def load_samples(file = QUADRANT_JSON, count = 100):
     samples = {}

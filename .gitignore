@@ -19,6 +19,7 @@ sb/
 
 #ignore misc
 fonts/
+.cache
 .cache*
 core.*
 *.code-workspace
