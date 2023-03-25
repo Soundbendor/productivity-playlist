@@ -8,12 +8,14 @@ import numpy as np
 FEATS_IND = ["loudness_max", "loudness_start"]
 FEATS_ARR = [("pitches", 12), ("timbre", 12)]
 
-def fillcols(s, outcols):
-    for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = []
+def fillcols(s, outcols, size=0):
+    outcols[f"{s}_duration"] = [None] * size
+    outcols[f"{s}_num_samples"] = [None] * size
+    for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = [None] * size
     for feat, n in FEATS_ARR: 
         for i in range(n):
             formatstr = "{}_{}_{}".format(s, feat, i)
-            outcols[formatstr] = []
+            outcols[formatstr] = [None] * size
     return outcols
 
 '''
@@ -49,12 +51,12 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
         head_dur, tail_dur = 0.0, 0.0
         head_idx, tail_idx = 0, len(segments) - 1
         
-        while head_dur < num:
+        while head_dur < num and head_idx < len(segments):
             segs["head"].append(segments[head_idx])
             head_dur += segments[head_idx]["duration"]
             head_idx += 1
 
-        while tail_dur < num:
+        while tail_dur < num and tail_idx >= 0:
             segs["tail"].append(segments[tail_idx])
             tail_dur += segments[tail_idx]["duration"]
             tail_idx -= 1
@@ -87,6 +89,9 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
                 outvals[coln] = np.around(wavg, decimals=6)
                 segvals[coln] = data
 
+        outvals[f"{s}_duration"] = np.around(sums[s], 5)
+        outvals[f"{s}_num_samples"] = lens[s]
+
     # print("---- Output values ----")
     # pprint(outvals)
     return segvals, outvals
@@ -115,54 +120,70 @@ def grab_dataset(outpath, length, mode, num, df_in):
     for col in outcols: df[col] = outcols[col]
     df.to_csv(outpath)
 
-def grab_datasets(df_in, orders):
+def grab_datasets(df_in, orders, retry = True):
     all_outcols = []
     for _ in range(len(orders)):
         outcols = {}
-        fillcols("head", outcols)
-        fillcols("tail", outcols)
+        fillcols("head", outcols, len(df_in))
+        fillcols("tail", outcols, len(df_in))
         all_outcols.append(outcols)
 
-    fail_idxs = []
-    for i in range(len(df_in)): 
-        spid = df_in.iloc[i]["sp_track_id"]
-        try:
-            analysis = sp.audio_analysis(spid)
-            segments = analysis["segments"]
-            print("{} / {}".format(i, len(df_in)), end="\r")
+    def fout():
+        for i in range(len(orders)):
+            mode, num = orders[i]
+            outcols = all_outcols[i]
+            df_out = df_in.copy()
+            for col in outcols: df_out[col] = outcols[col]
+            df_out.to_csv("./data/deezer/segments/{}{:03}.csv".format(mode, num))  
 
-            for j, (mode, num) in enumerate(orders):
-                _, vals = grab_segment_data(segments, mode, num)
-                for key in vals: all_outcols[j][key].append(vals[key])         
-        except:
-            for j in range(len(orders)):
-                for key in vals: all_outcols[j][key].append(None)
-            fail_idxs.append(i)
+    def fill(analysis):
+        segments = analysis["segments"]
+        for j, (mode, num) in enumerate(orders):
+            realnum = analysis["track"][("duration" if mode == 'dur' else "num_samples")]
+            _, vals = grab_segment_data(segments, mode, min(num, realnum))
+            for key in vals: all_outcols[j][key][i] = vals[key]
+    
+    try_idxs = list(range(len(df_in)))
+    if retry:
+        try_idxs = []
+        for j, (mode, num) in enumerate(orders):
+            path = "./data/deezer/segments/{}{:03}.csv".format(mode, num)
+            df = pd.read_csv(path)
+            for c in all_outcols[j]: all_outcols[j][c] = df[c].tolist()
+            nulls = pd.isnull(df).any(axis=1).tolist()
+            for i in range(len(nulls)):
+                if nulls[i]: try_idxs.append(i)
+        try_idxs = list(set(try_idxs))
 
-    print(f"Failed on {len(fail_idxs)}")
-    while len(fail_idxs) > 0:
-        i = fail_idxs.pop()
-        spid = df_in.iloc[i]["sp_track_id"]
-        try:
-            print(f"Retrying on {i}: {spid}")
-            analysis = sp.audio_analysis(spid)
-            segments = analysis["segments"]
+    success = True
+    while len(try_idxs) > 0 and success:
+        l = len(try_idxs)
+        fail_idxs = []
+        # spotify.refresh_token(spo)
 
-            for j, (mode, num) in enumerate(orders):
-                _, vals = grab_segment_data(segments, mode, num)
-                for key in vals: all_outcols[j][key][i] = vals[key]    
-        except:
-            print("... failed :(")
-            fail_idxs.append(i)
+        for k, i in enumerate(try_idxs): 
+            spid = df_in.iloc[i]["sp_track_id"]
+            try:
+                print("{} / {} ... failed on {:05}".format(k, len(try_idxs), len(fail_idxs)), end="\r")
+                analysis = sp.audio_analysis(spid)
+            except:
+                spotify.refresh_token(spo)
+                fail_idxs.append(i)
+            else:
+                fill(analysis)
 
-    for i in range(len(orders)):
-        mode, num = orders[i]
-        outcols = all_outcols[i]
-        df_out = df_in.copy()
-        for col in outcols: df_out[col] = outcols[col]
-        df_out.to_csv("./data/deezer/deezer-segments-{}{:03}".format(mode, num))        
+            if len(try_idxs) >= 100 and k % min(500, len(try_idxs) // 5) == 0:
+                fout()   
 
-def fill_segment_datasets(df, path, mode, num):    
+        fout()    
+        print(f"\nFailed on {len(fail_idxs)} indices")
+        if len(fail_idxs) == l: success = False
+        try_idxs = fail_idxs        
+
+    fout()
+    return fail_idxs 
+
+def fill_segment_datasets(dfs, path, mode, num):    
     for index in df.index.values.tolist():
         spid = df.loc[index]["sp_track_id"]
         hlmx = df.loc[index]["head_loudness_max"]
@@ -217,7 +238,6 @@ def test_segcounts(spid, mode, num):
                     title = "Averages of {}".format(col),
                     file="{}/{}.png".format(dirname, col))
 
-
 if __name__ == "__main__":     
     info        = helper.loadConfig("config.json")
     datasetpath = "data/deezer/deezer-std-all.csv"
@@ -225,8 +245,9 @@ if __name__ == "__main__":
         ("dur", 60), ("cnt", 200),
         ("dur", 50), ("cnt", 150),
         ("dur", 40), ("cnt", 100),
+        ("dur", 30), ("cnt", 75),
         ("dur", 20), ("cnt", 50),
-        ("dur", 10), ("cnt", 20),
+        ("dur", 10), ("cnt", 25),
         ("dur", 5), ("cnt", 10),
         ("dur", 2), ("cnt", 5),
         ("dur", 1), ("cnt", 1),
@@ -241,27 +262,4 @@ if __name__ == "__main__":
     )
 
     songdata = pd.read_csv(datasetpath, usecols=info["cols"]["deezer"])
-    grab_datasets(songdata, generate)
-
-    # # Find random song for comparison.
-    # randidx = np.random.randint(0, len(songdata))
-    # randsong = songdata.full_df.iloc[randidx]
-    # print(randsong)
-
-    # # Generate initial datasets and do a random test.
-    # for mode, num in generate:
-    #     test_segcounts(randsong["sp_track_id"], mode, num)
-    #     grab_dataset("out/{}-segments-{}{:03}.csv".format(songdata.name, mode, num), len(songdata), mode, num)
-
-
-
-
-
-
-
-
-
-
-
-
-
+    fails = grab_datasets(songdata, generate)
