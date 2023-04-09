@@ -15,7 +15,7 @@ class SongDataset:
         self.arousal_index = arousal
         self.valence_index = valence
 
-        self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
+        self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols)
         self.feat_df = self.full_df.iloc[:, feat_index:].copy()
         self.va_df = self.full_df.iloc[:, [valence, arousal]].copy()
         self.size = len(self.feat_df)

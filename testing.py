@@ -58,9 +58,10 @@ DEF_SEGMENTS_DR = 30
 ARG_SEGMENTS = [
     ("dur", 60), ("cnt", 200),
     ("dur", 50), ("cnt", 150),
-    ("dur", 40), ("cnt", 100), ("dur", 30),
+    ("dur", 40), ("cnt", 100),
+    ("dur", 30), ("cnt", 75),
     ("dur", 20), ("cnt", 50),
-    ("dur", 10), ("cnt", 20),
+    ("dur", 10), ("cnt", 25),
     ("dur", 5), ("cnt", 10),
     ("dur", 2), ("cnt", 5),
     ("dur", 1), ("cnt", 1),
@@ -121,9 +122,9 @@ def LOAD_SEGMENT_DATASETS(cols, deezer_dir = DEEZER_DIR, knn = True):
     datasets = []
 
     for mode, num in ARG_SEGMENTS:
-        path = "{}/deezer-segments-{}".format(deezer_dir, mode, num)
+        path = "{}/segments/{}{:03}.csv".format(deezer_dir, mode, num)
         d = SegmentDataset(
-            name="Deezer+Segments-{:03}{}".format(num, mode if mode == "cnt" else "sec"),
+            name="{}{:03}".format(mode, num),
             cols=cols["deezer"] + cols["segments"],
             path=path, knn=knn, verbose=True,
         )

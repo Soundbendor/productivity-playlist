@@ -2,8 +2,10 @@
 import numpy as np
 import random
 import pandas as pd
+import seaborn as sns
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import MinMaxScaler
+from scipy.stats.mstats import winsorize
 import matplotlib.pyplot as plt
 import json
 from pprint import pprint
@@ -122,19 +124,35 @@ if __name__ == '__main__':
         allresults = pd.concat(dfs)
         allresults["qc"] = allresults["oq"] + allresults["dq"]
         allresults.to_csv(f"{analysisdir}/_results.csv")
-    
+
     helper.makeDir(f"{analysisdir}/_all")
-    testing.plot_scores(allresults, variable, f"{analysisdir}/_all")
     testing.metric_sheets(allresults, variable, f"{analysisdir}/_all")
-    testing.plot_scores(allresults, "qc", f"{analysisdir}/_all")
     testing.metric_sheets(allresults, "qc", f"{analysisdir}/_all")
 
-    someresults = allresults[(allresults["qc"] != "TRBR") & (allresults["qc"] != "BRTR") & (allresults["qc"] != "TLBL") & (allresults["qc"] != "BLTL")]
+    allresults["meansqr"] = winsorize(allresults["meansqr"], limits=[0.01, 0.05])
+    allresults.reset_index(drop = True, inplace = True)
 
-    helper.makeDir(f"{analysisdir}/_some")
-    testing.plot_scores(someresults, variable, f"{analysisdir}/_some")
-    testing.metric_sheets(someresults, variable, f"{analysisdir}/_some")
-    testing.plot_scores(someresults, "qc", f"{analysisdir}/_some")
-    testing.metric_sheets(someresults, "qc", f"{analysisdir}/_some")
+    testing.plot_scores(allresults, variable, f"{analysisdir}/_all")
+    testing.plot_scores(allresults, "qc", f"{analysisdir}/_all")
+
+    metrics = ["pearson","stepvar","meansqr","feat_pearson","feat_stepvar"]
+    correlation = allresults[metrics].corr().round(2)
+    correlation.to_csv("{}/correlation.csv".format(analysisdir), float_format="%.6f")
+    plt.figure(figsize=(2 + len(metrics) * 0.6, 2 + len(metrics) * 0.4))
+    sns.heatmap(correlation, annot=True, center=0, cmap='RdYlGn')
+    plt.tight_layout()
+    plt.savefig("{}/heatmap.png".format(analysisdir))
+    plt.close()
+
+    # winsresults = allresults.copy()
+
+
+    # # someresults = allresults[(allresults["qc"] != "TRBR") & (allresults["qc"] != "BRTR") & (allresults["qc"] != "TLBL") & (allresults["qc"] != "BLTL")]
+
+    # helper.makeDir(f"{analysisdir}/_wins")
+    # testing.plot_scores(winsresults, variable, f"{analysisdir}/_wins")
+    # testing.metric_sheets(winsresults, variable, f"{analysisdir}/_wins")
+    # testing.plot_scores(winsresults, "qc", f"{analysisdir}/_wins")
+    # testing.metric_sheets(winsresults, "qc", f"{analysisdir}/_wins")
 
 

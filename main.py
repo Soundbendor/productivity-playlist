@@ -55,8 +55,9 @@ segmentdata = SegmentDataset(
     feat_index = 5, arousal = 4, valence = 3,
 )
 
-print("N: {}".format(len(segmentdata)))
-print("Sqrt(N): {}".format(np.sqrt(len(segmentdata))))
+print("N: {}".format(len(songdata)))
+print("Sqrt(N): {}".format(np.sqrt(len(songdata))))
+print("N2:", songdata.unique_size)
 
 # 3135555   = Daft Punk         - Digital Love          (0.950468991,0.572575336)
 # 3135561   = Daft Punk         - Something About Us    (-0.317973857,-0.399224044)

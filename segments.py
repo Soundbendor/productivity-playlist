@@ -4,6 +4,7 @@ from pprint import pprint
 import plot
 import pandas as pd
 import numpy as np
+import random
 
 FEATS_IND = ["loudness_max", "loudness_start"]
 FEATS_ARR = [("pitches", 12), ("timbre", 12)]
@@ -203,7 +204,7 @@ def fill_segment_datasets(dfs, path, mode, num):
     return df
 
 def test_segcounts(spid, mode, num):
-
+    print("Spotify ID: ", spid)
     test_range = [x+1 for x in range(num)]
     segments = sp.audio_analysis(spid)["segments"]
     dirname = helper.makeTestDir("seg{}{:03}".format(mode, num))
@@ -233,9 +234,9 @@ def test_segcounts(spid, mode, num):
             data = [test_range, testcols[col]]
         count = 2 if mode == "cnt" else 1
         
-        plot.line("# of segments/seconds", col, data, 
+        plot.line("# of segments", col, data, 
                     count = count, dim = 2,
-                    title = "Averages of {}".format(col),
+                    # title = "Segment Weighted Average for {}".format(spid),
                     file="{}/{}.png".format(dirname, col))
 
 if __name__ == "__main__":     
@@ -262,4 +263,7 @@ if __name__ == "__main__":
     )
 
     songdata = pd.read_csv(datasetpath, usecols=info["cols"]["deezer"])
-    fails = grab_datasets(songdata, generate)
+    # fails = grab_datasets(songdata, generate)
+
+    randspid = songdata.iloc[random.randint(0, len(songdata))]["sp_track_id"]
+    test_segcounts(randspid, "cnt", 100)

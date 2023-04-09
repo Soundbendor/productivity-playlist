@@ -24,27 +24,33 @@ import algos
 import testing
 from songdataset import SongDataset, SegmentDataset
 
-def analyze_dataset(dataset, dirname, verbose=1):
+def analyze_dataset(dataset, dirname, verbose=0):
     helper.makeDir(dirname)
     feats = dataset.feat_df
     va = dataset.va_df
     df = pd.merge(va, feats, left_index=True, right_index=True)
+    # df = feats
     if verbose >= 2: print(df.info())
 
     ## Basic descriptive stats.
     desc_stats = pd.DataFrame({
-        'Missing Values': df.isnull().sum(),
+        # 'Missing Values': df.isnull().sum(),
         'Mean': df.mean(),
+        'Std': df.std(),
+        # 'Mode': df.mode().iloc[0],
+        'Min': df.min(),
         'Median': df.median(),
-        'Mode': df.mode().iloc[0]
-    })
+        'Max': df.max(),
+    }).round(4)
     if verbose >= 2: print(desc_stats)
-    desc_stats.to_csv("{}/mmm.csv".format(dirname), float_format="%.6f")
+    desc_stats.to_csv("{}/mmm.csv".format(dirname))
+    helper.csvToLatex("{}/mmm.csv".format(dirname), "{}/info.tex".format(dirname))
     
     ## Full descriptive stats.
-    description = df.describe([0.01, 0.05, 0.1, 0.2, 0.25, 0.5, 0.75, 0.8, 0.9, 0.95, 0.99]).T
+    description = df.describe().T.round(4)
     if verbose >= 2: print(description)
-    description.to_csv("{}/description.csv".format(dirname), float_format="%.6f")
+    description.to_csv("{}/description.csv".format(dirname))
+    helper.csvToLatex("{}/description.csv".format(dirname), "{}/description.tex".format(dirname))
 
     ## Full boxplot.
     df.boxplot(figsize = (len(df.columns) * 1.5,10))
@@ -52,26 +58,26 @@ def analyze_dataset(dataset, dirname, verbose=1):
     plt.savefig("{}/all-boxes.png".format(dirname))
     plt.close()
 
-    # Plot bounding boxes of each feature.
-    helper.makeDir(f"{dirname}/feats")
-    if verbose >= 1: print("\nMaking individual plots for")
-    for col in df.columns:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 4.8))
-        if verbose >= 1: print("... {}".format(col))        
+    # # Plot bounding boxes of each feature.
+    # helper.makeDir(f"{dirname}/feats")
+    # if verbose >= 1: print("\nMaking individual plots for")
+    # for col in df.columns:
+    #     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12.8, 4.8))
+    #     if verbose >= 1: print("... {}".format(col))        
 
-        sns.boxenplot(data=df[[col]], ax=ax1)
-        ax1.set_title(f"Boxplot for {col}")
-        sns.histplot(data=df[[col]], ax=ax2)
-        ax2.set_title(f"Histogram for {col}")
+    #     sns.boxenplot(data=df[[col]], ax=ax1)
+    #     ax1.set_title(f"Boxplot for {col}")
+    #     sns.histplot(data=df[[col]], ax=ax2)
+    #     ax2.set_title(f"Histogram for {col}")
 
-        plt.savefig(f"{dirname}/feats/{col}.png")
-        plt.close()
+    #     plt.savefig(f"{dirname}/feats/{col}.png")
+    #     plt.close()
     
     # Correlation matrix and heatmap.
     correlation = df.corr().round(2)
     correlation.to_csv("{}/correlation.csv".format(dirname), float_format="%.6f")
-    plt.figure(figsize=(len(df.columns) * 0.5, len(df.columns) * 0.4))
-    sns.heatmap(correlation, annot=True, center=0)
+    plt.figure(figsize=(2 + len(df.columns) * 0.6, 2 + len(df.columns) * 0.4))
+    sns.heatmap(correlation, annot=True, center=0, cmap='RdYlGn')
     plt.tight_layout()
     plt.savefig("{}/heatmap.png".format(dirname))
     plt.close()
@@ -88,7 +94,7 @@ def analyze_dataset(dataset, dirname, verbose=1):
 
     return df
 
-def discretize(df, columns, maxcoef=5.5, verbose=1):
+def discretize(df, columns, maxcoef=5.0, verbose=2):
     badfeats = []
     catfeats = [
         "sp_time_sig", "sp_explicit", "sp_mode",
@@ -99,11 +105,6 @@ def discretize(df, columns, maxcoef=5.5, verbose=1):
     for col in columns: 
         if col in catfeats: continue
         iqr = df[col].quantile(0.75) - df[col].quantile(0.25)
-        
-        if verbose >= 2: 
-            print(col)
-            # print(df[col].describe([.01, .05, .1, .2, .25, .5, .75, .8, .9, .95, .99]))
-            print(" - iqr:", iqr)
 
         goodmin = df[col].quantile(0.25) - (maxcoef * iqr)
         goodmax = df[col].quantile(0.75) + (maxcoef * iqr)
@@ -111,6 +112,11 @@ def discretize(df, columns, maxcoef=5.5, verbose=1):
         realmax = df[col].quantile(1)
         iqrfmin = abs((df[col].quantile(.25) - realmin) / iqr)
         iqrfmax = abs((df[col].quantile(.75) - realmax) / iqr)
+
+        if verbose >= 2: 
+            print(col)
+            # print(df[col].describe([.01, .05, .1, .2, .25, .5, .75, .8, .9, .95, .99]))
+            print(" - iqr:", iqr, " iqrfmin:", iqrfmin, " iqrfmax:", iqrfmax)
 
         if realmax > goodmax or realmin < goodmin:
             if verbose >= 2:
@@ -145,44 +151,60 @@ if __name__ == "__main__":
         SongDataset(
             name="Deezer+Spotify",
             cols=info["cols"]["deezer"] + info["cols"]["spotify"],
-            path=testing.DEEZER_SPO_MSD,
+            path="data/deezer/deezer-std-all.csv",
         ),
+        # SongDataset(
+        #     name="old-Deezer",
+        #     cols=["dzr_sng_id","MSD_sng_id","MSD_track_id","valence","arousal"],
+        #     path="data/deezer/original-info/all.csv",
+        #     feat_index = 2, valence=2, arousal=3 
+        # ),
+        # SongDataset(
+        #     name="old-Deezer+Spotify",
+        #     cols=info["cols"]["deezer"] + info["cols"]["spotify"],
+        #     path="./data/deezer/deezer-spotify.csv",
+        # ),
+        # SongDataset(
+        #     name="old-Deezer+MSD",
+        #     cols=info["cols"]["deezer"] + info["cols"]["msd"],
+        #     path="./data/deezer/deezer-spotify+msd.csv",
+        # ),
         SongDataset(
             name="Deezer+MSD",
             cols=info["cols"]["deezer"] + info["cols"]["msd"],
-            path=testing.DEEZER_SPO_MSD,
+            path="data/deezer/deezer-std-all.csv",
         ),
         SongDataset(
             name="PCA-Deezer+Spotify",
-            path=testing.DEEZER_PCA_SPO, 
+            path="data/deezer/deezer-pca-spotify.csv", 
         ),
         SongDataset(
             name="PCA-Deezer+MSD",
-            path=testing.DEEZER_PCA_MSD, 
+            path="data/deezer/deezer-pca-msd.csv", 
         ),
         SongDataset(
             name="PCA-Deezer+Spotify+MSD",
-            path=testing.DEEZER_PCA_ALL, 
+            path="data/deezer/deezer-pca-all.csv", 
         ),
         SegmentDataset(
             name="Deezer+Segments-100cnt",
             cols=info["cols"]["deezer"] + info["cols"]["segments"],
-            path=testing.DEEZER_SEG_100,
+            path="data/deezer/segments/cnt100.csv",
         ),
         SegmentDataset(
             name="Deezer+Segments-030sec",
             cols=info["cols"]["deezer"] + info["cols"]["segments"],
-            path=testing.DEEZER_SEG_D30,
+            path="data/deezer/segments/dur030.csv",
         )
     ]
 
     mms = MinMaxScaler(feature_range=(-1,1))
     scalers = [
-        {"name": "stdscl", "func": StandardScaler()},
-        {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
-        {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
-        {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
-        {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
+        # {"name": "stdscl", "func": StandardScaler()},
+        # {"name": "minmax", "func": MinMaxScaler(feature_range=(-1,1))},
+        # {"name": "robust", "func": RobustScaler(quantile_range=(25,75))},
+        # {"name": "qtunif", "func": QuantileTransformer(output_distribution='uniform')},
+        # {"name": "qtnorm", "func": QuantileTransformer(output_distribution='normal')},
         {"name": "powert", "func": PowerTransformer(method='yeo-johnson', standardize=True)}
     ]
 
@@ -197,9 +219,9 @@ if __name__ == "__main__":
             df_scale = dataset.full_df.copy()
 
             ## Scale all the columns to the specific scaler.
-            print("\nIndividually scaling")
+            # print("\nIndividually scaling")
             for col in df.columns:
-                print("... {}".format(col))
+                # print("... {}".format(col))
                 df_scale[[col]] = scaler["func"].fit_transform(df[[col]])
 
             # Discretize outlier columns.
