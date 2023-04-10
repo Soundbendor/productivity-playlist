@@ -15,7 +15,7 @@ class SongDataset:
         self.arousal_index = arousal
         self.valence_index = valence
 
-        self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols)
+        self.full_df = pd.read_csv(path, header=0, index_col=0, usecols=cols).dropna()
         self.feat_df = self.full_df.iloc[:, feat_index:].copy()
         self.va_df = self.full_df.iloc[:, [valence, arousal]].copy()
         self.size = len(self.feat_df)
@@ -102,12 +102,12 @@ class SegmentDataset(SongDataset):
         super().__init__(name, path, cols, feat_index, arousal, valence, knn, verbose)
 
         headkeys = segments.fillcols("head", {}).keys()
-        if set(headkeys).issubset(set(self.feat_df.columns)):
-            self.head_df = self.feat_df[headkeys]
+        # if set(headkeys).issubset(set(self.feat_df.columns)):
+        self.head_df = self.feat_df[headkeys]
 
         tailkeys = segments.fillcols("tail", {}).keys()
-        if set(tailkeys).issubset(set(self.feat_df.columns)):
-            self.tail_df = self.feat_df[tailkeys]
+        # if set(tailkeys).issubset(set(self.feat_df.columns)):
+        self.tail_df = self.feat_df[tailkeys]
 
         return
     

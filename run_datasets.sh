@@ -15,5 +15,9 @@ source ./venv/bin/activate      #activate tensorflow environment
 #source activate tf_gpu
 python3 test_datasets.py 100
 python3 analyze_tests.py dataset
+python3 test_distances.py 100
+python3 analyze_tests.py distance
+python3 test_neighbors.py 100
+python3 analyze_tests.py kval
 deactivate
 

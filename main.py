@@ -22,7 +22,7 @@ from songdataset import SongDataset, SegmentDataset
 
 #get important personal information from Spotify API
 datasetpath = "data/deezer/deezer-std-all.csv"
-segmentpath = "data/deezer/deezer-segments-cnt100.csv"
+segmentpath = "data/deezer/segments/cnt100.csv"
 info = helper.loadConfig("config.json")
 
 scores = testing.ARG_DISTANCES
@@ -64,8 +64,8 @@ print("N2:", songdata.unique_size)
 # 540954    = Rachael Yamagata  - 1963                  (1.070081923,1.018911652)
 # 533164    = Patty Loveless    - How Can I Help U ...  (-1.636899729,-0.45914527)
 
-user_orig       = 3135561
-user_dest       = 3135555
+user_orig       = 533164
+user_dest       = 540954
 n_songs_reqd    = 12
 
 orig_point = np.array([
@@ -79,18 +79,18 @@ dest_point = np.array([
 point_diff = dest_point - orig_point
 point_step = point_diff / (n_songs_reqd - 1)
 
-target = [orig_point]
-for i in range(1, (n_songs_reqd - 1)):
-    target.append(orig_point + (i * point_step))
-target.append(dest_point)
-target = np.array(target)
+# target = [orig_point]
+# for i in range(1, (n_songs_reqd - 1)):
+#     target.append(orig_point + (i * point_step))
+# target.append(dest_point)
+# target = np.array(target)
 
 testsuite = [
-    {"name": "points only", "dataset": pointdata},
+    # {"name": "points only", "dataset": pointdata},
     {"name": "with features", "dataset": songdata},
-    {"name": "with segments", "dataset": segmentdata},
+    # {"name": "with segments", "dataset": segmentdata},
 ]
-testpoints = [target]
+testpoints = []
 testdir = helper.makeTestDir("main")
 
 print("N Songs Reqd:", n_songs_reqd)
@@ -134,7 +134,7 @@ for obj in testsuite:
     # print("\nSpotify Playlist: {}".format(splink))
 
 plot.playlist(testpoints, 
-    legend=["ideal", "points only", "with features", "segments"],
+    # legend=["ideal", "points only", "with features", "segments"],
     file = "{}/compare-graph.png".format(testdir),
     title = "Playlist from {} to {}".format(user_orig, user_dest)
 )

@@ -50,7 +50,7 @@ ARG_SEGMENTS_CT = list(range(1, 200, 9))
 ARG_SEGMENTS_DR = list(range(5, 60, 5))
 
 DEF_LENGTHS     = 12
-DEF_DISTANCES   = algos.cosine_score
+DEF_DISTANCES   = algos.euclidean_score
 DEF_NEIGHBORS_K = 7
 DEF_SEGMENTS_CT = 100
 DEF_SEGMENTS_DR = 30

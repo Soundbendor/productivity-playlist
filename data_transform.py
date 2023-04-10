@@ -27,49 +27,43 @@ from songdataset import SongDataset, SegmentDataset
 
 info = helper.loadConfig("config.json")
 indir = "./data/deezer"
-outdir = f"{indir}/powert"
+outdir = f"{indir}/powert-2"
 helper.makeDir(outdir)
-datasets = testing.load_segment_datasets(
-    info["cols"], "./data/deezer", knn=False)
+# datasets = testing.load_segment_datasets(
+#     info["cols"], "./data/deezer", knn=False)
 
-# datasets = [
-#     SongDataset(
-#         name="Deezer+Spotify+MSD",
-#         cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
-#         path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     ),
-#     SongDataset(
-#         name="PCA-Deezer+Spotify",
-#         path=testing.DEEZER_PCA_SPO, 
-#         knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     ),
-#     SongDataset(
-#         name="PCA-Deezer+MSD",
-#         path=testing.DEEZER_PCA_MSD, 
-#         knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     ),
-#     SongDataset(
-#         name="PCA-Deezer+Spotify+MSD",
-#         path=testing.DEEZER_PCA_ALL, 
-#         knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     ),
-#     SegmentDataset(
-#         name="Deezer+Segments-100cnt",
-#         cols=info["cols"]["deezer"] + info["cols"]["segments"],
-#         path=testing.DEEZER_SEG_100, knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     ),
-#     SegmentDataset(
-#         name="Deezer+Segments-030sec",
-#         cols=info["cols"]["deezer"] + info["cols"]["segments"],
-#         path=testing.DEEZER_SEG_D30, knn=True, verbose=True,
-#         feat_index = 5, arousal = 4, valence = 3,
-#     )
-# ]
+datasets = [
+    SongDataset(
+        name="Deezer+Spotify+MSD",
+        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+        path=f"{indir}/deezer-std-all.csv", verbose=True,
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify",
+        path=f"{indir}/deezer-pca-spotify.csv", 
+        verbose=True,
+    ),
+    SongDataset(
+        name="PCA-Deezer+MSD",
+        path=f"{indir}/deezer-pca-msd.csv", 
+        verbose=True,
+    ),
+    SongDataset(
+        name="PCA-Deezer+Spotify+MSD",
+        path=f"{indir}/deezer-pca-all.csv", 
+        verbose=True,
+    ),
+    SegmentDataset(
+        name="Deezer+Segments-100cnt",
+        cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        path=f"{indir}/segments/cnt100.csv", verbose=True,
+    ),
+    SegmentDataset(
+        name="Deezer+Segments-030sec",
+        cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        path=f"{indir}/segments/dur030.csv", verbose=True,
+    )
+]
 
 def scaledata(df, cols, sc):
     ## Scale all the columns to the specific scaler.
@@ -79,7 +73,7 @@ def scaledata(df, cols, sc):
         df[[col]] = sc.fit_transform(df[[col]])
     return df
 
-discretes = {}
+# discretes = {}
 for dataset in datasets:
     print(f"Transforming {dataset.name}")
     analyze_dataset(dataset, f"data/_analysis/{dataset.name}")
@@ -88,7 +82,7 @@ for dataset in datasets:
     cols = pd.merge(dataset.va_df, dataset.feat_df, left_index=True, right_index=True).columns
 
     scaledata(df_scale, cols, PowerTransformer(method='yeo-johnson', standardize=True))
-    discretes[dataset.name] = discretize(df_scale, cols)
+    # discretes[dataset.name] = discretize(df_scale, cols)
     scaledata(df_scale, cols, MinMaxScaler(feature_range=(-1,1)))
     df_scale.to_csv(f"{outdir}/{dataset.name}.csv")
 
@@ -99,9 +93,9 @@ for dataset in datasets:
         feat_index = dataset.feat_index,
     )
     analyze_dataset(
-        scaled_dataset, f"data/_analysis/{dataset.name}/scaled/powert")
+        scaled_dataset, f"data/_analysis/{dataset.name}/scaled/powert-2")
 
-helper.jsonout(discretes, "out/discretes-segments.json")
+# helper.jsonout(discretes, "out/discretes.json")
 
 
 

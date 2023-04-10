@@ -10,8 +10,8 @@ FEATS_IND = ["loudness_max", "loudness_start"]
 FEATS_ARR = [("pitches", 12), ("timbre", 12)]
 
 def fillcols(s, outcols, size=0):
-    outcols[f"{s}_duration"] = [None] * size
-    outcols[f"{s}_num_samples"] = [None] * size
+    # outcols[f"{s}_duration"] = [None] * size
+    # outcols[f"{s}_num_samples"] = [None] * size
     for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = [None] * size
     for feat, n in FEATS_ARR: 
         for i in range(n):

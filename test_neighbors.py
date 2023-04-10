@@ -54,12 +54,11 @@ if __name__ == "__main__":
     point_combos = testing.load_samples(testing.QUADRANT_JSON, samplecount)
 
     # Load datasets and variables. TODO: update for each test.
-    dataset = SegmentDataset(
-        name="Deezer+Segments-100cnt",
-        cols=info["cols"]["deezer"] + info["cols"]["segments"],
-        path=testing.DEEZER_SEG_100, knn=True, verbose=True,
-        feat_index = 5, arousal = 4, valence = 3,
-    )
+    dataset = SongDataset(
+            name="PCA-Deezer+Spotify+MSD",
+            path=testing.DEEZER_PCA_ALL, 
+            knn=True, verbose=True,
+        )
     variables = testing.ARG_NEIGHBORS_K
 
     # Run a process for each quadrant combo (12 in total).

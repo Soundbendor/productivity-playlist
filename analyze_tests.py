@@ -81,7 +81,6 @@ def perQuadrant(oq, dq):
 
 def getMostRecentTest(variable):
     testnames = list(reversed(sorted(os.listdir("./test"))))
-    print(testnames)
     for name in testnames:
         if variable in name:
             date = name.split(f'-{variable}')[0]
@@ -100,30 +99,29 @@ if __name__ == '__main__':
     helper.makeDir(analysisdir)
     print(f"Analyzing {variable}s from {testtime}")
 
-    allresults = None
-    if os.path.isfile(f"{analysisdir}/_results.csv"):
-        allresults = pd.read_csv(f"{analysisdir}/_results.csv")
-    else:
-        featEvalDataset = SegmentDataset(
-            name="Deezer+Segments-100cnt",
-            cols=info["cols"]["deezer"] + info["cols"]["segments"],
-            path=testing.DEEZER_SEG_100, verbose=True,
-        )
+    # allresults = None
+    # if os.path.isfile(f"{analysisdir}/_results.csv"):
+    #     allresults = pd.read_csv(f"{analysisdir}/_results.csv")
+    # else:
+    featEvalDataset = SongDataset(
+        name="PCA-Deezer+Spotify+MSD",
+        path=testing.DEEZER_PCA_ALL, verbose=True
+    )
 
-        # Columns for our result sheets
-        resultcols = [variable, "oq", "dq", "orig", "dest"]
-        for pm in testing.POINT_METRICS:
-            resultcols.append(pm["func"].__name__)
-        for fm in testing.FEAT_METRICS:
-            resultcols.append(fm["func"].__name__)
+    # Columns for our result sheets
+    resultcols = [variable, "oq", "dq", "orig", "dest"]
+    for pm in testing.POINT_METRICS:
+        resultcols.append(pm["func"].__name__)
+    for fm in testing.FEAT_METRICS:
+        resultcols.append(fm["func"].__name__)
 
-        # Run a process for each quadrant combo (12 in total).
-        pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
-        dfs = pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)    
+    # Run a process for each quadrant combo (12 in total).
+    pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
+    dfs = pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)    
 
-        allresults = pd.concat(dfs)
-        allresults["qc"] = allresults["oq"] + allresults["dq"]
-        allresults.to_csv(f"{analysisdir}/_results.csv")
+    allresults = pd.concat(dfs)
+    allresults["qc"] = allresults["oq"] + allresults["dq"]
+    allresults.to_csv(f"{analysisdir}/_results.csv")
 
     helper.makeDir(f"{analysisdir}/_all")
     testing.metric_sheets(allresults, variable, f"{analysisdir}/_all")
