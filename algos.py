@@ -29,10 +29,11 @@ def mult_score(cand, current, destination, songs_left):
     step = [(destination[i] - current[i] + .0000001) / songs_left for i in range(len(destination))]
     distRatio = [(cand[i] - current[i]) / step[i] for i in range(len(destination))]
     
-    score = 1
+    prod = 1
     for i in range(len(destination)):
-        score = score * np.absolute(i - distRatio[i])
+        prod = prod * (1 + np.absolute(1 - distRatio[i]))
     
+    score = 1 - prod
     return score
 
 def cosine_score(cand, current, destination, songs_left):

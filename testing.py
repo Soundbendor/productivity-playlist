@@ -196,10 +196,19 @@ def feat_pearson(playlistDF, dataset):
     R = abs(features.corr('pearson').to_numpy())
     N = R.shape[0]
 
+    count, total = 0, 0
+    for i in range(N):
+        for j in range(i+1, N):
+            if not np.isnan(R[i][j]):
+                count += 1
+                total += R[i][j]
+    
+    return total / count
+
     # Get average of the sum of the triangle.
-    trisum = (R.sum() - np.trace(R))
-    triavg = trisum / (N * (N-1))
-    return triavg
+    # trisum = (R.sum() - np.trace(R))
+    # triavg = trisum / (N * (N-1))
+    # return triavg
 
 def feat_stepvar(playlistDF, dataset):
     song_ids = playlistDF["id-deezer"].tolist()

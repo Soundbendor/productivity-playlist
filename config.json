@@ -24,18 +24,17 @@
             "sp_key",
             "sp_liveness",
             "sp_loudness",
-            "sp_mode",
             "sp_speechiness",
             "sp_tempo",
-            "sp_time_sig",
             "sp_valence",
             "sp_popularity",
-            "sp_explicit"
+            "sp_time_sig", "sp_explicit", "sp_mode"
         ],
         "msd": [
-            "MSD_key","MSD_key_confidence","MSD_loudness",
-            "MSD_mode","MSD_mode_confidence","MSD_tempo",
-            "MSD_time_signature","MSD_time_signature_confidence",
+            "MSD_key", "MSD_mode", "MSD_time_signature",
+            "MSD_key_confidence","MSD_loudness",
+            "MSD_mode_confidence","MSD_tempo",
+            "MSD_time_signature_confidence",
             "MSD_segments_loudness_max_avg","MSD_segments_loudness_max_var",
             "MSD_segments_loudness_max_min","MSD_segments_loudness_max_max","MSD_segments_loudness_max_med",
             "MSD_segments_loudness_max_time_avg","MSD_segments_loudness_max_time_var",

@@ -66,8 +66,8 @@ def hist(label, data, title="", file=""):
 
 def boxplots(df, x, y, legend=[], file="", title=""):
     fig, ax= plt.subplots(dpi=600)
-    fig.set_figwidth(10)
-    fig.set_figheight(len(df.columns) + 2)
+    fig.set_figwidth(5)
+    fig.set_figheight(0.5*(len(df.columns) + 1))
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
