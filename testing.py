@@ -219,7 +219,7 @@ def feat_stepvar(playlistDF, dataset):
     for i in range(1, features.shape[0]):
         a, b = features[i], features[i-1]
         norm = np.linalg.norm(a - b)
-        steplist = np.append(steplist, norm / features.shape[1])
+        steplist = np.append(steplist, norm / np.sqrt(features.shape[1]))
     
     sv = np.var(steplist)
     return sv
@@ -271,7 +271,7 @@ def metric_sheets(df, variable, dirname):
 def plot_scores(df, variable, dirname):
     for pm in POINT_METRICS:
         m = pm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))
+        plot.snsplot(sns.boxenplot, df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))
     for fm in FEAT_METRICS:
         m = fm["func"].__name__
-        plot.boxplots(df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))
+        plot.snsplot(sns.boxenplot, df, m, variable, file="{}/{}-{}.png".format(dirname, variable, m))

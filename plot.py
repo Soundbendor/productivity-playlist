@@ -3,18 +3,19 @@ import matplotlib.font_manager as fm
 import numpy as np
 import seaborn as sns
 
-def playlist(data, legend=[], file="", title=""):
+def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
     fig, ax= plt.subplots(dpi=600)
-    fig.set_figheight(4.8)
-    fig.set_figwidth(6.4)
+    fig.set_figheight(4.8 * scale)
+    fig.set_figwidth(6.4 * scale)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
     axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
     legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
-    ax.set_xlabel("valence", fontproperties=axisFont)
-    ax.set_ylabel("arousal", fontproperties=axisFont)
-    ax.set_title(title, fontproperties=titleFont)
+
+    if axislabels:
+        ax.set_xlabel("valence", fontproperties=axisFont)
+        ax.set_ylabel("arousal", fontproperties=axisFont)
 
     count = len(data)
     if (count == 1):
@@ -30,6 +31,8 @@ def playlist(data, legend=[], file="", title=""):
 
     if (title != ""):
         ax.set_title(title, fontproperties=titleFont)
+
+    plt.tight_layout()
 
     if (file != ""):
         plt.savefig(file, dpi=600)
@@ -64,27 +67,27 @@ def hist(label, data, title="", file=""):
     plt.clf()
     plt.close()
 
-def boxplots(df, x, y, legend=[], file="", title=""):
+def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4, figheight = None, figwidth = None, palette=None):
     fig, ax= plt.subplots(dpi=600)
-    fig.set_figwidth(5)
-    fig.set_figheight(0.5*(len(df.columns) + 1))
+    fig.set_figwidth(scale * (10 if figwidth is None else figwidth))
+    fig.set_figheight(scale * ((0.7 * len(df.columns) + 1) if figheight is None else figheight))
 
     # add formatted labels
-    titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
-    axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
-    legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
+    # titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
+    # axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
+    # legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
     # ax.set_xlabel(xlabel, fontproperties=axisFont)
     # ax.set_ylabel(ylabel, fontproperties=axisFont)
 
     # df.boxplot(column=x, by=y, figsize = (len(df.columns) * 1.5,10), ax=ax)
-    sns.boxenplot(ax=ax, data=df, x=x, y=y)
+    snsfunc(ax=ax, data=df, x=x, y=y, palette=palette)
     fig.tight_layout()
 
-    if (legend != []):
-        ax.legend(legend, prop=legendFont, fontsize='small')
+    # if (legend != []):
+    #     ax.legend(legend, prop=legendFont, fontsize='small')
 
-    if (title != ""):
-        ax.set_title(title, fontproperties=titleFont)
+    # if (title != ""):
+    #     ax.set_title(title, fontproperties=titleFont)
 
     if (file != ""):
         plt.savefig(file, dpi=600)
@@ -167,7 +170,11 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.clf() 
 
 def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
-    plt.figure(figsize=(plt_size,plt_size))
+    plt.figure(figsize=(plt_size,0.95 * plt_size))
+    # fig, ax= plt.subplots(dpi=600)
+    # fig.set_figheight(plt_size * 0.9)
+    # fig.set_figwidth(plt_size)
+
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
     # plt.xlim(-1.25,1.25)
     # plt.ylim(-1.25,1.25)  
@@ -190,20 +197,21 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
 
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
-    ax.set_title(title, fontproperties=titleFont, size=plt_size*4)
-    # ax.axes.xaxis.set_ticks([])
-    # ax.axes.yaxis.set_ticks([])
+    # ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
+    ax.axes.xaxis.set_ticks([])
+    ax.axes.yaxis.set_ticks([])
     
     # print emotion labels
-    ax.text(0.98, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(0.5, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(0.98, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*2.5))
-    ax.text(0.7, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*2.5)) 
+    ax.text(0.78, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(0.3, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
+    ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
 
+    plt.tight_layout()
     plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 
