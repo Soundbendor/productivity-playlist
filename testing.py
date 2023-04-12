@@ -169,6 +169,7 @@ def spearman(playlistDF):
 
 def stepvar(playlistDF):
     steps = playlistDF["step"].to_numpy()[1:]
+    steps = steps * np.sqrt(2)
     sv = np.var(steps)
     return sv
 
