@@ -55,10 +55,10 @@ if __name__ == "__main__":
 
     # Load datasets and variables. TODO: update for each test.
     dataset = SongDataset(
-            name="PCA-Deezer+Spotify+MSD",
-            path=testing.DEEZER_PCA_ALL, 
-            knn=True, verbose=True,
-        )
+        name="Deezer+Spotify+MSD",
+        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+        path=testing.DEEZER_SPO_MSD, verbose=True, knn=True, 
+    )
     variables = testing.ARG_LENGTHS
 
     # Run a process for each quadrant combo (12 in total).
