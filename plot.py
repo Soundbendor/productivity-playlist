@@ -42,6 +42,31 @@ def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
     plt.clf()
     plt.close()
 
+# https://matplotlib.org/3.4.3/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
+def mult_y(ax, data, x, y, palette=None):
+    lc = len(y)
+    axes = [None for _ in range(lc)]
+    axes[0] = ax
+    colors = list(mcolors.BASE_COLORS)
+    cc = len(colors)
+    linestyles = ['-', '--', ':', '-.']
+    
+    for i in range(1, lc): axes[i] = ax.twinx()
+    for i in range(2, lc): axes[i].spines.right.set_position(("axes", 0.8 + (0.2 * i)))
+
+    handles = []
+    for i in range(lc): 
+        sns.lineplot(
+            ax=axes[i], data=data, x=x, y=y[i], 
+            color=colors[i % cc], linestyle=linestyles[i % 4]
+        )
+        axes[i].yaxis.label.set_color(colors[i % cc])
+        axes[i].tick_params(axis='y', colors=colors[i % cc])
+        handles.append(
+            mlines.Line2D([], [], color=colors[i % cc], linestyle=linestyles[i % 4], label=y[i]))
+
+    ax.legend(labels=y, handles=handles)
+
 def hist(label, data, title="", file=""):
     figsize = (12.8, 9.6)
     plt.figure(figsize=figsize)
