@@ -37,19 +37,17 @@ DEEZER_SEG_D30  = f"{DEEZER_DIR}/Deezer+Segments-030sec.csv"
 
 ARG_LENGTHS     = list(range(3, 20, 4))
 ARG_DISTANCES   = [
-     { "func": algos.cosine_score,      "name": "Cosine Similarity"}
-    ,{ "func": algos.euclidean_score,   "name": "Euclidean Distance"}
-    ,{ "func": algos.manhattan_score,   "name": "Manhattan Distance"}
+     { "func": algos.cosine_score,      "name": "Cosine"}
+    ,{ "func": algos.euclidean_score,   "name": "Euclidean"}
+    ,{ "func": algos.manhattan_score,   "name": "Manhattan"}
     # ,{ "func": algos.minkowski3_score,  "name": "Minkowski Distance (order 3)"}
-    ,{ "func": algos.jaccard_score,     "name": "Jaccard Distance"}
-    ,{ "func": algos.mult_score,        "name": "Multiplied Ratios"}
-    ,{ "func": algos.neighbors_rand,    "name": "Random Neighbors"}
+    ,{ "func": algos.jaccard_score,     "name": "Jaccard"}
+    # ,{ "func": algos.mult_score,        "name": "Multiplied Ratios"}
+    ,{ "func": algos.neighbors_rand,    "name": "Random"}
 ]
 ARG_NEIGHBORS_K = list(range(3, 32, 4))
-ARG_SEGMENTS_CT = list(range(1, 200, 9))
-ARG_SEGMENTS_DR = list(range(5, 60, 5))
 
-DEF_LENGTHS     = 12
+DEF_LENGTHS     = 5
 DEF_DISTANCES   = algos.euclidean_score
 DEF_NEIGHBORS_K = 7
 DEF_SEGMENTS_CT = 100
@@ -76,45 +74,45 @@ def LOAD_DATASETS(cols):
             feat_index = 3, arousal = 4, valence = 3,
         ),
         SongDataset(
-            name="Deezer+Spotify",
+            name="Spotify",
             cols=cols["deezer"] + cols["spotify"],
             path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
-            name="Deezer+MSD",
+            name="MSD",
             cols=cols["deezer"] + cols["msd"],
             path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
-            name="Deezer+Spotify+MSD",
+            name="All",
             cols=cols["deezer"] + cols["spotify"] + cols["msd"],
             path=DEEZER_SPO_MSD, knn=True, verbose=True,
         ),
         SongDataset(
-            name="PCA-Deezer+Spotify",
+            name="PCA-Spotify",
             path=DEEZER_PCA_SPO, 
             knn=True, verbose=True,
         ),
         SongDataset(
-            name="PCA-Deezer+MSD",
+            name="PCA-MSD",
             path=DEEZER_PCA_MSD, 
             knn=True, verbose=True,
         ),
         SongDataset(
-            name="PCA-Deezer+Spotify+MSD",
+            name="PCA-All",
             path=DEEZER_PCA_ALL, 
             knn=True, verbose=True,
-        ),
-        SegmentDataset(
-            name="Deezer+Segments-100cnt",
-            cols=cols["deezer"] + cols["segments"],
-            path=DEEZER_SEG_100, knn=True, verbose=True,
-        ),
-        SegmentDataset(
-            name="Deezer+Segments-030sec",
-            cols=cols["deezer"] + cols["segments"],
-            path=DEEZER_SEG_D30, knn=True, verbose=True,
         )
+        # SegmentDataset(
+        #     name="Deezer+Segments-100cnt",
+        #     cols=cols["deezer"] + cols["segments"],
+        #     path=DEEZER_SEG_100, knn=True, verbose=True,
+        # ),
+        # SegmentDataset(
+        #     name="Deezer+Segments-030sec",
+        #     cols=cols["deezer"] + cols["segments"],
+        #     path=DEEZER_SEG_D30, knn=True, verbose=True,
+        # )
     ]
     return arg_datasets
 
@@ -226,16 +224,16 @@ def feat_stepvar(playlistDF, dataset):
     return sv
 
 POINT_METRICS = [
-    {"name": "Pearson correlation", "func": pearson},
+    {"name": "Mood-Based Smoothness (PCC)", "func": pearson},
     # {"name": "Spearman correlation", "func": spearman},
-    {"name": "Step size variance", "func": stepvar},
-    {"name": "Mean Square Error", "func": meansqr},
+    {"name": "Mood-Based Evenness (Step Variance)", "func": stepvar},
+    # {"name": "Mean Square Error", "func": meansqr},
 ]
 
 FEAT_METRICS = [
-    {"name": "Pearson correlation", "func": feat_pearson},
+    {"name": "Audio-Based Smoothness (PCC)", "func": feat_pearson},
     # {"name": "Spearman correlation", "func": spearman},
-    {"name": "Step size variance", "func": feat_stepvar},
+    {"name": "Audio-Based Evenness (Step Variance)", "func": feat_stepvar},
     # {"name": "Mean Square Error", "func": meansqr},
 ]
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#SBATCH -J playlist-analyze      #job name
+#SBATCH -J playlist-five      #job name
 #SBATCH -p cascades
 #SBATCH -A cascades
 #SBATCH -c 6
@@ -13,12 +13,14 @@
 #my commands
 source ./venv/bin/activate      #activate tensorflow environment
 #source activate tf_gpu
-python3 test_distances.py 100
-python3 test_kvals.py 100
-python3 test_lengths.py 100
+python3 test_datasets.py 100
 python3 analyze_tests.py dataset
+
+python3 test_distances.py 100
 python3 analyze_tests.py distance
-python3 analyze_tests.py length
+
+python3 test_kvals.py 100
 python3 analyze_tests.py kval
+
 deactivate
 
