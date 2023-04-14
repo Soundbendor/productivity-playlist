@@ -104,8 +104,9 @@ if __name__ == '__main__':
     #     allresults = pd.read_csv(f"{analysisdir}/_results.csv")
     # else:
     featEvalDataset = SongDataset(
-        name="PCA-Deezer+Spotify+MSD",
-        path=testing.DEEZER_PCA_ALL, verbose=True
+        name="Deezer+Spotify+MSD",
+        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+        path=testing.DEEZER_SPO_MSD, verbose=True,
     )
 
     # Columns for our result sheets

@@ -6,9 +6,6 @@ import seaborn as sns
 from sklearn.neighbors import NearestNeighbors
 from sklearn.preprocessing import MinMaxScaler
 from scipy.stats.mstats import winsorize
-import matplotlib.pyplot as plt
-import matplotlib.colors as mcolors
-import matplotlib.lines as mlines
 import json
 from pprint import pprint
 import time
@@ -34,14 +31,14 @@ metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
 # Plot Deezer again - bigger.
 info = helper.loadConfig("config.json")
 
-def plotRussell(df, name):
+def plotRussell(df, name, alpha=0.5):
     # mms = MinMaxScaler(feature_range=(-1,1))
     # valence = mms.fit_transform(songdata.va_df[["valence"]])
     # arousal = mms.fit_transform(songdata.va_df[["arousal"]])
     plot.av_circle(
         df["valence"], df["arousal"], 
         title=f"Spread of Deezer 2018",
-        file="{}/{}.png".format(outdir, name)
+        file="{}/{}.png".format(outdir, name), alpha=alpha
     )
 
     return
@@ -137,10 +134,10 @@ if __name__ == "__main__":
         "distance": "23-04-09-2119",
         "length": "23-04-10-2222"
     }
-    dfs = {t: pd.read_csv(f"analysis/{dates[t]}-{t}s/_results.csv") for t in dates}
+    dfs = {t: pd.read_csv(f"analysis-hpc/{dates[t]}-{t}s/_results.csv") for t in dates}
 
-    dist(dfs["distance"])
-    data(dfs["dataset"])
+    # dist(dfs["distance"])
+    # data(dfs["dataset"])
     kval(dfs["kval"])
 
     songdata = SongDataset(
@@ -148,14 +145,17 @@ if __name__ == "__main__":
         cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
         path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
     )
-    plotRussell(songdata.va_df, "deezer-circle")
+    # plotRussell(songdata.va_df, "deezer-circle")
 
     samples = {}
     with open("quadrants.json") as f: samples = json.load(f)
+    pprint(samples)
     allpoints = []
-    for c in testing.QUADRANT_CODES: allpoints.extend(samples[c])
+    for c in testing.QUADRANT_CODES: 
+        for s in samples[c]:
+            allpoints.append(int(s))
     sampledata = songdata.get_point(allpoints)
-    plotRussell(sampledata, "sample-circle")
+    plotRussell(sampledata, "sample-circle", alpha=1)
 
 
 

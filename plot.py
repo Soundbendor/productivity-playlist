@@ -1,5 +1,7 @@
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
+import matplotlib.colors as mcolors
+import matplotlib.lines as mlines
 import numpy as np
 import seaborn as sns
 
@@ -43,7 +45,7 @@ def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
     plt.close()
 
 # https://matplotlib.org/3.4.3/gallery/ticks_and_spines/multiple_yaxis_with_spines.html
-def mult_y(ax, data, x, y, palette=None):
+def mult_y(ax, data, x, y, palette=None): 
     lc = len(y)
     axes = [None for _ in range(lc)]
     axes[0] = ax
