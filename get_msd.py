@@ -6,11 +6,11 @@ import pprint
 import sys
 
 deezer_path = "./data/deezer/deezer-spotify.csv"
-msd_path = "../msd/data"
+msd_path = "../datasets/msd/data"
 attr_track = "MSD_track_id"
 attr_song = "MSD_sng_id"
 
-songdata = pd.read_csv(deezer_path, header=0, index_col=0).dropna()
+songdata = pd.read_csv(deezer_path, header=0, index_col=0)
 count = int(sys.argv[1]) if len(sys.argv) > 1 else len(songdata)
 msdata = {}
 
@@ -100,5 +100,5 @@ for i in range(count):
 
 for a in msdata.keys():
     songdata["MSD_" + a] = msdata[a]
-songdata.to_csv(path_or_buf="msdeezerplus.csv")
+songdata.to_csv(path_or_buf="data/deezer/deezer-msd.csv")
 
