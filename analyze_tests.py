@@ -103,11 +103,44 @@ if __name__ == '__main__':
     # if os.path.isfile(f"{analysisdir}/_results.csv"):
     #     allresults = pd.read_csv(f"{analysisdir}/_results.csv")
     # else:
-    featEvalDataset = SongDataset(
-        name="Deezer+Spotify+MSD",
-        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
-        path=testing.DEEZER_SPO_MSD, verbose=True,
-    )
+    # featEvalDataset = SongDataset(
+    #     name="Deezer+Spotify+MSD",
+    #     cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+    #     path=testing.DEEZER_SPO_MSD, verbose=True,
+    # )
+
+    featEvalDatasets = [
+        SongDataset(
+            name="Spotify",
+            cols=info["cols"]["deezer"] + info["cols"]["spotify"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="MSD",
+            cols=info["cols"]["deezer"] + info["cols"]["msd"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="All",
+            cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="PCA-Spotify",
+            path=testing.DEEZER_PCA_SPO, 
+            verbose=True,
+        ),
+        SongDataset(
+            name="PCA-MSD",
+            path=testing.DEEZER_PCA_MSD, 
+            verbose=True,
+        ),
+        SongDataset(
+            name="PCA-All",
+            path=testing.DEEZER_PCA_ALL, 
+            verbose=True,
+        )
+    ]
 
     # Columns for our result sheets
     resultcols = [variable, "oq", "dq", "orig", "dest"]
@@ -116,23 +149,24 @@ if __name__ == '__main__':
     for fm in testing.FEAT_METRICS:
         resultcols.append(fm["func"].__name__)
 
-    # Run a process for each quadrant combo (12 in total).
-    pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
-    dfs = pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)    
+    for featEvalDataset in featEvalDatasets:
+        # Run a process for each quadrant combo (12 in total).
+        pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
+        dfs = pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)    
 
-    allresults = pd.concat(dfs)
-    allresults["qc"] = allresults["oq"] + allresults["dq"]
-    allresults.to_csv(f"{analysisdir}/_results.csv")
+        allresults = pd.concat(dfs)
+        allresults["qc"] = allresults["oq"] + allresults["dq"]
+        allresults.to_csv(f"{analysisdir}/{featEvalDataset.name}/_results.csv")
 
-    helper.makeDir(f"{analysisdir}/_all")
-    testing.metric_sheets(allresults, variable, f"{analysisdir}/_all")
-    testing.metric_sheets(allresults, "qc", f"{analysisdir}/_all")
+        helper.makeDir(f"{analysisdir}/{featEvalDataset.name}/_all")
+        testing.metric_sheets(allresults, variable, f"{analysisdir}/{featEvalDataset.name}/_all")
+        testing.metric_sheets(allresults, "qc", f"{analysisdir}/{featEvalDataset.name}/_all")
 
-    allresults["meansqr"] = winsorize(allresults["meansqr"], limits=[0.01, 0.05])
-    allresults.reset_index(drop = True, inplace = True)
+        allresults["meansqr"] = winsorize(allresults["meansqr"], limits=[0.01, 0.05])
+        allresults.reset_index(drop = True, inplace = True)
 
-    testing.plot_scores(allresults, variable, f"{analysisdir}/_all")
-    testing.plot_scores(allresults, "qc", f"{analysisdir}/_all")
+        testing.plot_scores(allresults, variable, f"{analysisdir}/{featEvalDataset.name}/_all")
+        testing.plot_scores(allresults, "qc", f"{analysisdir}/{featEvalDataset.name}/_all")
 
     metrics = ["pearson","stepvar","meansqr","feat_pearson","feat_stepvar"]
     correlation = allresults[metrics].corr().round(2)

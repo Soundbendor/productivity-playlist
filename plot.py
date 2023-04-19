@@ -5,6 +5,16 @@ import matplotlib.lines as mlines
 import numpy as np
 import seaborn as sns
 
+key = {
+    "pearson": "Pearson Correlation (Mood)",
+    "stepvar": "Step-Size Variance (Mood)",
+    "feat_pearson": "Pearson Correlation (Audio)",
+    "feat_stepvar": "Step-Size Variance (Audio)",
+    "kval": "K",
+    "dataset": "Stage 2 Dataset",
+    "distance": "Distance Metric"
+}
+
 def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
     fig, ax= plt.subplots(dpi=600)
     fig.set_figheight(4.8 * scale)
@@ -62,12 +72,16 @@ def mult_y(ax, data, x, y, palette=None):
             ax=axes[i], data=data, x=x, y=y[i], 
             color=colors[i % cc], linestyle=linestyles[i % 4]
         )
+        axes[i].set_xlabel(key[x])
+        axes[i].set_ylabel(key[y[i]])
         axes[i].yaxis.label.set_color(colors[i % cc])
         axes[i].tick_params(axis='y', colors=colors[i % cc])
-        handles.append(
-            mlines.Line2D([], [], color=colors[i % cc], linestyle=linestyles[i % 4], label=y[i]))
 
-    ax.legend(labels=y, handles=handles)
+        label = "Audio" if "feat_" in y[i] else "Mood"
+        handles.append(
+            mlines.Line2D([], [], color=colors[i % cc], linestyle=linestyles[i % 4], label=label))
+
+    ax.legend(labels=["Audio" if "feat_" in yi else "Mood" for yi in y], handles=handles, loc='upper center')
 
 def hist(label, data, title="", file=""):
     figsize = (12.8, 9.6)
@@ -108,6 +122,11 @@ def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4
 
     # df.boxplot(column=x, by=y, figsize = (len(df.columns) * 1.5,10), ax=ax)
     snsfunc(ax=ax, data=df, x=x, y=y, palette=palette)
+
+    if snsfunc != mult_y:
+        ax.set_xlabel(key[x])
+        ax.set_ylabel(key[y])
+
     fig.tight_layout()
 
     # if (legend != []):
@@ -197,14 +216,14 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.clf() 
 
 def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
-    plt.figure(figsize=(plt_size,0.95 * plt_size))
+    plt.figure(figsize=(plt_size, plt_size))
     # fig, ax= plt.subplots(dpi=600)
     # fig.set_figheight(plt_size * 0.9)
     # fig.set_figwidth(plt_size)
 
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
-    # plt.xlim(-1.25,1.25)
-    # plt.ylim(-1.25,1.25)  
+    plt.xlim(-1.25,1.25)
+    plt.ylim(-1.25,1.25)  
 
     # draw the unit circle
     fig = plt.gcf()
@@ -224,7 +243,7 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
 
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
-    # ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
+    ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
     ax.axes.xaxis.set_ticks([])
     ax.axes.yaxis.set_ticks([])
     
@@ -238,7 +257,7 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
     ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
     ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
 
-    plt.tight_layout()
+    # plt.tight_layout()
     plt.savefig(file, dpi=600)
     plt.show(block=False)
     plt.clf() 

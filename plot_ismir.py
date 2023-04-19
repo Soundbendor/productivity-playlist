@@ -27,6 +27,12 @@ from songdataset import SongDataset, SegmentDataset
 outdir = "out/ismir2023"
 helper.makeDir(outdir)
 metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
+dates = {
+    "dataset":  "23-04-09-1750",
+    "kval":     "23-04-11-1049",
+    "distance": "23-04-09-2119",
+    # "length":   "23-04-14-0157"
+}
 
 # Plot Deezer again - bigger.
 info = helper.loadConfig("config.json")
@@ -37,7 +43,6 @@ def plotRussell(df, name, alpha=0.5):
     # arousal = mms.fit_transform(songdata.va_df[["arousal"]])
     plot.av_circle(
         df["valence"], df["arousal"], 
-        title=f"Spread of Deezer 2018",
         file="{}/{}.png".format(outdir, name), alpha=alpha
     )
 
@@ -61,7 +66,7 @@ def plotExPlaylist(dataset):
         file = f"{outdir}/ex-playlist.png", scale=0.5, axislabels=False
     )
 
-    playlistDF.round(2).to_latex(
+    playlistDF.round(2).to_latex(hrules=True,
         buf=f"{outdir}/ex-playlist.tex",
         columns=["artist", "title", "valence", "arousal"],
         index=False
@@ -79,16 +84,15 @@ def dist(df):
     ])
     df = df[df.distance != "Ratios"]
 
-
-    ## Table for feature-based Pearson correlation.
-    distfp = df.groupby("distance")["feat_pearson"].describe().round(6)
-    # print(distfp)
-    distfp[["mean", "std"]].style.to_latex(f"{outdir}/dist-fp.tex")
+    # ## Table for feature-based Pearson correlation.
+    # distfp = df.groupby("distance")["feat_pearson"].describe().round(6)
+    # # print(distfp)
+    # distfp[["mean", "std"]].style.to_latex(hrules=True, buf=f"{outdir}/dist-audio-pearson.tex")
 
     ## Plot for feature-based step variance.
     plot.snsplot(
         sns.boxenplot, df, "feat_stepvar", "distance", 
-        file=f"{outdir}/dist-sv.png", 
+        file=f"{outdir}/dist-audio-stepvar.png", 
         scale=0.4
     )
 
@@ -96,8 +100,6 @@ def dist(df):
 
 def data(df):
     # DATASETS
-    ## Better boxplot for datasets.
-
     df = df.replace([
         "Deezer", 
         "Deezer+Spotify", "Deezer+MSD", "Deezer+Spotify+MSD", 
@@ -112,8 +114,43 @@ def data(df):
     df = df[df.dataset != "100cnt"]
     df = df[df.dataset != "030sec"]
 
-    ## Table for each with median, mean, std and IQR.
+    datamp = df.groupby("dataset")["pearson"].describe().round(4)
+    datafp = df.groupby("dataset")["feat_pearson"].describe().round(4)
+    datasv = df.groupby("dataset")["feat_stepvar"].describe().round(4)
 
+    ## Mood-Pearson - table.
+    datamp[["mean", "std", "50%"]].style.to_latex(hrules=True, buf=f"{outdir}/data-mood-pearson.tex")    
+
+    ## Mood-Pearson - boxplot.
+    plot.snsplot(
+        sns.boxenplot, df, "pearson", "dataset", 
+        file=f"{outdir}/data-mood-pearson.png", 
+        scale=0.4
+    )
+
+    ## Audio-based metrics - table.
+    audiotable = pd.merge(
+        datafp[["mean", "std"]], datasv[["mean", "std"]],
+        left_index=True, right_index=True, suffixes=("-pearson", "-stepvar")
+    )
+    audiotable.style.to_latex(hrules=True, buf=f"{outdir}/data-audio.tex")
+
+
+    ## Smoothness metrics - table.
+    smoothtable = pd.merge(
+        datafp[["mean", "std", "50%"]], datamp[["mean", "std", "50%"]],
+        left_index=True, right_index=True, suffixes=("-audio", "-mood")
+    )
+    smoothtable.style.to_latex(hrules=True, buf=f"{outdir}/data-pearson.tex")
+
+    ## Audio step variance - boxplot.
+    plot.snsplot(
+        sns.boxenplot, df, "feat_stepvar", "dataset", 
+        file=f"{outdir}/data-audio-stepvar.png", 
+        scale=0.4
+    )
+
+    return
 
 def kval(df):
     ## K-value graph - line with some spread marker.
@@ -121,41 +158,34 @@ def kval(df):
         plot.snsplot(
             plot.mult_y, df, "kval", [m, f"feat_{m}"],
             file=f"{outdir}/kval-{m}.png",
-            figheight=9.6, figwidth=12.8
+            figheight=9.6, figwidth=12.8, scale=0.35
         )
 
     return
 
 if __name__ == "__main__":
     # Load up data from specific tests.
-    dates = {
-        "dataset": "23-04-09-1750",
-        "kval": "23-04-11-1049",
-        "distance": "23-04-09-2119",
-        "length": "23-04-10-2222"
-    }
-    dfs = {t: pd.read_csv(f"analysis-hpc/{dates[t]}-{t}s/_results.csv") for t in dates}
+    dfs = {t: pd.read_csv(f"analysis/{dates[t]}-{t}s/_results.csv") for t in dates}
 
-    # dist(dfs["distance"])
-    # data(dfs["dataset"])
+    dist(dfs["distance"])
+    data(dfs["dataset"])
     kval(dfs["kval"])
 
-    songdata = SongDataset(
-        name="Deezer+Spotify+MSD",
-        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
-        path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
-    )
-    # plotRussell(songdata.va_df, "deezer-circle")
+    # songdata = SongDataset(
+    #     name="Deezer+Spotify+MSD",
+    #     cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+    #     path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
+    # )
+    # plotRussell(songdata.va_df, "circle-deezer")
 
-    samples = {}
-    with open("quadrants.json") as f: samples = json.load(f)
-    pprint(samples)
-    allpoints = []
-    for c in testing.QUADRANT_CODES: 
-        for s in samples[c]:
-            allpoints.append(int(s))
-    sampledata = songdata.get_point(allpoints)
-    plotRussell(sampledata, "sample-circle", alpha=1)
+    # samples = {}
+    # with open("quadrants.json") as f: samples = json.load(f)
+    # allpoints = []
+    # for c in testing.QUADRANT_CODES: 
+    #     for s in samples[c]:
+    #         allpoints.append(int(s))
+    # sampledata = songdata.get_point(allpoints)
+    # plotRussell(sampledata, "circle-sample", alpha=1)
 
 
 

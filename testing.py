@@ -227,7 +227,7 @@ POINT_METRICS = [
     {"name": "Mood-Based Smoothness (PCC)", "func": pearson},
     # {"name": "Spearman correlation", "func": spearman},
     {"name": "Mood-Based Evenness (Step Variance)", "func": stepvar},
-    # {"name": "Mean Square Error", "func": meansqr},
+    {"name": "Mean Square Error", "func": meansqr},
 ]
 
 FEAT_METRICS = [
