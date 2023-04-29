@@ -27,21 +27,24 @@ def perQuadrant(oq, dq):
     pairs = point_combos[qc]
     helper.makeDir("{}/{}".format(dirname, qc))
 
-    for orig, dest in pairs:
-        curdirname = "{}/{}/{}-{}".format(dirname, qc, orig, dest)
-        helper.makeDir(curdirname)
+    for dataset in datasets:
+        helper.makeDir(f"{dirname}/{qc}/{dataset.name}")
 
-        for variable in variables:
-            # TODO: update default / variable arguments for each test.
-            playlistDF = prodplay.makePlaylist(
-                dataset, orig, dest, testing.DEF_LENGTHS,
-                score = variable["func"],
-                neighbors = testing.DEF_NEIGHBORS_K,
-                verbose = 0
-            )
+        for orig, dest in pairs:
+            curdirname = f"{dirname}/{qc}/{dataset.name}/{orig}-{dest}"
+            helper.makeDir(curdirname)
 
-            # Save playlist DataFrame to CSV. TODO: update name.
-            playlistDF.to_csv("{}/{}.csv".format(curdirname, variable["name"]))
+            for variable in variables:
+                # TODO: update default / variable arguments for each test.
+                playlistDF = prodplay.makePlaylist(
+                    dataset, orig, dest, testing.DEF_LENGTHS,
+                    score = variable["func"],
+                    neighbors = testing.DEF_NEIGHBORS_K,
+                    verbose = 0
+                )
+
+                # Save playlist DataFrame to CSV. TODO: update name.
+                playlistDF.to_csv("{}/{}.csv".format(curdirname, variable["name"]))
 
 if __name__ == "__main__":
     samplecount = int(sys.argv[1]) if len(sys.argv) > 1 else 100
@@ -54,11 +57,43 @@ if __name__ == "__main__":
     point_combos = testing.load_samples(testing.QUADRANT_JSON, samplecount)
 
     # Load datasets and variables. TODO: update for each test.
-    dataset = SongDataset(
-        name="Deezer+Spotify+MSD",
-        cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
-        path=testing.DEEZER_SPO_MSD, verbose=True, knn=True, 
-    )
+    # dataset = SongDataset(
+    #     name="Deezer+Spotify+MSD",
+    #     cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+    #     path=testing.DEEZER_SPO_MSD, verbose=True, knn=True, 
+    # )
+    datasets = [
+        SongDataset(
+            name="Spotify",
+            cols=info["cols"]["deezer"] + info["cols"]["spotify"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="MSD",
+            cols=info["cols"]["deezer"] + info["cols"]["msd"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="All",
+            cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
+            path=testing.DEEZER_SPO_MSD, verbose=True,
+        ),
+        SongDataset(
+            name="PCA-Spotify",
+            path=testing.DEEZER_PCA_SPO, 
+            verbose=True,
+        ),
+        SongDataset(
+            name="PCA-MSD",
+            path=testing.DEEZER_PCA_MSD, 
+            verbose=True,
+        ),
+        SongDataset(
+            name="PCA-All",
+            path=testing.DEEZER_PCA_ALL, 
+            verbose=True,
+        )
+    ]
     variables = testing.ARG_DISTANCES
 
     # Run a process for each quadrant combo (12 in total).

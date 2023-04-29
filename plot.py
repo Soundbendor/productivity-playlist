@@ -10,9 +10,12 @@ key = {
     "stepvar": "Step-Size Variance (Mood)",
     "feat_pearson": "Pearson Correlation (Audio)",
     "feat_stepvar": "Step-Size Variance (Audio)",
+    "meansqr": "Mean Square Error",
     "kval": "K",
     "dataset": "Stage 2 Dataset",
-    "distance": "Distance Metric"
+    "distance": "Distance Metric",
+    "length": "Length",
+    "qc": "Quadrant Combo"
 }
 
 def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):

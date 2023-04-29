@@ -26,21 +26,21 @@ from songdataset import SongDataset, SegmentDataset
 
 def perQuadrant(oq, dq):
     qc = f"{oq}{dq}"
-    quaddir = f"{analysisdir}/{qc}"
+    quaddir = f"{analysisdir}/{featEvalDataset.name}/{qc}"
     helper.makeDir(quaddir)
 
     # collect table of results
     results = {}
     for col in resultcols: results[col] = []
 
-    pointcombos = os.listdir(f"{testdir}/{qc}")
+    pointcombos = os.listdir(f"{testdir}/{qc}/{featEvalDataset.name}")
     if f"results-{samplecount}.csv" in pointcombos:
         pointcombos.remove(f"results-{samplecount}.csv")
     # helper.makeDir(f"{analysisdir}/{qc}/playlists")
 
     for idx, pc in enumerate(pointcombos):
         # print(f"{qc} ... {idx + 1} / {len(pointcombos)}\t")
-        playlistsDir = f"{testdir}/{qc}/{pc}"
+        playlistsDir = f"{testdir}/{qc}/{featEvalDataset.name}/{pc}"
         orig, dest = pc.split("-")
         orig, dest = int(orig), int(dest)
         
@@ -150,6 +150,7 @@ if __name__ == '__main__':
         resultcols.append(fm["func"].__name__)
 
     for featEvalDataset in featEvalDatasets:
+        helper.makeDir(f"{analysisdir}/{featEvalDataset.name}")
         # Run a process for each quadrant combo (12 in total).
         pQuadrants = multiprocessing.Pool(len(testing.QUADRANT_COMBOS))
         dfs = pQuadrants.starmap(perQuadrant, testing.QUADRANT_COMBOS)    
