@@ -44,7 +44,7 @@ def getCandidates(dataset, pointlist, current, destination, n_songs_reqd, neighb
     remaining = n_songs_reqd - len(pointlist)
     target = [[current[i] + (distance[i]/remaining) for i in range(len(current))]]
 
-    dists, nearest = dataset.knn_model.kneighbors(target, n_neighbors=3*neighbors, return_distance=True)
+    dists, nearest = dataset.knn_model.kneighbors(target, n_neighbors=len(pointlist)*neighbors, return_distance=True)
 
     candidate_indices = np.array(nearest)[0]
     candidate_dists = np.array(dists)[0]

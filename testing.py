@@ -35,7 +35,7 @@ DEEZER_PCA_MSD  = f"{DEEZER_DIR}/PCA-Deezer+MSD.csv"
 DEEZER_SEG_100  = f"{DEEZER_DIR}/Deezer+Segments-100cnt.csv"
 DEEZER_SEG_D30  = f"{DEEZER_DIR}/Deezer+Segments-030sec.csv"
 
-ARG_LENGTHS     = list(range(3, 20, 4))
+ARG_LENGTHS     = list(range(3, 20, 2))
 ARG_DISTANCES   = [
      { "func": algos.cosine_score,      "name": "Cosine"}
     ,{ "func": algos.euclidean_score,   "name": "Euclidean"}
@@ -47,7 +47,7 @@ ARG_DISTANCES   = [
 ]
 ARG_NEIGHBORS_K = list(range(3, 32, 4))
 
-DEF_LENGTHS     = 5
+DEF_LENGTHS     = 12
 DEF_DISTANCES   = algos.euclidean_score
 DEF_NEIGHBORS_K = 7
 DEF_SEGMENTS_CT = 100

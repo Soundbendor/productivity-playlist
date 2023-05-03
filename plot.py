@@ -15,7 +15,10 @@ key = {
     "dataset": "Stage 2 Dataset",
     "distance": "Distance Metric",
     "length": "Length",
-    "qc": "Quadrant Combo"
+    "segment": "Segment Type",
+    "qc": "Quadrant Combo",
+    "number": "Number of Segments",
+    "duration": "Duration (seconds)"
 }
 
 def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
@@ -84,7 +87,7 @@ def mult_y(ax, data, x, y, palette=None):
         handles.append(
             mlines.Line2D([], [], color=colors[i % cc], linestyle=linestyles[i % 4], label=label))
 
-    ax.legend(labels=["Audio" if "feat_" in yi else "Mood" for yi in y], handles=handles, loc='upper center')
+    ax.legend(labels=["Audio" if "feat_" in yi else "Mood" for yi in y], handles=handles)
 
 def hist(label, data, title="", file=""):
     figsize = (12.8, 9.6)
@@ -111,7 +114,7 @@ def hist(label, data, title="", file=""):
     plt.clf()
     plt.close()
 
-def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4, figheight = None, figwidth = None, palette=None):
+def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4, figheight = None, figwidth = None, palette=None, show_y=True):
     fig, ax= plt.subplots(dpi=600)
     fig.set_figwidth(scale * (10 if figwidth is None else figwidth))
     fig.set_figheight(scale * ((0.7 * len(df.columns) + 1) if figheight is None else figheight))
@@ -125,6 +128,10 @@ def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4
 
     # df.boxplot(column=x, by=y, figsize = (len(df.columns) * 1.5,10), ax=ax)
     snsfunc(ax=ax, data=df, x=x, y=y, palette=palette)
+
+    if not show_y:
+        ax.set_ylabel(None)
+        ax.set_yticks([])
 
     if snsfunc != mult_y:
         ax.set_xlabel(key[x])
