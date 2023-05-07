@@ -18,7 +18,8 @@ key = {
     "segment": "Segment Type",
     "qc": "Quadrant Combo",
     "number": "Number of Segments",
-    "duration": "Duration (seconds)"
+    "duration": "Duration (seconds)",
+    "points": "Unique Points"
 }
 
 def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
@@ -225,11 +226,16 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.show(block=False)
     plt.clf() 
 
-def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5):
+def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5, quad=False):
     plt.figure(figsize=(plt_size, plt_size))
     # fig, ax= plt.subplots(dpi=600)
     # fig.set_figheight(plt_size * 0.9)
     # fig.set_figwidth(plt_size)
+    qk = {"I":"b", "II": "r", "III": "g", "IV": "m"}
+
+    if quad:
+        colors = np.where(v > 0, np.where(a > 0, qk["I"], qk["IV"]), np.where(a > 0, qk["II"], qk["III"]))
+        s = 50
 
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
     plt.xlim(-1.25,1.25)
@@ -266,6 +272,12 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
     ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*4))
     ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
     ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
+
+    if quad:
+        ax.text(1.1, 0.8, "I", fontproperties=titleFont, size=int(plt_size*6), color=qk["I"])
+        ax.text(-1.3, 0.8, "II", fontproperties=titleFont, size=int(plt_size*6), color=qk["II"])
+        ax.text(-1.3, -0.8, "III", fontproperties=titleFont, size=int(plt_size*6), color=qk["III"])
+        ax.text(1.1, -0.8, "IV", fontproperties=titleFont, size=int(plt_size*6), color=qk["IV"])
 
     # plt.tight_layout()
     plt.savefig(file, dpi=600)

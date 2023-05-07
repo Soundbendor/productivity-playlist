@@ -35,26 +35,26 @@ metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
 evaldata = [
     "All", "Spotify", "MSD", 
     "PCA-All", "PCA-Spotify", "PCA-MSD", 
-    "Deezer+Segments-030sec", "Deezer+Segments-100cnt"
+    # "Deezer+Segments-030sec", "Deezer+Segments-100cnt"
 ]
 dates = {
-    # "dataset":  "23-04-09-1750",
-    # "kval":     "23-04-11-1049",
-    # "distance": "23-04-30-1302",
-    # "length":   "23-04-30-1954",
+    "dataset":  "23-04-09-1750",
+    "kval":     "23-05-01-0005",
+    "distance": "23-04-30-1302",
+    "length":   "23-04-30-1954",
     "segment":  "23-04-30-0115"
 }
 
 # Plot Deezer again - bigger.
 info = helper.loadConfig("config.json")
 
-def plotRussell(df, name, alpha=0.5):
+def plotRussell(df, name, alpha=0.5, quad=False):
     # mms = MinMaxScaler(feature_range=(-1,1))
     # valence = mms.fit_transform(songdata.va_df[["valence"]])
     # arousal = mms.fit_transform(songdata.va_df[["arousal"]])
     plot.av_circle(
         df["valence"], df["arousal"], 
-        file="{}/{}.png".format(outdir, name), alpha=alpha
+        file="{}/{}.png".format(outdir, name), alpha=alpha, quad=quad
     )
 
     return
@@ -276,18 +276,91 @@ def segments(dfs):
         )
 
     
-    # # fig, axs = plt.subplots(2, 2, dpi=600, sharex=True, sharey=True)
-    # # fig.set_figwidth(6)
-    # # fig.set_figheight(7)
-    # # plot.mult_y(ax=ax1, data=df, x="kval", y=["pearson", "feat_pearson"])
-    # # plot.mult_y(ax=ax2, data=df[df["qc"] == "BLTR"], x="kval", y=["stepvar", "feat_stepvar"])
-    # # # ax2.set_xlabel(None)
-    # # plt.tight_layout()
+    # fig, axs = plt.subplots(2, 2, dpi=600, sharex=True, sharey=True)
+    # fig.set_figwidth(6)
+    # fig.set_figheight(7)
+    # plot.mult_y(ax=ax1, data=df, x="kval", y=["pearson", "feat_pearson"])
+    # plot.mult_y(ax=ax2, data=df[df["qc"] == "BLTR"], x="kval", y=["stepvar", "feat_stepvar"])
+    # # ax2.set_xlabel(None)
+    # plt.tight_layout()
 
     # plt.savefig(f"{outdir}/kval.png", dpi=600)
     # plt.clf()
     # plt.close()
     
+    return
+
+def quadrants(results, deezer):
+
+    def dir(oq, dq):
+        if oq[1] == dq[1]: return "Vertical"
+        elif oq[0] == dq[0]: return "Horizontal"
+        else: return "Diagonal"
+        return
+
+    quads = ["BL", "BR", "TL", "TR"]
+    qp = { "BL": 0, "BR": 0, "TL": 0, "TR": 0 }
+    qs = { "BL": 0, "BR": 0, "TL": 0, "TR": 0 }
+    
+    for point in deezer.unique_points:
+        v, a = point[0], point[1]
+        index = 0
+        if v >= 0: index += 1
+        if a >= 0: index += 2
+        qp[quads[index]] += 1
+        qs[quads[index]] += len(
+            deezer.points_hash[helper.arr2stringPoint(point)])
+
+    tl = { "TR": "I", "TL": "II", "BL": "III", "BR": "IV" }
+    qctrans = {
+        f"{oq}{dq}": f"{tl[oq]} -> {tl[dq]}" for oq, dq in testing.QUADRANT_COMBOS
+    }
+    directions = {
+        f"{oq}{dq}": dir(oq, dq) for oq, dq in testing.QUADRANT_COMBOS
+    }
+
+    pearson = results.groupby("qc")["pearson"].describe()
+    stepvar = results.groupby("qc")["stepvar"].describe()
+
+    # results["points"] = [qp[oq] + qp[dq] for oq, dq in zip(results["oq"], results["dq"])]
+    # results["songs"] = 
+
+    # quadinfo = pd.DataFrame([{
+    #     "from": tl[oq], "to": tl[dq], "direction": directions[f"{oq}{dq}"],
+    #     "songs": qs[oq] + qs[dq], "points": qp[oq] + qp[dq],
+    # } for oq, dq in list(itertools.combinations(testing.QUADRANT_CODES, 2)) ])
+    # print(quadinfo)
+    # quadinfo.to_latex(buf="out/thesis-plots/quadinfo.tex", index=False)
+
+    quadresults = pd.DataFrame([{
+        "from": tl[oq], "to": tl[dq], "direction": directions[f"{oq}{dq}"],
+        "songs": qs[oq] + qs[dq],
+        "points": qp[oq] + qp[dq],
+        "pearson_avg": pearson.loc[f"{oq}{dq}", "mean"],
+        "pearson_std": pearson.loc[f"{oq}{dq}", "std"],
+        "pearson_med": pearson.loc[f"{oq}{dq}", "50%"],
+        "stepvar_avg": stepvar.loc[f"{oq}{dq}", "mean"],
+        "stepvar_std": stepvar.loc[f"{oq}{dq}", "std"],
+        "stepvar_med": stepvar.loc[f"{oq}{dq}", "50%"],
+    } for oq, dq in testing.QUADRANT_COMBOS ])
+    
+    quadresults = quadresults.sort_values(by="pearson_avg", ascending=False)
+    quadresults.to_latex(
+        buf="out/thesis-plots/quadresults.tex", index=False,
+        columns=[
+            "from", "to", "direction", "songs", "points", 
+            "pearson_avg", "pearson_std", "stepvar_avg", "stepvar_std"
+        ]
+    )
+    print(f"len: {len(results)}\n")
+    print(quadresults)
+
+    # plot.snsplot(
+    #     sns.lineplot, results, "points", "stepvar",
+    #     file=f"{outdir}/quad-stepvar.png",
+    #     figheight=4, figwidth=6, scale=1
+    # )    
+
     return
 
 if __name__ == "__main__":
@@ -296,17 +369,19 @@ if __name__ == "__main__":
         d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
      } for t in dates}
 
+    songdata = SongDataset(
+        name="Deezer",
+        cols=info["cols"]["deezer"],
+        path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
+    )
+
     # dist(dfs["distance"])
     # data(dfs["dataset"])
-    # kval(pd.read_csv("analysis/23-04-11-1049-kvals/_results.csv"))
+    kval(dfs["kval"]["All"])
     # length(dfs["length"])
-    segments(dfs["segment"])
+    # segments(dfs["segment"])
 
-    # songdata = SongDataset(
-    #     name="Deezer+Spotify+MSD",
-    #     cols=info["cols"]["deezer"] + info["cols"]["spotify"] + info["cols"]["msd"],
-    #     path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
-    # )
+    quadrants(dfs["dataset"]["All"], songdata)
     # plotRussell(songdata.va_df, "circle-deezer")
 
     # samples = {}
@@ -316,7 +391,7 @@ if __name__ == "__main__":
     #     for s in samples[c]:
     #         allpoints.append(int(s))
     # sampledata = songdata.get_point(allpoints)
-    # plotRussell(sampledata, "circle-sample", alpha=1)
+    # plotRussell(sampledata, "circle-sample", alpha=1, quad=True)
 
 
 

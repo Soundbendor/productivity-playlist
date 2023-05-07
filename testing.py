@@ -23,7 +23,7 @@ import algos
 from songdataset import SongDataset, SegmentDataset
 
 QUADRANT_JSON   = "quadrants.json"
-QUADRANT_CODES  = ["BL", "BR", "TL", "TR"]
+QUADRANT_CODES  = ["TR", "TL", "BL", "BR"]
 QUADRANT_COMBOS = list(itertools.permutations(QUADRANT_CODES, 2))
 
 DEEZER_DIR = "./data/deezer/powert" 
