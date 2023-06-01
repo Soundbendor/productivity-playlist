@@ -10,8 +10,8 @@ FEATS_IND = ["loudness_max", "loudness_start"]
 FEATS_ARR = [("pitches", 12), ("timbre", 12)]
 
 def fillcols(s, outcols, size=0):
-    # outcols[f"{s}_duration"] = [None] * size
-    # outcols[f"{s}_num_samples"] = [None] * size
+    outcols[f"{s}_duration"] = [None] * size
+    outcols[f"{s}_num_samples"] = [None] * size
     for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = [None] * size
     for feat, n in FEATS_ARR: 
         for i in range(n):
@@ -235,7 +235,7 @@ def test_segcounts(spid, mode, num):
         count = 2 if mode == "cnt" else 1
         
         plot.line("# of segments", col, data, 
-                    count = count, dim = 2,
+                    count = count, dim = 2, scale=1,
                     # title = "Segment Weighted Average for {}".format(spid),
                     file="{}/{}.png".format(dirname, col))
 
@@ -266,4 +266,4 @@ if __name__ == "__main__":
     # fails = grab_datasets(songdata, generate)
 
     randspid = songdata.iloc[random.randint(0, len(songdata))]["sp_track_id"]
-    test_segcounts(randspid, "cnt", 100)
+    test_segcounts("5JSfrkLVMTNcr4qC3jPTup", "cnt", 100)

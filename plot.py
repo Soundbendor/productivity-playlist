@@ -134,9 +134,9 @@ def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4
         ax.set_ylabel(None)
         ax.set_yticks([])
 
-    if snsfunc != mult_y:
-        ax.set_xlabel(key[x])
-        ax.set_ylabel(key[y])
+    # if snsfunc != mult_y:
+    #     ax.set_xlabel(key[x])
+    #     ax.set_ylabel(key[y])
 
     fig.tight_layout()
 
@@ -257,27 +257,29 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
     axisFont = fm.FontProperties(fname="./static/fonts/Stratum2-Medium.otf")
     emotionFont = fm.FontProperties(fname="./static/fonts/KievitOffc-BoldIta.ttf", size='xx-large')
 
-    ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
-    ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
+    ax.set_xlabel("Arousal", fontproperties=axisFont, size=plt_size*3)
+    ax.set_ylabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
-    ax.axes.xaxis.set_ticks([])
-    ax.axes.yaxis.set_ticks([])
-    
-    # print emotion labels
-    ax.text(0.78, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(0.3, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
-    ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
+    ax.grid(True, alpha=0.5 )
+    # ax.axes.xaxis.set_ticks([])
+    # ax.axes.yaxis.set_ticks([])
 
     if quad:
-        ax.text(1.1, 0.8, "I", fontproperties=titleFont, size=int(plt_size*6), color=qk["I"])
-        ax.text(-1.3, 0.8, "II", fontproperties=titleFont, size=int(plt_size*6), color=qk["II"])
-        ax.text(-1.3, -0.8, "III", fontproperties=titleFont, size=int(plt_size*6), color=qk["III"])
-        ax.text(1.1, -0.8, "IV", fontproperties=titleFont, size=int(plt_size*6), color=qk["IV"])
+        ax.text(0.9, 0.8, "I", fontproperties=titleFont, size=int(plt_size*6), color=qk["I"])
+        ax.text(-1, 0.8, "II", fontproperties=titleFont, size=int(plt_size*6), color=qk["II"])
+        ax.text(-1.1, -0.8, "III", fontproperties=titleFont, size=int(plt_size*6), color=qk["III"])
+        ax.text(0.9, -0.8, "IV", fontproperties=titleFont, size=int(plt_size*6), color=qk["IV"])
+
+    else:
+        # print emotion labels
+        ax.text(0.78, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.3, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
 
     # plt.tight_layout()
     plt.savefig(file, dpi=600)

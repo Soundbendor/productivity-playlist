@@ -363,11 +363,76 @@ def quadrants(results, deezer):
 
     return
 
+def evals(test):
+    filters = {
+        "length": 11,
+        "qc": "BLTR"
+    }
+
+    df = pd.read_csv(f"analysis/{test}/_results.csv")
+    for f in filters:
+        df = df[df[f] == filters[f]]
+    print(df.info())
+
+    examples = {
+        "pearson": [0.3, 0.6,0.99],
+        "stepvar": [0.0007, 0.0004, 0.0001],
+    }
+
+    colors = ['r', 'b', 'g']
+
+    for m in examples:
+        helper.makeDir(f"{outdir}/{m}")
+        print(f"\n\n{m}:")
+
+        fig, axs = plt.subplots(1, len(examples[m]), dpi=600)
+        fig.set_figheight(2.4)
+        fig.set_figwidth(6)
+
+        for i, v in enumerate(examples[m]):
+            df_closest = df.iloc[(df[m] - v).abs().argsort()[:1]]
+            print(df_closest)
+            orig = int(df_closest["orig"])
+            dest = int(df_closest["dest"])
+            print(orig, dest, v)
+
+            pl = pd.read_csv(
+                f"test/{test}/{filters['qc']}/{orig}-{dest}/{filters['length']}.csv"
+            )
+
+            axs[i].plot(
+                [pl.iloc[0]["valence"], pl.iloc[-1]["valence"]],
+                [pl.iloc[0]["arousal"], pl.iloc[-1]["arousal"]],
+                marker=None, linestyle='dotted', color=colors[i]                
+            )
+
+            axs[i].plot(pl["valence"], pl["arousal"], marker='.', color=colors[i], linestyle='-')
+
+            axs[i].set_frame_on(False)
+            # axs[i].spines["bottom"].set_visible(False)
+
+            axs[i].set_xlabel(f"{v}", fontweight='bold', size='large')
+            axs[i].set_xticks([])
+            axs[i].set_ylabel(None)
+            axs[i].set_yticks([])
+
+            # # print(pl)
+            # plot.playlist(
+            #     [pl[["valence", "arousal"]].to_numpy()], file=f"{outdir}/{m}/{v}.png"
+            # )
+        
+        plt.tight_layout()
+        plt.savefig(f"{outdir}/comp-{m}.png")
+        plt.clf()
+        plt.close()
+
+    return
+
 if __name__ == "__main__":
     # Load up data from specific tests.
-    dfs = {t: {
-        d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
-     } for t in dates}
+    # dfs = {t: {
+    #     d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
+    #  } for t in dates}
 
     songdata = SongDataset(
         name="Deezer",
@@ -377,12 +442,14 @@ if __name__ == "__main__":
 
     # dist(dfs["distance"])
     # data(dfs["dataset"])
-    kval(dfs["kval"]["All"])
+    # kval(dfs["kval"]["All"])
     # length(dfs["length"])
     # segments(dfs["segment"])
 
-    quadrants(dfs["dataset"]["All"], songdata)
+    # quadrants(dfs["dataset"]["All"], songdata)
     # plotRussell(songdata.va_df, "circle-deezer")
+
+    # evals("23-04-09-1831-lengths")
 
     # samples = {}
     # with open("quadrants.json") as f: samples = json.load(f)

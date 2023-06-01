@@ -53,7 +53,12 @@ def analyze_dataset(dataset, dirname, verbose=0):
     helper.csvToLatex("{}/description.csv".format(dirname), "{}/description.tex".format(dirname))
 
     ## Full boxplot.
-    df.boxplot(figsize = (len(df.columns) * 1.5,10))
+    # plot.snsplot(sns.boxenplot, df, None, None, figheight=2, figwidth=6)
+    fig, ax = plt.subplots(dpi=600)
+    fig.set_figwidth(9)
+    fig.set_figheight(5)
+    df.boxplot(figsize = (6, 3), ax=ax)
+    ax.set_xticklabels(df.columns, rotation=90, ha='right')
     plt.tight_layout()
     plt.savefig("{}/all-boxes.png".format(dirname))
     plt.close()
@@ -76,8 +81,8 @@ def analyze_dataset(dataset, dirname, verbose=0):
     # Correlation matrix and heatmap.
     correlation = df.corr().round(2)
     correlation.to_csv("{}/correlation.csv".format(dirname), float_format="%.6f")
-    plt.figure(figsize=(2 + len(df.columns) * 0.6, 2 + len(df.columns) * 0.4))
-    sns.heatmap(correlation, annot=True, center=0, cmap='RdYlGn')
+    plt.figure(figsize=(len(correlation)*0.6 + 1, len(correlation)*0.4 + 0.75))
+    sns.heatmap(correlation, annot=True, center=0, cmap='RdYlBu')
     plt.tight_layout()
     plt.savefig("{}/heatmap.png".format(dirname))
     plt.close()
@@ -169,33 +174,33 @@ if __name__ == "__main__":
         #     cols=info["cols"]["deezer"] + info["cols"]["msd"],
         #     path="./data/deezer/deezer-spotify+msd.csv",
         # ),
-        SongDataset(
-            name="Deezer+MSD",
-            cols=info["cols"]["deezer"] + info["cols"]["msd"],
-            path="data/deezer/deezer-std-all.csv",
-        ),
-        SongDataset(
-            name="PCA-Deezer+Spotify",
-            path="data/deezer/deezer-pca-spotify.csv", 
-        ),
-        SongDataset(
-            name="PCA-Deezer+MSD",
-            path="data/deezer/deezer-pca-msd.csv", 
-        ),
-        SongDataset(
-            name="PCA-Deezer+Spotify+MSD",
-            path="data/deezer/deezer-pca-all.csv", 
-        ),
-        SegmentDataset(
-            name="Deezer+Segments-100cnt",
-            cols=info["cols"]["deezer"] + info["cols"]["segments"],
-            path="data/deezer/segments/cnt100.csv",
-        ),
-        SegmentDataset(
-            name="Deezer+Segments-030sec",
-            cols=info["cols"]["deezer"] + info["cols"]["segments"],
-            path="data/deezer/segments/dur030.csv",
-        )
+        # SongDataset(
+        #     name="Deezer+MSD",
+        #     cols=info["cols"]["deezer"] + info["cols"]["msd"],
+        #     path="data/deezer/deezer-std-all.csv",
+        # ),
+        # SongDataset(
+        #     name="PCA-Deezer+Spotify",
+        #     path="data/deezer/deezer-pca-spotify.csv", 
+        # ),
+        # SongDataset(
+        #     name="PCA-Deezer+MSD",
+        #     path="data/deezer/deezer-pca-msd.csv", 
+        # ),
+        # SongDataset(
+        #     name="PCA-Deezer+Spotify+MSD",
+        #     path="data/deezer/deezer-pca-all.csv", 
+        # ),
+        # SegmentDataset(
+        #     name="Deezer+Segments-100cnt",
+        #     cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        #     path="data/deezer/segments/cnt100.csv",
+        # ),
+        # SegmentDataset(
+        #     name="Deezer+Segments-030sec",
+        #     cols=info["cols"]["deezer"] + info["cols"]["segments"],
+        #     path="data/deezer/segments/dur030.csv",
+        # )
     ]
 
     mms = MinMaxScaler(feature_range=(-1,1))
@@ -210,7 +215,7 @@ if __name__ == "__main__":
 
     for dataset in datasets:
         ## Grab features and point data and analyze.
-        dirname = "data/_analysis/{}".format(dataset.name)
+        dirname = "out/thesis-plots/{}".format(dataset.name)
         df = analyze_dataset(dataset, dirname)
 
         discretes = {}
