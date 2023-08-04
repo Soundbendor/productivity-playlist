@@ -154,11 +154,11 @@ def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4
     plt.clf()
     plt.close()
 
-def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None):
+def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', legend = [], file = "", title="", point_annotations=None, scale=1):
 
     fig, ax= plt.subplots(dpi=600)
-    fig.set_figheight(4.8)
-    fig.set_figwidth(6.4)
+    fig.set_figheight(4.8 * scale)
+    fig.set_figwidth(6.4 * scale)
 
     # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
@@ -180,7 +180,8 @@ def line(xlabel, ylabel, data, dim = 1, count = 1, marker=',', linestyle='-', le
         else:
             for i in range(count):
                 ax.plot(data[i][0], data[i][1], marker=marker, linestyle=linestyle)
-        
+
+    plt.tight_layout()       
     
     if point_annotations != None:
         for i in range(len(point_annotations)):
@@ -257,8 +258,8 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
     axisFont = fm.FontProperties(fname="./static/fonts/Stratum2-Medium.otf")
     emotionFont = fm.FontProperties(fname="./static/fonts/KievitOffc-BoldIta.ttf", size='xx-large')
 
-    ax.set_xlabel("Arousal", fontproperties=axisFont, size=plt_size*3)
-    ax.set_ylabel("Valence", fontproperties=axisFont, size=plt_size*3)
+    ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
+    ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
     ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
     ax.grid(True, alpha=0.5 )
     # ax.axes.xaxis.set_ticks([])

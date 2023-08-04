@@ -447,18 +447,18 @@ if __name__ == "__main__":
     # segments(dfs["segment"])
 
     # quadrants(dfs["dataset"]["All"], songdata)
-    # plotRussell(songdata.va_df, "circle-deezer")
+    plotRussell(songdata.va_df, "circle-deezer")
 
     # evals("23-04-09-1831-lengths")
 
-    # samples = {}
-    # with open("quadrants.json") as f: samples = json.load(f)
-    # allpoints = []
-    # for c in testing.QUADRANT_CODES: 
-    #     for s in samples[c]:
-    #         allpoints.append(int(s))
-    # sampledata = songdata.get_point(allpoints)
-    # plotRussell(sampledata, "circle-sample", alpha=1, quad=True)
+    samples = {}
+    with open("quadrants.json") as f: samples = json.load(f)
+    allpoints = []
+    for c in testing.QUADRANT_CODES: 
+        for s in samples[c]:
+            allpoints.append(int(s))
+    sampledata = songdata.get_point(allpoints)
+    plotRussell(sampledata, "circle-sample", alpha=1, quad=True)
 
 
 

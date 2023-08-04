@@ -10,8 +10,8 @@ FEATS_IND = ["loudness_max", "loudness_start"]
 FEATS_ARR = [("pitches", 12), ("timbre", 12)]
 
 def fillcols(s, outcols, size=0):
-    outcols[f"{s}_duration"] = [None] * size
-    outcols[f"{s}_num_samples"] = [None] * size
+    # outcols[f"{s}_duration"] = [None] * size
+    # outcols[f"{s}_num_samples"] = [None] * size
     for feat in FEATS_IND: outcols["{}_{}".format(s, feat)] = [None] * size
     for feat, n in FEATS_ARR: 
         for i in range(n):
@@ -90,8 +90,8 @@ def grab_segment_data(segments, mode = "cnt", num = 10.0):
                 outvals[coln] = np.around(wavg, decimals=6)
                 segvals[coln] = data
 
-        outvals[f"{s}_duration"] = np.around(sums[s], 5)
-        outvals[f"{s}_num_samples"] = lens[s]
+        # outvals[f"{s}_duration"] = np.around(sums[s], 5)
+        # outvals[f"{s}_num_samples"] = lens[s]
 
     # print("---- Output values ----")
     # pprint(outvals)
@@ -207,7 +207,7 @@ def test_segcounts(spid, mode, num):
     print("Spotify ID: ", spid)
     test_range = [x+1 for x in range(num)]
     segments = sp.audio_analysis(spid)["segments"]
-    dirname = helper.makeTestDir("seg{}{:03}".format(mode, num))
+    dirname = "out/thesis-plots/segcnt"
 
     testcols = {}
     fillcols("head", testcols)
@@ -235,7 +235,7 @@ def test_segcounts(spid, mode, num):
         count = 2 if mode == "cnt" else 1
         
         plot.line("# of segments", col, data, 
-                    count = count, dim = 2, scale=1,
+                    count = count, dim = 2, scale=0.7,
                     # title = "Segment Weighted Average for {}".format(spid),
                     file="{}/{}.png".format(dirname, col))
 
