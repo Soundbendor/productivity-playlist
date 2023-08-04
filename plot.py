@@ -129,14 +129,16 @@ def snsplot(snsfunc, df, x, y, hue=None, legend=[], file="", title="", scale=0.4
 
     # df.boxplot(column=x, by=y, figsize = (len(df.columns) * 1.5,10), ax=ax)
     snsfunc(ax=ax, data=df, x=x, y=y, palette=palette)
+    for item in ax.get_xticklabels():
+        item.set_fontstyle('italic')
 
     if not show_y:
         ax.set_ylabel(None)
         ax.set_yticks([])
 
-    # if snsfunc != mult_y:
-    #     ax.set_xlabel(key[x])
-    #     ax.set_ylabel(key[y])
+    if snsfunc != mult_y:
+        ax.set_xlabel(key[x])
+        ax.set_ylabel(key[y])
 
     fig.tight_layout()
 
