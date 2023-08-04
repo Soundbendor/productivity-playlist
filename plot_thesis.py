@@ -38,11 +38,11 @@ evaldata = [
     # "Deezer+Segments-030sec", "Deezer+Segments-100cnt"
 ]
 dates = {
-    "dataset":  "23-04-09-1750",
-    "kval":     "23-05-01-0005",
+    # "dataset":  "23-04-09-1750",
+    # "kval":     "23-05-01-0005",
     "distance": "23-04-30-1302",
-    "length":   "23-04-30-1954",
-    "segment":  "23-04-30-0115"
+    # "length":   "23-04-30-1954",
+    # "segment":  "23-04-30-0115"
 }
 
 # Plot Deezer again - bigger.
@@ -148,8 +148,8 @@ def data(dfs):
             "Deezer+Segments-100cnt", "Deezer+Segments-030sec"
         ],[
             "Deezer", 
-            "Spotify", "MSD", "all", 
-            "PCA-Spotify", "PCA-MSD", "PCA-all",
+            "Spotify", "MSD", "All", 
+            "PCA-Spotify", "PCA-MSD", "PCA-All",
             "100 segments", "30 seconds"
         ])
 
@@ -179,7 +179,7 @@ def data(dfs):
     # Spotify features - boxplot.
     fig, (ax1, ax2) = plt.subplots(1, 2, dpi=600, sharey=True)
     fig.set_figwidth(6)
-    fig.set_figheight(3.5)
+    fig.set_figheight(4)
 
     sns.boxenplot(ax=ax1, data=spot, x="feat_pearson", y="dataset")
     sns.boxenplot(ax=ax2, data=spot, x="feat_stepvar", y="dataset")
@@ -195,7 +195,7 @@ def data(dfs):
     # Mood Pearson - all vs BLTR.
     fig, (ax1, ax2) = plt.subplots(1, 2, dpi=600, sharey=True)
     fig.set_figwidth(6)
-    fig.set_figheight(3.5)
+    fig.set_figheight(4)
     sns.boxenplot(ax=ax1, data=df, x="pearson", y="dataset")
     sns.boxenplot(ax=ax2, data=df[df["qc"] == "BLTR"], x="pearson", y="dataset")
     ax1.set_xlabel("PCC (all Quadrant paths)")
@@ -334,7 +334,7 @@ def quadrants(results, deezer):
 
     quadresults = pd.DataFrame([{
         "from": tl[oq], "to": tl[dq], "direction": directions[f"{oq}{dq}"],
-        "songs": qs[oq] + qs[dq],
+        # "songs": qs[oq] + qs[dq],
         "points": qp[oq] + qp[dq],
         "pearson_avg": pearson.loc[f"{oq}{dq}", "mean"],
         "pearson_std": pearson.loc[f"{oq}{dq}", "std"],
@@ -343,13 +343,15 @@ def quadrants(results, deezer):
         "stepvar_std": stepvar.loc[f"{oq}{dq}", "std"],
         "stepvar_med": stepvar.loc[f"{oq}{dq}", "50%"],
     } for oq, dq in testing.QUADRANT_COMBOS ])
-    
-    quadresults = quadresults.sort_values(by="pearson_avg", ascending=False)
+
+    quadresults = quadresults.sort_values(by="to", ascending=True)    
+    quadresults = quadresults.sort_values(by="from", ascending=True)
     quadresults.to_latex(
         buf="out/thesis-plots/quadresults.tex", index=False,
         columns=[
-            "from", "to", "direction", "songs", "points", 
-            "pearson_avg", "pearson_std", "stepvar_avg", "stepvar_std"
+            "from", "to", "direction", "points", 
+            "pearson_avg", "pearson_std", "pearson_med", 
+            "stepvar_avg", "stepvar_std", "stepvar_med",
         ]
     )
     print(f"len: {len(results)}\n")
@@ -430,9 +432,9 @@ def evals(test):
 
 if __name__ == "__main__":
     # Load up data from specific tests.
-    # dfs = {t: {
-    #     d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
-    #  } for t in dates}
+    dfs = {t: {
+        d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
+     } for t in dates}
 
     songdata = SongDataset(
         name="Deezer",
@@ -440,7 +442,7 @@ if __name__ == "__main__":
         path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
     )
 
-    # dist(dfs["distance"])
+    dist(dfs["distance"])
     # data(dfs["dataset"])
     # kval(dfs["kval"]["All"])
     # length(dfs["length"])
