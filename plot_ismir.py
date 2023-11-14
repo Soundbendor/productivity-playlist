@@ -24,11 +24,11 @@ import testing
 from songdataset import SongDataset, SegmentDataset
 
 # Basic output stuff.
-outdir = "out/ismir2023"
+outdir = "out/evo2024"
 helper.makeDir(outdir)
 metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
 dates = {
-    "dataset":  "23-04-09-1750",
+    # "dataset":  "23-04-09-1750",
     "kval":     "23-04-11-1049",
     "distance": "23-04-09-2119",
     # "length":   "23-04-14-0157"
@@ -84,17 +84,26 @@ def dist(df):
     ])
     df = df[df.distance != "Ratios"]
 
-    # ## Table for feature-based Pearson correlation.
-    # distfp = df.groupby("distance")["feat_pearson"].describe().round(6)
-    # # print(distfp)
-    # distfp[["mean", "std"]].style.to_latex(hrules=True, buf=f"{outdir}/dist-audio-pearson.tex")
+    ## Table for feature-based Pearson correlation.
+    distfp = df.groupby("distance")["feat_pearson"].describe().round(4)
+    distsv = df.groupby("distance")["feat_stepvar"].describe().round(4)
+    # print(distfp)
+    distfp[["mean", "std", "50%"]].style.to_latex(hrules=True, buf=f"{outdir}/dist-audio-pearson.tex")
 
     ## Plot for feature-based step variance.
     plot.snsplot(
         sns.boxenplot, df, "feat_stepvar", "distance", 
         file=f"{outdir}/dist-audio-stepvar.png", 
-        scale=0.4
+        figheight=3, figwidth=6, scale=1
     )
+
+    ## Audio-based metrics - table.
+    disttable = pd.merge(
+        distfp[["mean", "std", "50%"]], distsv[["mean", "std", "50%"]],
+        left_index=True, right_index=True, suffixes=("-pearson", "-stepvar")
+    )
+    disttable.style.to_latex(hrules=True, buf=f"{outdir}/dist-audio.tex")
+
 
     return
 
@@ -168,8 +177,8 @@ if __name__ == "__main__":
     dfs = {t: pd.read_csv(f"analysis/{dates[t]}-{t}s/_results.csv") for t in dates}
 
     dist(dfs["distance"])
-    data(dfs["dataset"])
-    kval(dfs["kval"])
+    # data(dfs["dataset"])
+    # kval(dfs["kval"])
 
     # songdata = SongDataset(
     #     name="Deezer+Spotify+MSD",
