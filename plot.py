@@ -229,8 +229,9 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.show(block=False)
     plt.clf() 
 
-def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, alpha=.5, quad=False):
-    plt.figure(figsize=(plt_size, plt_size))
+def av_circle(v, a, title=None, colors="#D73F09", file="./test.png", plt_size=10, alpha=.5, quad=False):
+    plt.figure(figsize=(plt_size, 0.9 *plt_size))
+    # plt.tight_layout()
     # fig, ax= plt.subplots(dpi=600)
     # fig.set_figheight(plt_size * 0.9)
     # fig.set_figwidth(plt_size)
@@ -242,7 +243,7 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
 
     plt.scatter(v, a, s=20, c=colors, alpha=alpha)
     plt.xlim(-1.25,1.25)
-    plt.ylim(-1.25,1.25)  
+    plt.ylim(-1.05,1.05)  
 
     # draw the unit circle
     fig = plt.gcf()
@@ -262,10 +263,14 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
 
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
-    ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
+    if title:
+        ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
+    else:
+        ax.set_title(None)
+    
     ax.grid(True, alpha=0.5 )
-    # ax.axes.xaxis.set_ticks([])
-    # ax.axes.yaxis.set_ticks([])
+    ax.axes.xaxis.set_ticks([-1, -0.5, 0, 0.5, 1.0])
+    ax.axes.yaxis.set_ticks([-1, -0.5, 0, 0.5, 1.0])
 
     if quad:
         ax.text(0.9, 0.8, "I", fontproperties=titleFont, size=int(plt_size*6), color=qk["I"])
@@ -275,13 +280,13 @@ def av_circle(v, a, title="", colors="#D73F09", file="./test.png", plt_size=10, 
 
     else:
         # print emotion labels
-        ax.text(0.78, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*4))
-        ax.text(0.3, 0.9, 'Excited', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-0.7, 0.8, 'Angry', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.3, 0.8, 'Excited', fontproperties=emotionFont, size=int(plt_size*4))
         ax.text(-1.16, 0.35, 'Afraid', fontproperties=emotionFont, size=int(plt_size*4))
-        ax.text(-0.7, 0.9, 'Angry', fontproperties=emotionFont, size=int(plt_size*4))
-        ax.text(-1.05, -0.25, 'Sad', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.6, 0.35, 'Happy', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(-1.05, -0.35, 'Sad', fontproperties=emotionFont, size=int(plt_size*4))
+        ax.text(0.6, -0.35, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
         ax.text(-0.9, -0.9, 'Depressed', fontproperties=emotionFont, size=int(plt_size*4))
-        ax.text(0.78, -0.25, 'Content', fontproperties=emotionFont, size=int(plt_size*4))
         ax.text(0.5, -0.9, 'Calm', fontproperties=emotionFont, size=int(plt_size*4)) 
 
     # plt.tight_layout()

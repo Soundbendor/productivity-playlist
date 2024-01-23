@@ -28,9 +28,9 @@ outdir = "out/evo2024"
 helper.makeDir(outdir)
 metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
 dates = {
-    # "dataset":  "23-04-09-1750",
-    "kval":     "23-04-11-1049",
-    "distance": "23-04-09-2119",
+    "dataset":  "23-04-09-1750",
+    # "kval":     "23-04-11-1049",
+    # "distance": "23-04-09-2119",
     # "length":   "23-04-14-0157"
 }
 
@@ -176,8 +176,8 @@ if __name__ == "__main__":
     # Load up data from specific tests.
     dfs = {t: pd.read_csv(f"analysis/{dates[t]}-{t}s/_results.csv") for t in dates}
 
-    dist(dfs["distance"])
-    # data(dfs["dataset"])
+    # dist(dfs["distance"])
+    data(dfs["dataset"])
     # kval(dfs["kval"])
 
     # songdata = SongDataset(

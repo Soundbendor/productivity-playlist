@@ -29,7 +29,7 @@ import testing
 from songdataset import SongDataset, SegmentDataset
 
 # Basic output stuff.
-outdir = "out/thesis-plots"
+outdir = "out/evo2024"
 helper.makeDir(outdir)
 metrics = ["feat_pearson", "feat_stepvar", "pearson", "stepvar", "meansqr"]
 evaldata = [
@@ -431,10 +431,10 @@ def evals(test):
     return
 
 if __name__ == "__main__":
-    # Load up data from specific tests.
-    dfs = {t: {
-        d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
-     } for t in dates}
+    # # Load up data from specific tests.
+    # dfs = {t: {
+    #     d: pd.read_csv(f"analysis/{dates[t]}-{t}s/{d}/_results.csv") for d in evaldata
+    #  } for t in dates}
 
     songdata = SongDataset(
         name="Deezer",
@@ -442,7 +442,7 @@ if __name__ == "__main__":
         path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
     )
 
-    dist(dfs["distance"])
+    # dist(dfs["distance"])
     # data(dfs["dataset"])
     # kval(dfs["kval"]["All"])
     # length(dfs["length"])
