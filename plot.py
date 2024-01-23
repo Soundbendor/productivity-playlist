@@ -22,29 +22,58 @@ key = {
     "points": "Unique Points"
 }
 
-def playlist(data, legend=[], file="", title="", scale=1, axislabels=True):
+def playlist(data, legend=[], file="", title="", scale=1, axislabels=True, annot=None, annot_props=None):
     fig, ax= plt.subplots(dpi=600)
-    fig.set_figheight(4.8 * scale)
+    fig.set_figheight(4 * scale)
     fig.set_figwidth(6.4 * scale)
 
-    # add formatted labels
+    # # add formatted labels
     titleFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Bold.ttf",size='x-large')
     axisFont = fm.FontProperties(fname="./static/fonts/KievitOffc.ttf",size='x-large')
     legendFont = fm.FontProperties(fname="./static/fonts/KievitOffc-Ita.ttf",size='medium')
 
+    ax.spines["left"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["top"].set_position(("data",0))
+    ax.spines["right"].set_position(("data",0))
+
+    for k, spine in ax.spines.items():  #ax.spines is a dictionary
+        spine.set_zorder(1)
+        spine.set_alpha(0.5)
+
     if axislabels:
-        ax.set_xlabel("valence", fontproperties=axisFont)
-        ax.set_ylabel("arousal", fontproperties=axisFont)
+        ax.set_xlabel("Valence")
+        ax.set_ylabel("Arousal")
 
     count = len(data)
     if (count == 1):
         points = np.transpose(data)
-        ax.plot(points[0], points[1], marker='.', color="#D73F09", linestyle='-')
+        ax.plot(points[0], points[1], 
+                marker='.', color="#D73F09", zorder=2,
+                linestyle='-', linewidth=3, markersize=12)
+
+        if annot is not None:
+            for i in range(len(annot)):
+                plt.annotate(annot[i], # this is the text
+                    (points[0][i],points[1][i]), # these are the coordinates to position the label
+                    textcoords="offset points", # how to position the text
+                    xytext=(
+                        annot_props[i][0],
+                        annot_props[i][1]), # distance from text to points (x,y)
+                    size='small',
+                    # fontweight='bold',
+                    # color='blue',
+                    ha='left',
+                    bbox=dict(boxstyle="round", fc="#B8DDE1"),
+                    arrowprops=dict(arrowstyle="->")
+                    ) 
+
     else:
         for i in range(count):
             points = np.transpose(data[i])
             ax.plot(points[0], points[1], marker='.', linestyle='-')
-    
+
+   
     if (legend != []):
         ax.legend(legend, prop=legendFont, fontsize='small')
 
@@ -230,7 +259,7 @@ def av_box(plots, labels, title="test", file="./test.png", plt_size=10, vert=Tru
     plt.clf() 
 
 def av_circle(v, a, title=None, colors="#D73F09", file="./test.png", plt_size=10, alpha=.5, quad=False):
-    plt.figure(figsize=(plt_size, 0.9 *plt_size))
+    plt.figure(figsize=(plt_size, 0.84 * plt_size))
     # plt.tight_layout()
     # fig, ax= plt.subplots(dpi=600)
     # fig.set_figheight(plt_size * 0.9)
@@ -263,11 +292,7 @@ def av_circle(v, a, title=None, colors="#D73F09", file="./test.png", plt_size=10
 
     ax.set_xlabel("Valence", fontproperties=axisFont, size=plt_size*3)
     ax.set_ylabel("Arousal", fontproperties=axisFont, size=plt_size*3)
-    if title:
-        ax.set_title(title, fontproperties=titleFont, size=plt_size*6)
-    else:
-        ax.set_title(None)
-    
+
     ax.grid(True, alpha=0.5 )
     ax.axes.xaxis.set_ticks([-1, -0.5, 0, 0.5, 1.0])
     ax.axes.yaxis.set_ticks([-1, -0.5, 0, 0.5, 1.0])

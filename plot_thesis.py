@@ -56,7 +56,6 @@ def plotRussell(df, name, alpha=0.5, quad=False):
         df["valence"], df["arousal"], 
         file="{}/{}.png".format(outdir, name), alpha=alpha, quad=quad
     )
-
     return
 
 
@@ -73,11 +72,30 @@ def plotExPlaylist(dataset):
         songdata, user_orig, user_dest, 11, verbose = 0, score=algos.euclidean_score, neighbors=7
     )
 
+    playlistDF["annotations"] = [f"$\mathbf{{{i+1}}}$ - {s['artist']}\n\"{s['title']}\"" for i, s in playlistDF.iterrows()]
+    # playlistDF["annotations"] = playlistDF["annotations"].map(lambda x: x.replace(' ', '\\;'))
+
+    annot_adjustments = [
+        (50, -5),
+        (-40, 50),
+        (50, -13),
+        (50, -10),
+        (85, -5),
+        (-120, -5),
+        (70, -10),
+        (-150, -5),
+        (-120, -10),
+        (-10, -40),
+        (-150, -10)
+    ]
+
     plot.playlist([playlistDF[["valence", "arousal"]].to_numpy()], 
-        file = f"{outdir}/ex-playlist.png", scale=0.5, axislabels=False
+        file = f"{outdir}/ex-playlist.png", scale=1, axislabels=True,
+        annot= playlistDF["annotations"],
+        annot_props =annot_adjustments,
     )
 
-    playlistDF.round(2).to_latex(hrules=True,
+    playlistDF.round(2).to_latex(
         buf=f"{outdir}/ex-playlist.tex",
         columns=["artist", "title", "valence", "arousal"],
         index=False
@@ -438,9 +456,11 @@ if __name__ == "__main__":
 
     songdata = SongDataset(
         name="Deezer",
-        cols=info["cols"]["deezer"],
+        cols=info["cols"]["deezer"] + info["cols"]["msd"],
         path=testing.DEEZER_SPO_MSD, knn=True, verbose=True,
     )
+
+    # plotExPlaylist(songdata)
 
     # dist(dfs["distance"])
     # data(dfs["dataset"])
@@ -449,7 +469,7 @@ if __name__ == "__main__":
     # segments(dfs["segment"])
 
     # quadrants(dfs["dataset"]["All"], songdata)
-    plotRussell(songdata.va_df, "circle-deezer")
+    plotRussell(songdata.va_df, "deezer-circle")
 
     # evals("23-04-09-1831-lengths")
 
@@ -460,7 +480,7 @@ if __name__ == "__main__":
         for s in samples[c]:
             allpoints.append(int(s))
     sampledata = songdata.get_point(allpoints)
-    plotRussell(sampledata, "circle-sample", alpha=1, quad=True)
+    plotRussell(sampledata, "quadrants", alpha=1, quad=True)
 
 
 
