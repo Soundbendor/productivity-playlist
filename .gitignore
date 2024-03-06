@@ -23,3 +23,5 @@ fonts/
 .cache*
 core.*
 *.code-workspace
+
+intersect/
