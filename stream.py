@@ -1,15 +1,8 @@
 import streamlit as st
 import altair as alt
 import numpy as np
-import random
 import pandas as pd
-import json
-import pprint
 import time
-import sys
-import os
-import math
-import warnings
 
 #our modules
 import helper
@@ -19,7 +12,7 @@ import algos
 from songdataset import SongDataset
 
 st.title("Mood-Dynamic Playlist")
-st.write("By [Shaurya Gaur](https://shaurgaur.github.io/)")
+st.write("By [Shaurya Gaur](https://github.com/shaurgaur/)")
 st.write("For [Soundbendor Lab](https://soundbendor.org/), Oregon State University")
 # st.write("Last updated November 2nd, 2022")
 
@@ -27,11 +20,19 @@ st.write("For [Soundbendor Lab](https://soundbendor.org/), Oregon State Universi
 datasetpath = "static/deezer-std-all.csv"
 info = helper.loadConfig("config.json")
 dataset = SongDataset(
-    name="Deezer+Spotify",
+    name="Deezer",
     cols=info["cols"]["deezer"] + info["cols"]["spotify"],
-    path=datasetpath, knn=True, verbose=True,
+    path=datasetpath, knn=False, verbose=False,
     feat_index = 5, arousal = 4, valence = 3,
 )
+
+dist_options = {
+    "Cosine": algos.cosine_score,
+    "Euclidean": algos.euclidean_score,
+    "Manhattan": algos.manhattan_score,
+    "Jaccard": algos.jaccard_score,
+    "Random": algos.neighbors_rand
+}
 
 sp, spo = spotify.Spotify(
     info["auth"]["client_id"], 
@@ -60,12 +61,23 @@ optiondf = pd.DataFrame(songoptionobj)
 
 st.write("## Let's make a playlist!")
 form = st.form("playlist_form")
+
+form.write("### Required Options")
 origstr = form.selectbox("Choose a song to start with:", optiondf, index=52)
 deststr = form.selectbox("Choose a song to end with:", optiondf, index=8)
-nsongs = form.number_input("Number of songs:", 3, 13, value=7, step=1)
-spotyn = form.checkbox("Make the playlist on Spotify.")
-submitted = form.form_submit_button("Make my playlist!")
+nsongs = form.slider("Number of songs:", 3, 15, value=7, step=1)
 
+form.write("### Advanced Options")
+distmetric = form.radio("Distance metric:", dist_options.keys(), index=1, horizontal=True)
+neighbors_k = form.slider("Neighbors:", 3, 31, value=11, step=2)
+dataset_cols = form.multiselect(
+    "Audio dataset(s) to use:",
+    ["Spotify", "MSD"],
+    ["Spotify"]
+)
+spotyn = form.checkbox("Make the playlist on Spotify.")
+
+submitted = form.form_submit_button("Make my playlist!", type='primary')
 if submitted:
     orig = int(origstr.split(" ... ")[0].split(" id: ")[1])
     dest = int(deststr.split(" ... ")[0].split(" id: ")[1])
@@ -74,7 +86,22 @@ if submitted:
         st.write("Songs are the same! Try again.")
         submitted = False
     else:
-        playlistDF = prodplay.makePlaylist(dataset, orig, dest, nsongs)
+        cols = info["cols"]["deezer"]
+        for c in dataset_cols:
+            cols += info["cols"][c.lower()]
+
+        dataset = SongDataset(
+            name="Deezer",
+            cols=cols,
+            path=datasetpath, knn=True, verbose=False,
+            feat_index = 5, arousal = 4, valence = 3,
+        )
+
+        playlistDF = prodplay.makePlaylist(
+            dataset, orig, dest, nsongs, 
+            score=dist_options[distmetric],
+            neighbors=neighbors_k
+        )
         st.write("## Here's your playlist!")
 
         chart = alt.Chart(playlistDF).mark_line(
